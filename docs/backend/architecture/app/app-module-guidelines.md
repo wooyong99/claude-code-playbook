@@ -49,16 +49,26 @@ app — Controller → Request DTO → Extension → Command
 
 ## File Structure
 
+app 모듈의 최상위 디렉토리는 `common/`과 `{domain}/`으로 구성한다.
+
 ```
-:app:{module}/{domain}/          # {module} ∈ {storefront, backoffice, admin}
-├── {Entity}Controller.kt        ← Controller (flat 배치)
-├── {Domain}DtoExtension.kt      ← 매핑 Extension (dto/ 밖)
-└── dto/
-    ├── {Domain}Requests.kt      ← Request DTO 모음
-    └── {Domain}Responses.kt     ← Response DTO 모음 (필요 시만)
+:app:{module}/
+├── common/
+│   ├── config/      ← WebMvc, Jackson, CORS, Interceptor 등
+│   ├── advice/      ← @RestControllerAdvice, GlobalExceptionHandler
+│   ├── response/    ← BaseResponse<T>, ErrorResponse, PageResponse<T>
+│   ├── security/    ← SecurityFilterChain, 인증 필터, 인가 규칙
+│   ├── logging/     ← 요청·응답 로그 필터, MDC 설정, 마스킹
+│   └── validator/   ← 커스텀 Bean Validation, 공통 포맷 Validator
+└── {domain}/
+    ├── {Entity}Controller.kt        ← Controller (flat 배치)
+    ├── {Domain}DtoExtension.kt      ← 매핑 Extension (dto/ 밖)
+    └── dto/
+        ├── {Domain}Requests.kt      ← Request DTO 모음
+        └── {Domain}Responses.kt     ← Response DTO 모음 (필요 시만)
 ```
 
-app 공통 컴포넌트(`GlobalExceptionHandler`, `ErrorTypeExtension`, `BaseErrorCode`, `BaseError`, `BaseResponse`)는 모듈 공통 패키지(`common/` 등)에 위치한다.
+상세 규칙 → [file-structure.md](file-structure.md) · [common/ 패키지 상세](file-structure/common.md)
 
 ---
 
