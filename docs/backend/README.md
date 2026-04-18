@@ -49,14 +49,22 @@ Clean Architecture + DDD 기반 멀티모듈. 의존 방향: `app → applicatio
 
 ---
 
-## 정책 ([`policies/`](policies/))
+## 아키텍처 전역 결정 ([`architecture/`](architecture/))
 
-레이어와 무관하게 적용되는 크로스커팅 규칙·전략.
+특정 레이어에 국한되지 않으면서, 프로젝트의 **아키텍처 선택**에 의해 도입되는 규칙.
 
 | 문서 | 설명 |
 |------|------|
-| [multi-tenant](policies/multi-tenant.md) | 테넌트 격리 전략, 데이터 분류, 앱 모듈별 테넌트 식별 방식 |
-| [ddl-management](policies/ddl-management.md) | DDL 파일 위치, 엔티티-DDL 동기화 규칙 |
+| [multi-tenant](architecture/multi-tenant.md) | 테넌트 격리 전략, 데이터 분류, 채널별 테넌트 식별 방식 |
+
+---
+
+## 크로스커팅 정책 ([`policies/`](policies/))
+
+프로젝트 도메인·아키텍처 선택과 무관하게, 모든 레이어에 걸쳐 일반적으로 적용되는 기술 정책.
+
+| 문서 | 설명 |
+|------|------|
 | [security](policies/security.md) | 비밀번호 취급, 인증 컨텍스트 분리, 민감 정보 커밋 금지 |
 | [logging](policies/logging.md) | 로그 레벨 기준, MDC 키, 민감 데이터 차단 |
 

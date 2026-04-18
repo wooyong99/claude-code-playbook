@@ -61,10 +61,12 @@ Before writing code, read the guideline documents relevant to the current task's
 - `docs/backend/architecture/storage/storage-module-guidelines.md`
 - `docs/backend/architecture/storage/storage-adapter-convention.md`
 - `docs/backend/architecture/storage/querydsl-convention.md`
+- `docs/backend/architecture/storage/ddl-management.md` — 엔티티 변경 시 `sql/{domain}/{table}.sql` 함께 갱신
+
+**아키텍처 전역 결정** (해당 프로젝트에 적용 시)
+- `docs/backend/architecture/multi-tenant.md` — tenant 스코프 엔티티에는 `tenantId` 필수
 
 **Cross-cutting policies** (항상 관련 시)
-- `docs/backend/policies/multi-tenant.md` — tenant 스코프 엔티티에는 `tenantId` 필수
-- `docs/backend/policies/ddl-management.md` — 엔티티 변경 시 `sql/{domain}/{table}.sql` 함께 갱신
 - `docs/backend/policies/security.md` — 평문 비밀번호는 DTO 경계에서 종료
 - `docs/backend/policies/logging.md` — `LogExtension` 확장 함수, `[SCOPE] 설명 - key=value` 포맷
 

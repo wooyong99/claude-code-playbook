@@ -150,7 +150,7 @@ GET /api/v1/orders?status=PENDING&sort=createdAt,desc&cursor=xxx&size=20
 ❌ GET /api/v1/tenants/{slug}/orders     (tenant를 URL에 노출 — 이 프로젝트에서는 사용 안 함)
 ```
 
-> 멀티테넌트 컨텍스트 해석 상세는 [../../policies/multi-tenant.md](../../policies/multi-tenant.md) 참고
+> 멀티테넌트 컨텍스트 해석 상세는 [../multi-tenant.md](../multi-tenant.md) 참고
 
 ---
 

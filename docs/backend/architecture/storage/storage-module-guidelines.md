@@ -35,6 +35,7 @@ storage  — Adapter → JpaRepository / QueryDslRepository → DB
 |-----------|---------------------|----------|
 | Adapter / JpaRepository / Entity / Extension | `{Entity}Adapter` Port 구현 + Jpa(단순) · QueryDsl(복잡) 분리 + Entity는 JPA 매핑만 + Extension이 도메인 변환 | [storage-adapter-convention.md](storage-adapter-convention.md) |
 | QueryDsl | `BooleanExpression?` 동적 조건, 2-step 조인 페이지네이션, `Projections.constructor` 기반 Projection | [querydsl-convention.md](querydsl-convention.md) |
+| DDL 관리 | DDL 파일 위치 `sql/{domain}/{table}.sql`. 엔티티 신규/변경 시 **같은 커밋에서 DDL 동기화**. 버전 접두사 미사용 | [ddl-management.md](ddl-management.md) |
 
 ---
 
@@ -73,3 +74,4 @@ storage  — Adapter → JpaRepository / QueryDslRepository → DB
 
 - [storage-adapter-convention.md](storage-adapter-convention.md)
 - [querydsl-convention.md](querydsl-convention.md)
+- [ddl-management.md](ddl-management.md)

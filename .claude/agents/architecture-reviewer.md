@@ -60,11 +60,14 @@ You are the **Architecture Reviewer** sub-agent for this Kotlin + Spring Boot mu
 - `docs/backend/architecture/storage/storage-module-guidelines.md`
 - `docs/backend/architecture/storage/storage-adapter-convention.md`
 - `docs/backend/architecture/storage/querydsl-convention.md`
+- `docs/backend/architecture/storage/ddl-management.md`
+
+### 아키텍처 전역 결정
+
+- `docs/backend/architecture/multi-tenant.md`
 
 ### 크로스커팅 정책
 
-- `docs/backend/policies/multi-tenant.md`
-- `docs/backend/policies/ddl-management.md`
 - `docs/backend/policies/security.md`
 - `docs/backend/policies/logging.md`
 
