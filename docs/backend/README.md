@@ -1,6 +1,6 @@
 # Backend
 
-멀티테넌트 e-커머스 플랫폼 백엔드 문서. 아키텍처 가이드라인, 정책, 설계 문서, 실행 계획으로 구성된다.
+멀티테넌트 e-커머스 플랫폼 백엔드 문서. 아키텍처 가이드라인, 정책, 설계 문서로 구성된다.
 
 ---
 
@@ -11,8 +11,7 @@ docs/backend/
 ├── getting-started.md # 오리엔테이션 (기술 스택, 로컬 실행)
 ├── architecture/      # 레이어별 모듈 가이드라인 및 컨벤션
 ├── policies/          # 레이어를 관통하는 규칙·전략 (멀티테넌트, 보안, 로깅, DDL)
-├── design/            # 기술 설계 문서 (TDD)
-└── execution-plans/   # 기능 단위 실행 계획
+└── design/            # 기술 설계 문서 (TDD)
 ```
 
 **어디로 가야 할지 모르겠다면**
@@ -22,7 +21,6 @@ docs/backend/
 | 특정 레이어에 코드 작성 | [`architecture/`](architecture/) |
 | 테넌트/보안/로깅/DDL 등 전역 규칙 확인 | [`policies/`](policies/) |
 | 새 기능/서브시스템 설계 | [`design/`](design/) |
-| 기능 구현 단계 계획 | [`execution-plans/`](execution-plans/) |
 | 로컬 환경 세팅 | [getting-started.md](getting-started.md) |
 
 ---
@@ -72,18 +70,7 @@ Clean Architecture + DDD 기반 멀티모듈. 의존 방향: `app → applicatio
 
 ## 설계 문서 ([`design/`](design/))
 
-기능·서브시스템의 기술 설계 문서(Technical Design Document).
+기능·서브시스템의 기술 설계 문서(Technical Design Document). 아키텍처 판단 근거, 계층 분리, 트랜잭션 경계, 동시성 등 코드만으로 읽히지 않는 설계 의도를 담는다.
 
-- [SSR HTML Render](design/tdd-ssr-html-render.md)
-- [Tenant Onboarding](design/tdd-tenant-onboarding.md)
-
----
-
-## 실행 계획 ([`execution-plans/`](execution-plans/))
-
-기능 단위의 구현 실행 계획.
-
-- [Category CRUD](execution-plans/execution-plan-category-crud.md)
-- [Menu Catalog](execution-plans/execution-plan-menu-catalog.md)
-- [Product Management](execution-plans/execution-plan-product-management.md)
-- [Tenant Onboarding](execution-plans/execution-plan-tenant-onboarding.md)
+- 작성 규칙·표준 섹션 → [design/README.md](design/README.md)
+- 작성 예시 → [design/sample-tdd.md](design/sample-tdd.md)

@@ -55,14 +55,7 @@ docs/       # 기술 문서
 - [security](../docs/backend/policies/security.md) · [logging](../docs/backend/policies/logging.md)
 
 **설계 문서** — [`docs/backend/design/`](../docs/backend/design/)
-- [SSR HTML Render](../docs/backend/design/tdd-ssr-html-render.md)
-- [Tenant Onboarding](../docs/backend/design/tdd-tenant-onboarding.md)
-
-**실행 계획** — [`docs/backend/execution-plans/`](../docs/backend/execution-plans/)
-- [Category CRUD](../docs/backend/execution-plans/execution-plan-category-crud.md)
-- [Menu Catalog](../docs/backend/execution-plans/execution-plan-menu-catalog.md)
-- [Product Management](../docs/backend/execution-plans/execution-plan-product-management.md)
-- [Tenant Onboarding](../docs/backend/execution-plans/execution-plan-tenant-onboarding.md)
+기능·서브시스템의 기술 설계(TDD). 작성 규칙과 템플릿은 [design/README.md](../docs/backend/design/README.md) · 샘플 [sample-tdd.md](../docs/backend/design/sample-tdd.md).
 
 ### 프론트엔드 — [`docs/frontend/`](../docs/frontend/)
 

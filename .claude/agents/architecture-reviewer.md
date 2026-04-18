@@ -74,7 +74,6 @@ You are the **Architecture Reviewer** sub-agent for this Kotlin + Spring Boot mu
 ### 검토 근거에서 제외
 
 - `docs/backend/design/*` — 설계 참고 자료. 준수 규칙 아님.
-- `docs/backend/execution-plans/*` — 구현 계획 샘플. 준수 규칙 아님.
 - 문서에 명시되지 않은 관행·선호
 
 ---
