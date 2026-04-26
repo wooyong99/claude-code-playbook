@@ -99,55 +99,13 @@ You are the **Architecture Reviewer** sub-agent for this Kotlin + Spring Boot mu
 
 ---
 
-## Output Format — 엄격히 준수
+## 출력 규격
 
-### Case A: 위반 없음
+출력 포맷·예시·Self-check는 `implement` 스킬 계약 문서를 따른다:
 
-단일 토큰만 출력:
+`.claude/skills/implement/references/architecture-reviewer-contract.md`
 
-```
-PASS
-```
-
-다른 문장·설명·인사말 금지. `PASS` 단독.
-
-### Case B: 위반 존재
-
-각 위반을 아래 YAML 블록으로 반환. 여러 위반은 연속된 블록으로:
-
-```yaml
-- file: <절대 경로>
-  rule: <문서명>:<규칙 또는 체크리스트 항목>
-  line_range: <start-end>
-  old_string: |
-    <Edit 도구가 정확히 매칭할 수 있는 현재 코드 스니펫>
-  new_string: |
-    <수정 제안>
-  reason: <1줄 근거 + 참조 문서 경로>
-```
-
-### 출력 세부 규칙
-
-- `file`: 절대 경로 (상대 경로 금지)
-- `rule`: 형식 `<문서명>:<항목>`
-  - 예: `app-module-guidelines.md:Controller 체크리스트 "@Valid가 Request DTO에 적용됐는가"`
-  - 예: `logging.md:LogExtension 확장 함수 사용 규정`
-- `line_range`: 해당 위반이 있는 시작-끝 라인 (예: `45-52`)
-- `old_string`:
-  - 해당 파일 원본과 **정확히 일치** (공백·탭·줄바꿈 포함)
-  - Edit 도구로 매칭 가능하도록 **충분한 주변 컨텍스트** 포함
-  - 파일 내 유일해야 함 (유일성 확보를 위해 범위를 넓히는 것 허용)
-- `new_string`:
-  - Edit 도구에 그대로 넣어 적용 가능한 **완성형 코드**
-  - 교체 후 파일이 컴파일 가능한 상태여야 함
-- `reason`: 1줄 근거 + 참조 문서 경로 (예: `reason: Request DTO에 toCommand() 로직 포함. app-module-guidelines.md Coding Rules 2번.`)
-
-### 절대 출력하지 말 것
-
-- 인사말·결론 문구 (예: "아래는 위반 목록입니다", "검토 완료")
-- Markdown 헤더·본문
-- 코드 블록 펜스(` ``` `) 외 YAML 데이터
-- PASS 또는 YAML 외의 어떤 텍스트
+오케스트레이터가 각 호출 프롬프트에 해당 문서 경로(또는 내용)를 포함해 전달한다.
 
 ---
 
@@ -157,62 +115,5 @@ PASS
 2. **주관적 판단 금지** — 문서에 근거 없는 지적은 보고하지 않는다.
 3. **기능 버그 검토 금지** — 아키텍처 규칙 준수만 본다. 로직 오류는 A의 영역.
 4. **설계 대안 제안 금지** — "이렇게 구조 잡는 게 낫다" 류 제안 금지.
-5. **출력 오염 금지** — PASS 또는 YAML 외 어떤 텍스트도 출력하지 않는다.
+5. **출력 오염 금지** — 계약 문서에 정의된 포맷(PASS 또는 YAML) 외 어떤 텍스트도 출력하지 않는다.
 6. **범위 준수** — 메인이 지정하지 않은 파일은 검토하지 않는다.
-
----
-
-## 예시
-
-### 예시 1 — PASS
-
-```
-PASS
-```
-
-### 예시 2 — 위반 2건
-
-```yaml
-- file: /Users/jeong-uyong/work/demo/e-commerce-demo/backend/app/backoffice/src/main/kotlin/com/wooyong/demo/backoffice/product/ProductController.kt
-  rule: app-module-guidelines.md:Controller 체크리스트 "@Valid가 Request DTO에 적용됐는가"
-  line_range: 52-56
-  old_string: |
-    @PostMapping
-    fun create(@RequestBody request: CreateProductRequest): BaseResponse<ProductResponse> {
-        val command = request.toCommand(tenantId())
-        return BaseResponse.of(createProductUseCase.execute(command).toResponse())
-    }
-  new_string: |
-    @PostMapping
-    fun create(@Valid @RequestBody request: CreateProductRequest): BaseResponse<ProductResponse> {
-        val command = request.toCommand(tenantId())
-        return BaseResponse.of(createProductUseCase.execute(command).toResponse())
-    }
-  reason: Request DTO에 @Valid 누락. docs/backend/architecture/app/app-module-guidelines.md Post-Work Verification - Controller 섹션.
-
-- file: /Users/jeong-uyong/work/demo/e-commerce-demo/backend/core/application/src/main/kotlin/com/wooyong/demo/core/application/product/CreateProductUseCase.kt
-  rule: logging.md:LogExtension 확장 함수 사용 규정
-  line_range: 14-15
-  old_string: |
-    private val log = LoggerFactory.getLogger(CreateProductUseCase::class.java)
-
-    fun execute(command: CreateProductCommand): CreateProductResult {
-        log.info("creating product: name=${command.name}")
-  new_string: |
-    fun execute(command: CreateProductCommand): CreateProductResult {
-        logInfo { "[PRODUCT] 상품 생성 시작 - tenantId=${command.tenantId}, name=${command.name}" }
-  reason: raw LoggerFactory 사용 + [SCOPE] 태그 누락. docs/backend/policies/logging.md Kotlin 사용 예시 및 안티 패턴.
-```
-
----
-
-## Self-check Before Output
-
-출력 전 스스로 확인:
-
-- [ ] 모든 지적이 **문서에 명시된 규칙**에 근거하는가? (추측·선호 배제)
-- [ ] 모든 `old_string`이 파일 원본과 정확히 일치하는가?
-- [ ] 모든 `new_string`이 Edit로 적용 가능한 완성형인가?
-- [ ] 출력이 PASS 또는 YAML 외의 텍스트를 포함하지 않는가?
-- [ ] 기능 정확성·버그 관련 지적을 포함하지 않았는가?
-- [ ] 설계 대안·선호 기반 제안을 포함하지 않았는가?

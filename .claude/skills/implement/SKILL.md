@@ -17,6 +17,10 @@ description: 요구사항을 마일스톤 단위로 분해하여 코드 작성(A
 | **Agent A** (`subagent_type="code-writer"`) | Kotlin 코드 작성·수정, 테스트, 빌드 확인 |
 | **Agent B** (`subagent_type="architecture-reviewer"`) | `docs/backend/architecture/*`·`docs/backend/policies/*` 준수 검토만. Read/Glob/Grep만 보유, 수정 권한 없음 |
 
+**에이전트 계약 문서** (입출력 규격의 단일 출처):
+- A: [`references/code-writer-contract.md`](references/code-writer-contract.md)
+- B: [`references/architecture-reviewer-contract.md`](references/architecture-reviewer-contract.md)
+
 ### 절대 지켜야 할 제약
 
 1. **당신은 파일을 직접 Read/Edit/Write 하지 않는다.** 코드 작업은 전부 A에게 위임.
@@ -97,7 +101,7 @@ description: 요구사항을 마일스톤 단위로 분해하여 코드 작성(A
   - 관련 레이어: {app/application/domain/storage 중 해당}
   - 관련 도메인: {도메인명}
 
-[반환]: code-writer 에이전트 정의의 "Type 1 반환 포맷" 그대로.
+[출력 규격]: `.claude/skills/implement/references/code-writer-contract.md` — Output > Type 1 그대로.
 ```
 
 A의 응답을 받으면:
@@ -118,7 +122,7 @@ A의 응답을 받으면:
 - `description`: `[M{n}] 규칙 검토`
 - `prompt`: 아래 템플릿
 
-**B 프롬프트 템플릿** (간결 — 역할·제약·출력 포맷은 에이전트 정의에 내장되어 있으므로 맥락과 대상만 전달):
+**B 프롬프트 템플릿** (역할·제약는 에이전트 정의에 내장, 출력 포맷은 계약 문서 참조로 전달):
 
 ```
 [마일스톤]: {마일스톤 제목}
@@ -127,6 +131,8 @@ A의 응답을 받으면:
 
 [추가 컨텍스트]: 이번 마일스톤에서 A가 집중한 설계 결정 요약
 {A의 "핵심 설계 결정" 섹션 그대로}
+
+[출력 규격]: `.claude/skills/implement/references/architecture-reviewer-contract.md` — Output 섹션 그대로.
 ```
 
 B의 응답을 받으면 아래 포맷으로 즉시 콘솔에 출력:
@@ -167,7 +173,7 @@ B의 응답 처리:
   - old_string이 파일에서 매칭되지 않으면 실패로 보고.
   - 모든 Edit 적용 후 컴파일 성공 확인.
 
-[반환]: code-writer 에이전트 정의의 "Type 2 반환 포맷" 그대로.
+[출력 규격]: `.claude/skills/implement/references/code-writer-contract.md` — Output > Type 2 그대로.
 ```
 
 A의 응답을 받으면:
