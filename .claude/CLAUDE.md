@@ -1,34 +1,22 @@
-# e-commerce-demo
+# {프로젝트명}
 
-테넌트 별 멀티 쇼핑몰 플랫폼 데모. 하나의 시스템에서 독립적인 쇼핑몰(테넌트)을 운영하는 SaaS 형태의 e-커머스 플랫폼.
+{프로젝트 한 줄 설명}
 
 ---
 
 ## 비즈니스 목표
 
-- 하나의 플랫폼에서 여러 독립 쇼핑몰(테넌트)을 운영할 수 있는 멀티테넌트 SaaS
-- 테넌트 운영자는 자체 상품·카테고리·스킨(쇼핑몰 UI 템플릿)을 관리할 수 있다
-- 샵 방문 고객은 각 테넌트의 스킨/콘텐츠로 렌더링된 화면에서 쇼핑한다
-- 시스템 관리자는 전체 테넌트와 플랫폼 공통 데이터를 운영한다
+{비즈니스 목표 및 핵심 기능 설명}
 
 ### 사용자와 인터페이스
 
-| 사용자 | 인터페이스 | 진입점 |
-|--------|-----------|--------|
-| 샵 방문 고객 | Storefront | `:app:storefront` |
-| 테넌트 운영자 | Backoffice | `:app:backoffice` + `frontend/backoffice` |
-| 시스템 관리자 | Admin | `:app:admin` |
+{사용자 유형 · 인터페이스 · 진입점}
 
 ---
 
 ## 프로젝트 구조
 
-```
-backend/    # Kotlin + Spring Boot API 서버
-frontend/   # 백오피스 웹 UI
-sql/        # DDL 및 초기 seed 데이터
-docs/       # 기술 문서
-```
+{디렉토리 구조 및 각 디렉토리 역할}
 
 ---
 
@@ -47,9 +35,6 @@ docs/       # 기술 문서
 | `:core:domain` | [domain-module-guidelines](../docs/backend/architecture/domain/domain-module-guidelines.md) | [domain-model](../docs/backend/architecture/domain/domain-model-convention.md) · [exception](../docs/backend/architecture/domain/exception-convention.md) |
 | `:infra:storage` | [storage-module-guidelines](../docs/backend/architecture/storage/storage-module-guidelines.md) | [storage-adapter](../docs/backend/architecture/storage/storage-adapter-convention.md) · [querydsl](../docs/backend/architecture/storage/querydsl-convention.md) · [ddl-management](../docs/backend/architecture/storage/ddl-management.md) |
 | `:infra:external` | [external-module-guidelines](../docs/backend/architecture/external/external-module-guidelines.md) | [adapter](../docs/backend/architecture/external/adapter-convention.md) · [api-client](../docs/backend/architecture/external/api-client-convention.md) · [dto](../docs/backend/architecture/external/dto-convention.md) · [exception](../docs/backend/architecture/external/exception-convention.md) · [config](../docs/backend/architecture/external/config-convention.md) · [mock-adapter](../docs/backend/architecture/external/mock-adapter-convention.md) |
-
-**아키텍처 전역 결정** ([`docs/backend/architecture/`](../docs/backend/architecture/))
-- [multi-tenant](../docs/backend/architecture/multi-tenant.md) — 테넌트 격리 전략, 데이터 분류, 채널별 테넌트 식별
 
 **크로스커팅 정책** ([`docs/backend/policies/`](../docs/backend/policies/))
 - [security](../docs/backend/policies/security.md) · [logging](../docs/backend/policies/logging.md)
