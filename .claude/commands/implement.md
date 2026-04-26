@@ -27,7 +27,7 @@ allowed-tools: Agent, TaskCreate, TaskUpdate, TaskList, TaskGet, Bash(git *), Re
 2. **당신은 검토를 직접 수행하지 않는다.** 검토는 전부 B에게 위임.
 3. **A와 B는 서로 호출하지 않는다.** 모든 통신은 당신을 경유.
 4. **B 호출은 매번 새 인스턴스**로 수행 (fresh context).
-5. **A 호출도 마일스톤 단위로 새 인스턴스**. A에게 전달하는 프롬프트에 필요한 맥락을 담는다.
+5. **A 호출도 매번 새 인스턴스**로 수행 (fresh context). A에게 전달하는 프롬프트에 필요한 모든 맥락을 담는다.
 
 ---
 
