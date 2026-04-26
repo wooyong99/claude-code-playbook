@@ -69,7 +69,7 @@
 
 ## 코드 작업 오케스트레이션
 
-기능 구현·리팩토링은 `/implement <요구사항>` 커스텀 커맨드로 수행한다.
+기능 구현·리팩토링은 `implement` 스킬로 수행한다.
 
 - **메인 Claude** = 오케스트레이터 (요구 분석, 마일스톤 분할, 위임, 반복 종료 판단)
 - **Agent A** (`code-writer`) = 코드 작성·수정·테스트
@@ -77,4 +77,4 @@
 
 각 마일스톤마다 A→B 루프를 최대 5회 반복하여 PASS까지 수렴. 초과 시 사용자 escalate.
 
-상세: [`.claude/commands/implement.md`](commands/implement.md) · [`.claude/agents/code-writer.md`](agents/code-writer.md) · [`.claude/agents/architecture-reviewer.md`](agents/architecture-reviewer.md)
+상세: [`.claude/skills/implement/SKILL.md`](skills/implement/SKILL.md) · [`.claude/agents/code-writer.md`](agents/code-writer.md) · [`.claude/agents/architecture-reviewer.md`](agents/architecture-reviewer.md)

@@ -1,6 +1,6 @@
-# WORKFLOW — `/implement` 커맨드 운용 흐름
+# WORKFLOW — `implement` 스킬 운용 흐름
 
-`/implement`는 이 리포지토리의 **주력 커스텀 커맨드**다.
+`implement` 스킬은 이 리포지토리의 **주력 코드 작업 스킬**이다.
 요구사항 한 줄을 받아서, 마일스톤 단위 분할 → 구현 → 아키텍처 검토 → 자동 수정 루프를 돌려 PASS까지 수렴시킨다.
 
 ---
@@ -8,7 +8,7 @@
 ## 한눈에 보기
 
 ```
-[사용자] /implement "<요구사항>"
+[사용자] "<요구사항>"  (implement 스킬이 자동 트리거)
    ↓
 [메인 Claude] Phase 0 요구 분석 → 불명확하면 사용자 확인
    ↓
@@ -44,7 +44,7 @@
 | **Agent A** | `code-writer` 서브에이전트 | Kotlin 코드 작성·수정·테스트·빌드 |
 | **Agent B** | `architecture-reviewer` 서브에이전트 | 문서 기반 규칙 준수 검토. Read 전용. |
 
-### 절대 지켜야 할 제약 (커맨드에 명시)
+### 절대 지켜야 할 제약 (스킬에 명시)
 
 1. **메인 Claude는 파일을 직접 편집하지 않는다.** 모든 코드 작업은 A에게 위임.
 2. **메인 Claude는 검토를 직접 하지 않는다.** 검토는 전부 B에게 위임.
@@ -234,7 +234,7 @@ Step 2를 반복. 결과에 따라:
 
 ### 루프 횟수를 바꾸고 싶다
 
-`.claude/commands/implement.md`의 Step 2-4의 `iter > 5` 기준을 수정.
+`.claude/skills/implement/SKILL.md`의 Step 2-4의 `iter > 5` 기준을 수정.
 
 ### 검토 기준에 다른 문서를 추가하고 싶다
 
@@ -243,7 +243,7 @@ Step 2를 반복. 결과에 따라:
 ### 새 에이전트를 루프에 끼우고 싶다 (예: 보안 전문 검토자)
 
 1. `.claude/agents/security-reviewer.md` 신규 작성 (Read 전용)
-2. `.claude/commands/implement.md`의 Phase 2에 Step 추가 (A → 아키텍처 검토 → 보안 검토 → ...)
+2. `.claude/skills/implement/SKILL.md`의 Phase 2에 Step 추가 (A → 아키텍처 검토 → 보안 검토 → ...)
 
 ---
 
@@ -251,6 +251,6 @@ Step 2를 반복. 결과에 따라:
 
 - [CLAUDE_SETUP.md](CLAUDE_SETUP.md) — 에이전트·커맨드 정의 파일 상세
 - [PHILOSOPHY.md](PHILOSOPHY.md) — 이 루프를 만든 설계 사상
-- `.claude/commands/implement.md` — 실제 커맨드 정의 (진실의 원본)
+- `.claude/skills/implement/SKILL.md` — 실제 스킬 정의 (진실의 원본)
 - `.claude/agents/code-writer.md` — Agent A 정의
 - `.claude/agents/architecture-reviewer.md` — Agent B 정의

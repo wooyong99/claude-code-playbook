@@ -1,14 +1,11 @@
 ---
-description: 요구사항을 마일스톤 단위로 분해하여 코드 작성(A) → 아키텍처 검토(B) → 수정 루프를 오케스트레이션하는 커맨드
-argument-hint: <구현할 기능/리팩토링 요구사항>
-allowed-tools: Agent, TaskCreate, TaskUpdate, TaskList, TaskGet, Bash(git *), Read, Glob, Grep
+name: implement
+description: 요구사항을 마일스톤 단위로 분해하여 코드 작성(A) → 아키텍처 검토(B) → 수정 루프를 오케스트레이션하는 스킬. 기능 구현, 리팩토링, UseCase 추가, 도메인 모델 변경 등 코드 작업이 필요한 모든 상황에서 사용한다. "구현해줘", "만들어줘", "추가해줘", "리팩토링", "implement", "/implement" 같은 요청에 이 스킬을 사용한다.
 ---
 
-# /implement — 코드 작성 및 검토 오케스트레이션
+# implement — 코드 작성 및 검토 오케스트레이션
 
 사용자의 구현/리팩토링 요구사항을 **마일스톤 단위로 분해**하고, 각 마일스톤에 대해 **코드 작성 서브에이전트(A)** 와 **아키텍처 검토 서브에이전트(B)** 를 오케스트레이션한다.
-
-**사용자 입력**: `$ARGUMENTS`
 
 ---
 
