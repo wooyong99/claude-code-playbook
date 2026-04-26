@@ -3,7 +3,7 @@
 AI 에이전트(Claude Code)를 활용해 **대규모 서비스를 안정적으로 구축·유지보수**하기 위한 실전 템플릿.
 엄격한 아키텍처 문서와 AI 가드레일을 한 세트로 묶어, 어떤 프로젝트에도 이식해 쓸 수 있도록 설계되었다.
 
-> 예시 도메인: **멀티테넌트 e-커머스 플랫폼** (Kotlin + Spring Boot + React).
+> 예시 도메인: **e-커머스 플랫폼** (Kotlin + Spring Boot + React).
 > 본 리포지토리는 *실행 코드가 없는 문서·설정 템플릿*이며, 코드 베이스를 새로 시작할 때 이 구조를 베이스로 삼는 것을 전제로 한다.
 
 ---
@@ -85,6 +85,7 @@ Claude Code가 아직 설치되어 있지 않다면 [GETTING_STARTED.md](GETTING
 
 ## 이 템플릿을 내 프로젝트에 맞게 고치려면
 
+- **프로젝트 컨텍스트를 설정할 때** → `setup-project-context` 스킬 실행. `.claude/CLAUDE.md`의 플레이스홀더를 인터뷰 방식으로 채운다.
 - **도메인을 바꿀 때** → `docs/backend/` · `docs/frontend/` 하위 문서의 도메인 예시와 모듈 이름을 갈아끼운다. 구조는 그대로 두고 내용만 바꾸는 것을 권장.
 - **규칙을 추가할 때** → `docs/backend/architecture/*` 또는 `docs/backend/policies/*`에 새 문서를 추가하고, `architecture-reviewer.md`의 **Source of Truth** 목록에 등록한다.
 - **에이전트 역할을 늘릴 때** → `.claude/agents/`에 새 서브에이전트를 추가하고, `/implement` 커맨드(또는 새 커스텀 커맨드)에서 호출 지점을 정의한다.

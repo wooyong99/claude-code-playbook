@@ -12,8 +12,7 @@ docs/
 ├── backend/              # Kotlin + Spring Boot 서버 문서
 │   ├── README.md         # 백엔드 문서 인덱스
 │   ├── getting-started.md
-│   ├── architecture/     # 레이어별 가이드라인 + 아키텍처 전역 결정
-│   │   ├── multi-tenant.md  # 아키텍처 전역 결정 (프로젝트가 멀티테넌트일 때만)
+│   ├── architecture/     # 레이어별 가이드라인
 │   │   ├── app/          # Controller, API 규약, 예외 처리
 │   │   ├── application/  # UseCase, Validator, Handler, Flow, Policy, Mapper, EventHandler
 │   │   ├── domain/       # 도메인 모델, 예외
@@ -57,7 +56,6 @@ docs/
 | 도메인 모델·예외 작성 | [domain/domain-module-guidelines.md](docs/backend/architecture/domain/domain-module-guidelines.md) |
 | JPA 어댑터·QueryDSL | [storage/storage-module-guidelines.md](docs/backend/architecture/storage/storage-module-guidelines.md) |
 | 외부 API 연동 | [external/external-module-guidelines.md](docs/backend/architecture/external/external-module-guidelines.md) |
-| 멀티테넌트 규칙 확인 | [architecture/multi-tenant.md](docs/backend/architecture/multi-tenant.md) |
 | DDL 파일 관리 규칙 확인 | [architecture/storage/ddl-management.md](docs/backend/architecture/storage/ddl-management.md) |
 | 로깅·보안 등 전역 정책 확인 | [policies/](docs/backend/policies/) |
 
