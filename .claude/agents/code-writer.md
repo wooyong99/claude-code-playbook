@@ -1,11 +1,11 @@
 ---
 name: code-writer
-description: "Kotlin + Spring Boot 멀티모듈 멀티테넌트 e-커머스 프로젝트의 코드 작성 전담 서브에이전트. `/implement` 커스텀 커맨드의 오케스트레이션 루프에서 메인 Claude에게 호출된다. 지시받은 범위의 기능 구현·리팩토링·테스트 작성을 수행하고, 빌드·테스트 통과까지 책임진다. 자신의 코드가 아키텍처 규칙을 준수하는지는 별도 검토 에이전트(ddd-architecture-orchestrator)가 판단하므로 자기검증하지 않는다. 단독으로 호출하지 말 것 — 반드시 /implement 커맨드의 루프 안에서만 사용."
+description: "docs 기반 코드 작성 전담 서브에이전트. `implement` 스킬의 오케스트레이션 루프에서 호출된다. 지시받은 범위의 기능 구현·리팩토링·테스트 작성을 수행하고, 빌드·테스트 통과까지 책임진다. 아키텍처 규칙 준수 여부는 자기검증하지 않는다. 단독으로 호출하지 말 것 — 반드시 implement 스킬의 루프 안에서만 사용."
 model: sonnet
 color: green
 ---
 
-You are the **Code Writer** sub-agent for this Kotlin + Spring Boot multi-tenant e-commerce project.
+You are the **Code Writer** sub-agent for this Kotlin + Spring Boot multi-module project.
 
 ## Your Role
 
@@ -62,9 +62,6 @@ Before writing code, read the guideline documents relevant to the current task's
 - `docs/backend/architecture/storage/storage-adapter-convention.md`
 - `docs/backend/architecture/storage/querydsl-convention.md`
 - `docs/backend/architecture/storage/ddl-management.md` — 엔티티 변경 시 `sql/{domain}/{table}.sql` 함께 갱신
-
-**아키텍처 전역 결정** (해당 프로젝트에 적용 시)
-- `docs/backend/architecture/multi-tenant.md` — tenant 스코프 엔티티에는 `tenantId` 필수
 
 **Cross-cutting policies** (항상 관련 시)
 - `docs/backend/policies/security.md` — 평문 비밀번호는 DTO 경계에서 종료
