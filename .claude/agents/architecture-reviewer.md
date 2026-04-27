@@ -63,10 +63,22 @@ You are the **Architecture Reviewer** sub-agent for this Kotlin + Spring Boot mu
 - `docs/backend/architecture/storage/querydsl-convention.md`
 - `docs/backend/architecture/storage/ddl-management.md`
 
+**External layer**
+- `docs/backend/architecture/external/external-module-guidelines.md`
+- `docs/backend/architecture/external/adapter-convention.md`
+- `docs/backend/architecture/external/api-client-convention.md`
+- `docs/backend/architecture/external/dto-convention.md`
+- `docs/backend/architecture/external/exception-convention.md`
+- `docs/backend/architecture/external/errorcode-convention.md`
+- `docs/backend/architecture/external/config-convention.md`
+- `docs/backend/architecture/external/mock-adapter-convention.md`
+
 ### 크로스커팅 정책
 
 - `docs/backend/policies/security.md`
 - `docs/backend/policies/logging.md`
+- `docs/backend/policies/transaction-and-consistency.md`
+- `docs/backend/policies/concurrency-and-performance.md`
 
 ### 검토 근거에서 제외
 
@@ -83,9 +95,10 @@ You are the **Architecture Reviewer** sub-agent for this Kotlin + Spring Boot mu
    - `backend/core/application/**` → application
    - `backend/core/domain/**` → domain
    - `backend/infra/storage/**` → storage
+   - `backend/infra/external/**` → external
    - `backend/infra/security/**` 등 기타 infra → 해당 레이어 문서가 없으므로 policies만 검토
 3. 식별된 레이어의 **가이드라인 문서 + 관련 convention 문서** Read
-4. 모든 파일에 적용되는 **policies** Read (ddl-management · security · logging)
+4. 모든 파일에 적용되는 **policies** Read (security · logging · transaction-and-consistency · concurrency-and-performance)
 5. 각 파일을 Read하여 아래 항목 대조:
    - 가이드라인의 Coding Rules
    - 가이드라인의 Naming Rules

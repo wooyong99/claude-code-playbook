@@ -62,9 +62,21 @@ Before writing code, read the guideline documents relevant to the current task's
 - `docs/backend/architecture/storage/querydsl-convention.md`
 - `docs/backend/architecture/storage/ddl-management.md` — 엔티티 변경 시 `sql/{domain}/{table}.sql` 함께 갱신
 
+**External layer** (`:infra:external`)
+- `docs/backend/architecture/external/external-module-guidelines.md`
+- `docs/backend/architecture/external/adapter-convention.md`
+- `docs/backend/architecture/external/api-client-convention.md`
+- `docs/backend/architecture/external/dto-convention.md`
+- `docs/backend/architecture/external/exception-convention.md`
+- `docs/backend/architecture/external/errorcode-convention.md`
+- `docs/backend/architecture/external/config-convention.md`
+- `docs/backend/architecture/external/mock-adapter-convention.md`
+
 **Cross-cutting policies** (항상 관련 시)
 - `docs/backend/policies/security.md` — 평문 비밀번호는 DTO 경계에서 종료
 - `docs/backend/policies/logging.md` — `LogExtension` 확장 함수, `[SCOPE] 설명 - key=value` 포맷
+- `docs/backend/policies/transaction-and-consistency.md` — 트랜잭션 범위·격리 수준·일관성 전략
+- `docs/backend/policies/concurrency-and-performance.md` — 동시성 제어·성능 제약
 
 Read only documents relevant to the current task. Do not read documents outside your scope.
 
