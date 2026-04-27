@@ -38,47 +38,47 @@ You are the **Architecture Reviewer** sub-agent for this Kotlin + Spring Boot mu
 ### 레이어별 가이드라인
 
 **App layer**
-- `docs/backend/architecture/app/app-module-guidelines.md` — Coding Rules / Naming Rules / File Structure / **Post-Work Verification**
-- `docs/backend/architecture/app/api-convention.md`
-- `docs/backend/architecture/app/exception-handling-convention.md`
+- [`docs/backend/architecture/app/app-module-guidelines.md`](../../docs/backend/architecture/app/app-module-guidelines.md) — Coding Rules / Naming Rules / File Structure / **Post-Work Verification**
+- [`docs/backend/architecture/app/api-convention.md`](../../docs/backend/architecture/app/api-convention.md)
+- [`docs/backend/architecture/app/exception-handling-convention.md`](../../docs/backend/architecture/app/exception-handling-convention.md)
 
 **Application layer**
-- `docs/backend/architecture/application/application-module-guidelines.md`
-- `docs/backend/architecture/application/use-case-convention.md`
-- `docs/backend/architecture/application/validator-convention.md`
-- `docs/backend/architecture/application/handler-convention.md`
-- `docs/backend/architecture/application/flow-convention.md`
-- `docs/backend/architecture/application/policy-convention.md`
-- `docs/backend/architecture/application/mapper-convention.md`
-- `docs/backend/architecture/application/event-handler-convention.md`
+- [`docs/backend/architecture/application/application-module-guidelines.md`](../../docs/backend/architecture/application/application-module-guidelines.md)
+- [`docs/backend/architecture/application/use-case-convention.md`](../../docs/backend/architecture/application/use-case-convention.md)
+- [`docs/backend/architecture/application/validator-convention.md`](../../docs/backend/architecture/application/validator-convention.md)
+- [`docs/backend/architecture/application/handler-convention.md`](../../docs/backend/architecture/application/handler-convention.md)
+- [`docs/backend/architecture/application/flow-convention.md`](../../docs/backend/architecture/application/flow-convention.md)
+- [`docs/backend/architecture/application/policy-convention.md`](../../docs/backend/architecture/application/policy-convention.md)
+- [`docs/backend/architecture/application/mapper-convention.md`](../../docs/backend/architecture/application/mapper-convention.md)
+- [`docs/backend/architecture/application/event-handler-convention.md`](../../docs/backend/architecture/application/event-handler-convention.md)
 
 **Domain layer**
-- `docs/backend/architecture/domain/domain-module-guidelines.md`
-- `docs/backend/architecture/domain/domain-model-convention.md`
-- `docs/backend/architecture/domain/exception-convention.md`
+- [`docs/backend/architecture/domain/domain-module-guidelines.md`](../../docs/backend/architecture/domain/domain-module-guidelines.md)
+- [`docs/backend/architecture/domain/domain-model-convention.md`](../../docs/backend/architecture/domain/domain-model-convention.md)
+- [`docs/backend/architecture/domain/exception-convention.md`](../../docs/backend/architecture/domain/exception-convention.md)
 
 **Storage layer**
-- `docs/backend/architecture/storage/storage-module-guidelines.md`
-- `docs/backend/architecture/storage/storage-adapter-convention.md`
-- `docs/backend/architecture/storage/querydsl-convention.md`
-- `docs/backend/architecture/storage/ddl-management.md`
+- [`docs/backend/architecture/storage/storage-module-guidelines.md`](../../docs/backend/architecture/storage/storage-module-guidelines.md)
+- [`docs/backend/architecture/storage/storage-adapter-convention.md`](../../docs/backend/architecture/storage/storage-adapter-convention.md)
+- [`docs/backend/architecture/storage/querydsl-convention.md`](../../docs/backend/architecture/storage/querydsl-convention.md)
+- [`docs/backend/architecture/storage/ddl-management.md`](../../docs/backend/architecture/storage/ddl-management.md)
 
 **External layer**
-- `docs/backend/architecture/external/external-module-guidelines.md`
-- `docs/backend/architecture/external/adapter-convention.md`
-- `docs/backend/architecture/external/api-client-convention.md`
-- `docs/backend/architecture/external/dto-convention.md`
-- `docs/backend/architecture/external/exception-convention.md`
-- `docs/backend/architecture/external/errorcode-convention.md`
-- `docs/backend/architecture/external/config-convention.md`
-- `docs/backend/architecture/external/mock-adapter-convention.md`
+- [`docs/backend/architecture/external/external-module-guidelines.md`](../../docs/backend/architecture/external/external-module-guidelines.md)
+- [`docs/backend/architecture/external/adapter-convention.md`](../../docs/backend/architecture/external/adapter-convention.md)
+- [`docs/backend/architecture/external/api-client-convention.md`](../../docs/backend/architecture/external/api-client-convention.md)
+- [`docs/backend/architecture/external/dto-convention.md`](../../docs/backend/architecture/external/dto-convention.md)
+- [`docs/backend/architecture/external/exception-convention.md`](../../docs/backend/architecture/external/exception-convention.md)
+- [`docs/backend/architecture/external/errorcode-convention.md`](../../docs/backend/architecture/external/errorcode-convention.md)
+- [`docs/backend/architecture/external/config-convention.md`](../../docs/backend/architecture/external/config-convention.md)
+- [`docs/backend/architecture/external/mock-adapter-convention.md`](../../docs/backend/architecture/external/mock-adapter-convention.md)
 
 ### 크로스커팅 정책
 
-- `docs/backend/policies/security.md`
-- `docs/backend/policies/logging.md`
-- `docs/backend/policies/transaction-and-consistency.md`
-- `docs/backend/policies/concurrency-and-performance.md`
+- [`docs/backend/policies/security.md`](../../docs/backend/policies/security.md)
+- [`docs/backend/policies/logging.md`](../../docs/backend/policies/logging.md)
+- [`docs/backend/policies/transaction-and-consistency.md`](../../docs/backend/policies/transaction-and-consistency.md)
+- [`docs/backend/policies/concurrency-and-performance.md`](../../docs/backend/policies/concurrency-and-performance.md)
 
 ### 검토 근거에서 제외
 
