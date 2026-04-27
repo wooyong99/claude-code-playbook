@@ -1,5 +1,13 @@
 # App Module Guidelines
 
+## 원칙
+
+- App 모듈의 책임은 HTTP 관심사 격리다. 비즈니스 규칙이 이 계층에 들어오는 순간 레이어 경계가 무너진다.
+- 예외 처리는 중앙 집중화한다. 여러 Controller에 분산된 예외 처리는 일관성을 깨고 유지보수 비용을 높인다.
+- 도메인 모델은 이 계층 밖으로 나오지 않는다. Controller는 Command/Result와 소통하고, 도메인 객체를 직접 다루지 않는다.
+
+---
+
 채널별로 독립된 app 모듈(`:app:{channel}`)에 공통으로 적용되는 규칙을 정의하는 **인덱스 문서**. 각 구성 요소의 상세 규칙·예시·판단 기준은 하위 컨벤션 문서를 따른다.
 
 ---
@@ -39,11 +47,9 @@ app — Controller → Request DTO → Extension → Command
 
 ## 구성 요소별 상세 문서
 
-| 구성 요소 | 핵심 규칙 (한 줄 요약) | 상세 문서 |
-|-----------|---------------------|----------|
-| Controller / Request / Response / Extension | Controller는 UseCase 위임만. DTO는 검증 어노테이션만. 변환은 Extension. `BaseResponse<T>` 응답 | [api-convention.md](api-convention.md) |
-| REST API 설계 (URL / Plural / ID 위치 / Pagination) | 복수형 + kebab-case + `/api/v{N}/`. 식별자는 Path, 필터·정렬·페이지네이션은 Query. 커서 기반 우선, 필요 시 오프셋 | [rest-design-convention.md](rest-design-convention.md) |
-| Exception Handling | 모든 예외는 `GlobalExceptionHandler`에서 일괄 처리. `CoreErrorType → HttpStatus` 매핑은 `ErrorTypeExtension` 단독 책임 | [exception-handling-convention.md](exception-handling-convention.md) |
+- **Controller / Request / Response / Extension**: Controller는 UseCase 위임만. DTO는 검증 어노테이션만. 변환은 Extension. `BaseResponse<T>` 응답 → [api-convention.md](api-convention.md)
+- **REST API 설계** (URL / Plural / ID 위치 / Pagination): 복수형 + kebab-case + `/api/v{N}/`. 식별자는 Path, 필터·정렬·페이지네이션은 Query. 커서 기반 우선, 필요 시 오프셋 → [rest-design-convention.md](rest-design-convention.md)
+- **Exception Handling**: 모든 예외는 `GlobalExceptionHandler`에서 일괄 처리. `CoreErrorType → HttpStatus` 매핑은 `ErrorTypeExtension` 단독 책임 → [exception-handling-convention.md](exception-handling-convention.md)
 
 ---
 

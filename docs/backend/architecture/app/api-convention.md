@@ -1,5 +1,13 @@
 # API 컨벤션 (App Layer)
 
+## 원칙
+
+- HTTP는 외부 계약이다. Controller는 HTTP 진입점 역할만 담당하고, 비즈니스 로직은 application 계층에 위임한다.
+- Request DTO와 Command는 서로 다른 경계의 계약이다. 이 둘을 섞으면 HTTP 계층과 비즈니스 계층이 결합된다.
+- 변환은 경계에서 일어난다. 변환 로직은 DTO 자신의 것이 아니라, 경계를 관리하는 계층의 책임이다.
+- Response DTO는 필요한 경우에만 만든다. Result를 그대로 반환할 수 있다면 추상화 계층을 늘리지 않는다.
+- 응답 형식은 일관성이 중요하다. 성공·실패 모두 `BaseResponse<T>`로 래핑하여 클라이언트가 단일 포맷을 기대할 수 있다.
+
 ---
 
 ## 핵심 규칙
@@ -14,31 +22,20 @@ Request/Response DTO는 Spring 검증 어노테이션만 포함하고 변환 로
 
 ## 네이밍 규칙
 
-| 항목 | 패턴 | 예시 |
-|------|------|------|
-| Controller 클래스 | `{Domain}Controller` (admin 모듈: `Admin{Domain}Controller`) | `OrderController`, `AdminUserController` |
-| Request 파일 | `{Domain}Requests.kt` (복수). 1개면 단수형 | `OrderRequests.kt`, `OrderRequest.kt` |
-| Response 파일 | `{Domain}Responses.kt` (복수). 1개면 단수형 | `OrderResponses.kt` |
-| Extension 파일 | `{Domain}DtoExtension.kt` | `OrderDtoExtension.kt` |
-| Request 클래스 | `{Action}{Entity}Request` | `CreateOrderRequest`, `UploadFileRequest` |
-| Response 클래스 | `{Action}{Entity}Response` | `GetOrderDetailResponse` |
-| Request → Command 변환 | `request.toCommand()` | `createOrderRequest.toCommand()` |
-| Result → Response 변환 | `result.toResponse()` | `result.toResponse()` |
+- **Controller 클래스**: `{Domain}Controller` (admin 모듈: `Admin{Domain}Controller`) — `OrderController`, `AdminUserController`
+- **Request 파일**: `{Domain}Requests.kt` (복수). 1개면 단수형 — `OrderRequests.kt`, `OrderRequest.kt`
+- **Response 파일**: `{Domain}Responses.kt` (복수). 1개면 단수형 — `OrderResponses.kt`
+- **Extension 파일**: `{Domain}DtoExtension.kt` — `OrderDtoExtension.kt`
+- **Request 클래스**: `{Action}{Entity}Request` — `CreateOrderRequest`, `UploadFileRequest`
+- **Response 클래스**: `{Action}{Entity}Response` — `GetOrderDetailResponse`
+- **Request → Command 변환**: `request.toCommand()` — `createOrderRequest.toCommand()`
+- **Result → Response 변환**: `result.toResponse()`
 
 ---
 
 ## 경로 네이밍 (요약)
 
 Controller의 `@RequestMapping` 경로는 **복수형 명사 + kebab-case + `/api/v{N}/` prefix** 를 따른다.
-
-```
-GET    /api/v1/{resources}         # 목록 조회
-GET    /api/v1/{resources}/{id}    # 단건 조회
-POST   /api/v1/{resources}         # 생성
-PUT    /api/v1/{resources}/{id}    # 전체 수정
-PATCH  /api/v1/{resources}/{id}    # 부분 수정
-DELETE /api/v1/{resources}/{id}    # 삭제
-```
 
 > URL 네이밍 · Plural 규칙 · ID 위치(Path vs Query) · 페이지네이션 표준 등 REST API 설계 상세는 [rest-design-convention.md](rest-design-convention.md) 참고
 
@@ -90,11 +87,6 @@ class {Domain}Controller(
 - `null` 필드는 JSON에 미포함 (`@JsonInclude(NON_NULL)`)
 - 성공/실패 판단은 HTTP 상태 코드로 — `success` 필드 없음
 
-```kotlin
-ResponseEntity.ok(BaseResponse.success(result))                                 // 200
-ResponseEntity.status(HttpStatus.CREATED).body(BaseResponse.success(result))    // 201
-```
-
 > 예외 응답 포맷과 처리 흐름은 [exception-handling-convention.md](exception-handling-convention.md) 참고
 
 ---
@@ -103,12 +95,10 @@ ResponseEntity.status(HttpStatus.CREATED).body(BaseResponse.success(result))    
 
 **규칙: Request DTO는 Spring 검증 어노테이션만 포함한다. 변환 로직이나 비즈니스 규칙을 포함하지 않는다.**
 
-| 원칙 | 설명 |
-|------|------|
-| Controller는 Command를 직접 받지 않음 | Request DTO → Command 변환은 Extension 함수 |
-| Spring 검증 어노테이션 포함 | `@NotBlank`, `@Size`, `@Email`, `@Min`, `@Max` |
-| 변환 로직(`toCommand()`) 금지 | Extension 함수로 분리 |
-| 같은 도메인은 한 파일로 | `{Domain}Requests.kt` |
+- Controller는 Command를 직접 받지 않음 — Request DTO → Command 변환은 Extension 함수
+- Spring 검증 어노테이션 포함 — `@NotBlank`, `@Size`, `@Email`, `@Min`, `@Max`
+- 변환 로직(`toCommand()`) 금지 — Extension 함수로 분리
+- 같은 도메인은 한 파일로 — `{Domain}Requests.kt`
 
 ```kotlin
 // {Domain}Requests.kt
@@ -129,13 +119,11 @@ data class Create{Entity}Request(
 
 **규칙: 기본은 application 계층의 `Result`를 `BaseResponse<Result>`로 직접 반환한다. API 전용 포맷이 필요한 경우에만 Response DTO를 생성한다.**
 
-| 상황 | 판단 |
-|------|------|
-| Result를 그대로 반환 가능 | Response DTO **불필요** |
-| API 전용 날짜/숫자 포맷 (`@JsonFormat`) | Response DTO 생성 |
-| Result의 일부 필드만 노출 | Response DTO 생성 |
-| 여러 Result 조합 응답 | Response DTO 생성 |
-| API 버전 간 응답 차이 | Response DTO 생성 |
+- Result를 그대로 반환 가능 → Response DTO **불필요**
+- API 전용 날짜/숫자 포맷 (`@JsonFormat`) → Response DTO 생성
+- Result의 일부 필드만 노출 → Response DTO 생성
+- 여러 Result 조합 응답 → Response DTO 생성
+- API 버전 간 응답 차이 → Response DTO 생성
 
 생성 시 `{Domain}Responses.kt` 한 파일에 모아서 정의한다.
 

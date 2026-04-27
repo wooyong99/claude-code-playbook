@@ -1,5 +1,12 @@
 # REST API 설계 컨벤션
 
+## 원칙
+
+- API는 리소스 중심으로 설계한다. 행위(동사)가 아닌 자원(명사)으로 URL을 구성하면 클라이언트가 일관된 멘탈 모델을 가질 수 있다.
+- URL 구조는 예측 가능해야 한다. 복수형·kebab-case·버전 prefix 같은 규칙은 임의성을 제거하고 읽는 사람이 직관적으로 이해하도록 돕는다.
+- 파라미터는 의미에 따라 위치를 결정한다. 자원 식별은 Path, 컬렉션 필터링은 Query — 이 구분이 흐릿해지면 API 의미가 모호해진다.
+- 페이지네이션 방식은 사용 패턴에서 결정한다. 안정적인 탐색이 필요하면 커서 기반, 총 개수·페이지 이동이 필요하면 오프셋 기반을 선택한다.
+
 ---
 
 ## 핵심 규칙
@@ -19,25 +26,21 @@
 
 ### 패턴
 
-| 규칙 | 예시 |
-|------|------|
-| 도메인 개념을 **복수 명사**로 | `/api/v1/orders`, `/api/v1/fs-nodes` |
-| 단어 구분은 **하이픈(`-`, kebab-case)** | `/api/v1/menu-catalogs`, `/api/v1/purchase-orders` |
-| 버전 prefix는 `/api/v{N}` (현재 `v1`) | `/api/v1/...` |
-| admin 전용은 `/api/v{N}/admin/...` prefix | `/api/v1/admin/users` |
-| 버전은 URL path 노출 (`Accept` 헤더 버저닝 사용 안 함) | |
-| 계층 관계는 path 중첩 | `/api/v1/orders/{orderId}/items` |
+- 도메인 개념을 **복수 명사**로 — `/api/v1/orders`, `/api/v1/fs-nodes`
+- 단어 구분은 **하이픈(`-`, kebab-case)** — `/api/v1/menu-catalogs`, `/api/v1/purchase-orders`
+- 버전 prefix는 `/api/v{N}` (현재 `v1`) — `/api/v1/...`
+- admin 전용은 `/api/v{N}/admin/...` prefix — `/api/v1/admin/users`
+- 버전은 URL path 노출 (`Accept` 헤더 버저닝 사용 안 함)
+- 계층 관계는 path 중첩 — `/api/v1/orders/{orderId}/items`
 
 ### HTTP 메서드 매핑
 
-| 메서드 | 의미 | 예시 |
-|--------|------|------|
-| `GET /resources` | 목록 조회 | `GET /api/v1/orders` |
-| `GET /resources/{id}` | 단건 조회 | `GET /api/v1/orders/123` |
-| `POST /resources` | 생성 | `POST /api/v1/orders` |
-| `PUT /resources/{id}` | 전체 수정 (리소스 대체) | `PUT /api/v1/orders/123` |
-| `PATCH /resources/{id}` | 부분 수정 | `PATCH /api/v1/orders/123` |
-| `DELETE /resources/{id}` | 삭제 | `DELETE /api/v1/orders/123` |
+- `GET /resources` — 목록 조회 (`GET /api/v1/orders`)
+- `GET /resources/{id}` — 단건 조회 (`GET /api/v1/orders/123`)
+- `POST /resources` — 생성 (`POST /api/v1/orders`)
+- `PUT /resources/{id}` — 전체 수정 / 리소스 대체 (`PUT /api/v1/orders/123`)
+- `PATCH /resources/{id}` — 부분 수정 (`PATCH /api/v1/orders/123`)
+- `DELETE /resources/{id}` — 삭제 (`DELETE /api/v1/orders/123`)
 
 ### 동사·행위 — 원칙 금지, 예외 제한적
 
@@ -93,12 +96,10 @@
 
 ### 영어 불규칙 복수 — 정확한 영어 복수형 사용
 
-| 단수 | 복수 |
-|------|------|
-| `category` | `categories` |
-| `inventory` | `inventories` |
-| `person` | `people` (프로젝트 내 통일 필요) |
-| `status` | `statuses` |
+- `category` → `categories`
+- `inventory` → `inventories`
+- `person` → `people` (프로젝트 내 통일 필요)
+- `status` → `statuses`
 
 가능하면 **규칙적 복수(`orders`, `users`, `products`)로 표현 가능한 도메인 용어를 선택**하여 불규칙 복수 변환을 피한다.
 
@@ -110,15 +111,13 @@
 
 ### 판단 기준
 
-| 상황 | 위치 | 예시 |
-|------|------|------|
-| 리소스를 **고유하게 식별**하는 ID | **Path** | `/orders/{orderId}` |
-| 상위 리소스 ID (계층 관계) | **Path** | `/orders/{orderId}/items/{itemId}` |
-| 선택적 필터 조건 | **Query** | `/orders?status=PENDING` |
-| 정렬 | **Query** | `/orders?sort=createdAt,desc` |
-| 페이지네이션 | **Query** | `/orders?cursor=xxx&size=20` |
-| 복수 ID 일괄 조회 | **Query** | `/orders?ids=1,2,3` |
-| 검색 키워드 | **Query** | `/orders?keyword=abc` |
+- 리소스를 **고유하게 식별**하는 ID → **Path** (`/orders/{orderId}`)
+- 상위 리소스 ID (계층 관계) → **Path** (`/orders/{orderId}/items/{itemId}`)
+- 선택적 필터 조건 → **Query** (`/orders?status=PENDING`)
+- 정렬 → **Query** (`/orders?sort=createdAt,desc`)
+- 페이지네이션 → **Query** (`/orders?cursor=xxx&size=20`)
+- 복수 ID 일괄 조회 → **Query** (`/orders?ids=1,2,3`)
+- 검색 키워드 → **Query** (`/orders?keyword=abc`)
 
 핵심 질문: **"이 값이 없으면 자원을 특정할 수 없는가?"**
 
@@ -160,13 +159,11 @@ GET /api/v1/orders?status=PENDING&sort=createdAt,desc&cursor=xxx&size=20
 
 ### 선택 기준
 
-| 상황 | 방식 |
-|------|------|
-| 무한 스크롤 / 최신순 피드 | **커서 기반** — 데이터 추가·삭제에 안정적 |
-| 시간 순서가 중요한 목록 (활동 로그, 주문 이력 등) | **커서 기반** |
-| 관리자 테이블 — 페이지 점프 UI 필요 | 오프셋 기반 |
-| 총 개수를 UI에 명시적으로 표시해야 함 | 오프셋 기반 |
-| 고정된 스냅샷 목록 (검색 결과 상위 N개 등) | 오프셋 기반 |
+- 무한 스크롤 / 최신순 피드 → **커서 기반** (데이터 추가·삭제에 안정적)
+- 시간 순서가 중요한 목록 (활동 로그, 주문 이력 등) → **커서 기반**
+- 관리자 테이블 — 페이지 점프 UI 필요 → 오프셋 기반
+- 총 개수를 UI에 명시적으로 표시해야 함 → 오프셋 기반
+- 고정된 스냅샷 목록 (검색 결과 상위 N개 등) → 오프셋 기반
 
 둘 다 필요한 경우 엔드포인트를 분리하지 않고, **엔드포인트별로 하나의 방식만** 고정한다 (혼용 금지).
 
@@ -176,11 +173,9 @@ GET /api/v1/orders?status=PENDING&sort=createdAt,desc&cursor=xxx&size=20
 
 **요청 파라미터**
 
-| 파라미터 | 설명 | 예시 |
-|----------|------|------|
-| `cursor` | 다음 페이지 시작 커서 (opaque 문자열) | `?cursor=eyJpZCI6MTIzfQ==` |
-| `size` | 페이지 크기 (기본 20, 최대 100) | `?size=20` |
-| `sort` | 정렬 기준 | `?sort=createdAt,desc` |
+- `cursor`: 다음 페이지 시작 커서 (opaque 문자열) — `?cursor=eyJpZCI6MTIzfQ==`
+- `size`: 페이지 크기 (기본 20, 최대 100) — `?size=20`
+- `sort`: 정렬 기준 — `?sort=createdAt,desc`
 
 ```
 GET /api/v1/orders?cursor=eyJpZCI6MTIzfQ==&size=20&sort=createdAt,desc
@@ -215,11 +210,9 @@ GET /api/v1/orders?cursor=eyJpZCI6MTIzfQ==&size=20&sort=createdAt,desc
 
 **요청 파라미터**
 
-| 파라미터 | 설명 | 예시 |
-|----------|------|------|
-| `page` | 0부터 시작하는 페이지 번호 | `?page=0` |
-| `size` | 페이지 크기 (기본 20, 최대 100) | `?size=20` |
-| `sort` | 정렬 기준 | `?sort=createdAt,desc` |
+- `page`: 0부터 시작하는 페이지 번호 — `?page=0`
+- `size`: 페이지 크기 (기본 20, 최대 100) — `?size=20`
+- `sort`: 정렬 기준 — `?sort=createdAt,desc`
 
 Spring Data의 `Pageable` 파라미터 규약과 일치한다.
 
@@ -260,27 +253,21 @@ GET /api/v1/admin/orders?page=2&size=20&sort=createdAt,desc
 
 ### 행위 리소스 설계
 
-| 상황 | 설계 |
-|------|------|
-| 리소스 CRUD에 자연스럽게 맵핑 | `POST /orders` (생성), `DELETE /orders/{id}` |
-| 상태 전이 — 도메인 행위 | `POST /orders/{id}/cancellation` (하위 리소스) |
-| 검색처럼 리소스화가 어색 | `GET /orders?keyword=...` (Query parameter) |
+- 리소스 CRUD에 자연스럽게 맵핑 → `POST /orders` (생성), `DELETE /orders/{id}`
+- 상태 전이 — 도메인 행위 → `POST /orders/{id}/cancellation` (하위 리소스)
+- 검색처럼 리소스화가 어색 → `GET /orders?keyword=...` (Query parameter)
 
 ### Path vs Query
 
-| 조건 | 위치 |
-|------|------|
-| 값이 없으면 자원을 식별할 수 없다 | Path |
-| 값이 없어도 자원 컬렉션 자체는 존재한다 | Query |
+- 값이 없으면 자원을 식별할 수 없다 → Path
+- 값이 없어도 자원 컬렉션 자체는 존재한다 → Query
 
 ### 커서 vs 오프셋
 
-| 조건 | 방식 |
-|------|------|
-| 목록 변동이 잦고 최신순 스크롤 | 커서 |
-| 총 개수·페이지 점프가 반드시 필요 | 오프셋 |
-| 시간순 로그·피드 | 커서 |
-| 단순 관리자 테이블 | 오프셋 |
+- 목록 변동이 잦고 최신순 스크롤 → 커서
+- 총 개수·페이지 점프가 반드시 필요 → 오프셋
+- 시간순 로그·피드 → 커서
+- 단순 관리자 테이블 → 오프셋
 
 ---
 
