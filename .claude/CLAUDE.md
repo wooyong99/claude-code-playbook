@@ -72,9 +72,10 @@
 기능 구현·리팩토링은 `implement` 스킬로 수행한다.
 
 - **메인 Claude** = 오케스트레이터 (요구 분석, 마일스톤 분할, 위임, 반복 종료 판단)
+- **Agent D** (`design-writer`) = 마일스톤별 기술설계문서(TDD) 작성. `write-tech-design-doc` 스킬 사용
 - **Agent A** (`code-writer`) = 코드 작성·수정·테스트
 - **Agent B** (`architecture-reviewer`) = `docs/backend/architecture/*` · `docs/backend/policies/*` 준수 검토 (Read/Glob/Grep만 보유, 수정 권한 없음)
 
-각 마일스톤마다 A→B 루프를 최대 5회 반복하여 PASS까지 수렴. 초과 시 사용자 escalate.
+각 마일스톤마다 D(설계) → A(구현) → B(검토) 순서로 진행. A↔B 루프를 최대 5회 반복하여 PASS까지 수렴. 초과 시 사용자 escalate.
 
-상세: [`.claude/skills/implement/SKILL.md`](skills/implement/SKILL.md) · [`.claude/agents/code-writer.md`](agents/code-writer.md) · [`.claude/agents/architecture-reviewer.md`](agents/architecture-reviewer.md)
+상세: [`.claude/skills/implement/SKILL.md`](skills/implement/SKILL.md) · [`.claude/agents/design-writer.md`](agents/design-writer.md) · [`.claude/agents/code-writer.md`](agents/code-writer.md) · [`.claude/agents/architecture-reviewer.md`](agents/architecture-reviewer.md)

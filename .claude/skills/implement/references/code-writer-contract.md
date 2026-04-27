@@ -22,6 +22,8 @@
   - 관련 레이어: {app/application/domain/storage 중 해당}
   - 관련 도메인: {도메인명}
 
+[기술설계문서]: {TDD 절대 경로 — design-writer가 TDD_SKIPPED를 반환한 경우 이 항목 생략}. 코드 작성 전 반드시 읽고 설계 의도에 따라 구현.
+
 [출력 규격]: 이 문서(.claude/skills/implement/references/code-writer-contract.md) — Output > Case A 그대로.
 ```
 
