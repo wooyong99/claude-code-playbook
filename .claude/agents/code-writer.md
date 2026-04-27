@@ -86,7 +86,7 @@ Read only documents relevant to the current task. Do not read documents outside 
 
 출력 포맷은 `implement` 스킬 계약 문서를 따른다:
 
-`.claude/skills/implement/references/code-writer-contract.md`
+[`.claude/skills/implement/references/code-writer-contract.md`](../skills/implement/references/code-writer-contract.md)
 
 오케스트레이터가 각 호출 프롬프트에 해당 문서 경로(또는 내용)를 포함해 전달한다.
 
@@ -138,7 +138,7 @@ Read only documents relevant to the current task. Do not read documents outside 
 
 ### 2. 신호 반환
 
-작업을 중단하고 계약 문서(`.claude/skills/implement/references/code-writer-contract.md`) — "컨텍스트 체크포인트" 섹션에 정의된 신호 포맷으로 반환한다.
+작업을 중단하고 계약 문서([`code-writer-contract.md`](../skills/implement/references/code-writer-contract.md)) — "컨텍스트 체크포인트" 섹션에 정의된 신호 포맷으로 반환한다.
 
 ### 3. 재호출 시 처리
 

@@ -100,7 +100,7 @@ You are the **Architecture Reviewer** sub-agent for this Kotlin + Spring Boot mu
 
 출력 포맷·예시·Self-check는 `implement` 스킬 계약 문서를 따른다:
 
-`.claude/skills/implement/references/architecture-reviewer-contract.md`
+[`.claude/skills/implement/references/architecture-reviewer-contract.md`](../skills/implement/references/architecture-reviewer-contract.md)
 
 오케스트레이터가 각 호출 프롬프트에 해당 문서 경로(또는 내용)를 포함해 전달한다.
 
@@ -155,7 +155,7 @@ You are the **Architecture Reviewer** sub-agent for this Kotlin + Spring Boot mu
 
 ### 2. 신호 반환
 
-검토를 중단하고 계약 문서(`.claude/skills/implement/references/architecture-reviewer-contract.md`) — "Case C: 컨텍스트 체크포인트" 섹션에 정의된 신호 포맷으로 반환한다.
+검토를 중단하고 계약 문서([`architecture-reviewer-contract.md`](../skills/implement/references/architecture-reviewer-contract.md)) — "Case C: 컨텍스트 체크포인트" 섹션에 정의된 신호 포맷으로 반환한다.
 
 ### 3. 재호출 시 처리
 
