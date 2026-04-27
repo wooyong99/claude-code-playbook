@@ -1,5 +1,14 @@
 # Application Module Guidelines
 
+## 원칙
+
+- Application 계층은 조율자다. 비즈니스 규칙은 domain에, 인프라 호출은 인프라 계층에 위임하고, 계층 간 조합만 담당한다.
+- 책임 배치는 계층 구조를 따른다. 입력 검증→조회→비즈니스 검증→행위→저장 순서는 각 책임의 소유자를 명확히 구분한다.
+- 구현 세부사항과 진입점을 분리한다. UseCase/EventHandler는 외부에 노출되는 진입점이고, Flow/Validator/Policy는 내부 구현이다.
+- 트랜잭션 경계는 의미 단위로 결정한다. 너무 넓은 트랜잭션은 커넥션 점유와 잠금 범위를 불필요하게 늘린다.
+
+---
+
 `:core:application` 모듈의 구성 요소와 역할을 정의하는 **인덱스 문서**. 각 구성 요소의 상세 규칙·예시·판단 기준은 하위 컨벤션 문서를 따른다.
 
 ---
@@ -32,13 +41,11 @@ UseCase → Flow → Validator / Handler / Policy → Port (interface)
 
 **규칙: 각 로직은 아래 순서와 위치를 따른다.**
 
-| 순서 | 책임 | 담당 객체 | 위치 |
-|------|------|-----------|------|
-| 1 | 입력값 형식 검증 (필수값, 범위, 포맷) | Command의 `init` 블록 | `dto/` |
-| 2 | 데이터 조회 | UseCase 또는 Flow에서 Port 조회 | UseCase / Flow |
-| 3 | 비즈니스 규칙 검증 (허용 확장자, 중복 등) | Validator (조회된 객체를 매개변수로 전달) | `validator/` |
-| 4 | 도메인 행위 호출 (상태 변경) | Domain 객체 메서드 | `:core:domain` |
-| 5 | 결과 변환 | Mapper 클래스 | `mapper/` |
+1. **입력값 형식 검증** (필수값, 범위, 포맷) — Command의 `init` 블록 (`dto/`)
+2. **데이터 조회** — UseCase 또는 Flow에서 Port 조회
+3. **비즈니스 규칙 검증** (허용 확장자, 중복 등) — Validator, 조회된 객체를 매개변수로 전달 (`validator/`)
+4. **도메인 행위 호출** (상태 변경) — Domain 객체 메서드 (`:core:domain`)
+5. **결과 변환** — Mapper 클래스 (`mapper/`)
 
 UseCase와 Flow에서 이 순서가 코드에 그대로 드러나야 한다.
 
@@ -46,15 +53,13 @@ UseCase와 Flow에서 이 순서가 코드에 그대로 드러나야 한다.
 
 ## 구성 요소별 상세 문서
 
-| 구성 요소 | 핵심 규칙 (한 줄 요약) | 상세 문서 |
-|-----------|---------------------|----------|
-| UseCase | `@Service` 선언. Flow 조합만 담당. `@Transactional`은 원칙적으로 Flow에 선언 | [use-case-convention.md](use-case-convention.md) |
-| Flow | `@Component` 선언. 쓰기 `@Transactional`, 읽기 `@Transactional(readOnly = true)`. Flow → Flow 직접 호출 금지 | [flow-convention.md](flow-convention.md) |
-| Validator | `@Component` 선언. Port 주입 금지. 조회된 데이터를 파라미터로 받아 규칙만 검증 | [validator-convention.md](validator-convention.md) |
-| Handler | `@Component` 선언. 여러 도메인 재사용 로직 또는 Flow → 타 도메인 Port의 ACL | [handler-convention.md](handler-convention.md) |
-| Policy | 인터페이스 + 여러 구현체. `List<Policy>` 주입 + `supports(type)` 디스패치 | [policy-convention.md](policy-convention.md) |
-| EventHandler | `@Component` 선언. `@TransactionalEventListener(phase = AFTER_COMMIT)`. 자기 도메인 Flow만 호출 | [event-handler-convention.md](event-handler-convention.md) |
-| Mapper | `@Component` 선언. `mapper/{Entity}DtoMapper.kt`. UseCase 내 인라인 매핑 금지 | [mapper-convention.md](mapper-convention.md) |
+- **UseCase**: `@Service` 선언. Flow 조합만 담당. `@Transactional`은 원칙적으로 Flow에 선언 → [use-case-convention.md](use-case-convention.md)
+- **Flow**: `@Component` 선언. 쓰기 `@Transactional`, 읽기 `@Transactional(readOnly = true)`. Flow → Flow 직접 호출 금지 → [flow-convention.md](flow-convention.md)
+- **Validator**: `@Component` 선언. Port 주입 금지. 조회된 데이터를 파라미터로 받아 규칙만 검증 → [validator-convention.md](validator-convention.md)
+- **Handler**: `@Component` 선언. 여러 도메인 재사용 로직 또는 Flow → 타 도메인 Port의 ACL → [handler-convention.md](handler-convention.md)
+- **Policy**: 인터페이스 + 여러 구현체. `List<Policy>` 주입 + `supports(type)` 디스패치 → [policy-convention.md](policy-convention.md)
+- **EventHandler**: `@Component` 선언. `@TransactionalEventListener(phase = AFTER_COMMIT)`. 자기 도메인 Flow만 호출 → [event-handler-convention.md](event-handler-convention.md)
+- **Mapper**: `@Component` 선언. `mapper/{Entity}DtoMapper.kt`. UseCase 내 인라인 매핑 금지 → [mapper-convention.md](mapper-convention.md)
 
 ---
 

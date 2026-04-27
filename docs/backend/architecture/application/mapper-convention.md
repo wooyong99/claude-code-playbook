@@ -1,5 +1,11 @@
 # Mapper 컨벤션
 
+## 원칙
+
+- 변환 로직은 한 곳에 모인다. UseCase 파일 곳곳에 인라인 매핑이 산재하면 변환 규칙을 추적하고 수정하기 어렵다.
+- Mapper는 일관성 원칙을 따른다. 단순한 변환이더라도 Mapper로 분리하면 모든 변환이 예측 가능한 위치에 있다.
+- 변환과 비즈니스 로직을 섞지 않는다. Mapper는 순수 변환만 수행하고, 조건 분기가 필요하면 호출 측에서 판단한 뒤 Mapper에 넘긴다.
+
 ---
 
 ## 핵심 규칙
@@ -69,11 +75,9 @@ fun create(command: CreateMenuCatalog.Command): CreateMenuCatalog.Result {
 
 ## 추출 판단 기준
 
-| 조건 | 방식 |
-|------|------|
-| 같은 도메인 객체를 여러 Result 타입으로 변환 | Mapper 하나에서 메서드로 통합 |
-| 여러 도메인 객체를 조합하여 Result 구성 | Mapper |
-| 단일 UseCase에서만 사용하는 단순 변환이더라도 | Mapper (일관성 원칙) |
+- 같은 도메인 객체를 여러 Result 타입으로 변환 → Mapper 하나에서 메서드로 통합
+- 여러 도메인 객체를 조합하여 Result 구성 → Mapper
+- 단일 UseCase에서만 사용하는 단순 변환이더라도 → Mapper (일관성 원칙)
 
 ---
 

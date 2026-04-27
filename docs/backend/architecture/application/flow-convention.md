@@ -1,5 +1,12 @@
 # Flow 컨벤션
 
+## 원칙
+
+- Flow는 하나의 업무 흐름이다. 여러 Port·Validator·Policy의 조합을 단일 흐름으로 캡슐화하고, UseCase가 재사용할 수 있는 단위로 유지한다.
+- 상태 변경 없는 흐름은 Flow가 아니다. DB 조회 + 검증만 있다면 ValidateFlow가 아니라 UseCase의 조회 + Validator로 분리하는 것이 올바르다.
+- Flow는 자신의 도메인 영역만 안다. 다른 도메인 Port가 필요하면 Handler를 통해 경계를 명확히 한다.
+- Flow 간 직접 호출은 UseCase의 역할을 침범한다. 조합이 필요하면 UseCase가 담당한다.
+
 ---
 
 ## 핵심 규칙
@@ -15,34 +22,22 @@ Flow는 Validator · Handler · Policy · Port를 조합하여 하나의 업무 
 
 **규칙: Flow는 `{Entity}{Action}Flow` 형식으로 네이밍한다. UseCase(`{Action}{Entity}UseCase`)와 반대 순서다.**
 
-| 구성 요소 | 패턴 | 예시 |
-|-----------|------|------|
-| UseCase | `{Action}{Entity}UseCase` | `CreateProductUseCase`, `DeleteProductUseCase` |
-| Flow | `{Entity}{Action}Flow` | `ProductCreateFlow`, `ProductDeleteFlow` |
+- **UseCase**: `{Action}{Entity}UseCase` — `CreateProductUseCase`, `DeleteProductUseCase`
+- **Flow**: `{Entity}{Action}Flow` — `ProductCreateFlow`, `ProductDeleteFlow`
 
-```
-✅ AccountCreateFlow      (Account + Create)
-✅ TermsAgreementSaveFlow (TermsAgreement + Save)
-✅ ProductOptionDeleteFlow (ProductOption + Delete)
-✅ InventoryAdjustFlow    (Inventory + Adjust)
-
-❌ CreateAccountFlow      (Action 먼저 — UseCase 패턴과 혼동)
-❌ DeleteProductFlow      (Action 먼저 — UseCase 패턴과 혼동)
-```
+UseCase는 Action이 먼저, Flow는 Entity가 먼저다 (`CreateAccountFlow` / `DeleteProductFlow` 처럼 Action 먼저 쓰면 UseCase 패턴과 혼동됨).
 
 ---
 
 ## Flow 메서드 내부 처리 순서
 
-```
-1. 데이터 조회       →  Port
-2. 비즈니스 규칙 검증 →  Validator (조회된 객체를 매개변수로 전달)
-3. 외부 영역 위임    →  Handler
-4. 정책 결정        →  Policy (행위 분기, 필요 시)
-5. 도메인 행위 호출  →  Domain 객체 메서드
-6. 저장             →  Port.save()
-7. 결과 반환        →  도메인 객체 반환
-```
+1. 데이터 조회 — Port
+2. 비즈니스 규칙 검증 — Validator (조회된 객체를 매개변수로 전달)
+3. 외부 영역 위임 — Handler
+4. 정책 결정 — Policy (행위 분기, 필요 시)
+5. 도메인 행위 호출 — Domain 객체 메서드
+6. 저장 — Port.save()
+7. 결과 반환 — 도메인 객체 반환
 
 ---
 
@@ -121,30 +116,24 @@ class TransferFundsUseCase(
 
 ## 추출 판단 기준
 
-| 조건 | 판단 |
-|------|------|
-| 두 개 이상의 UseCase에서 동일한 실행 흐름이 필요 | Flow로 추출 |
-| 여러 Port · Validator · Handler를 조합하는 복잡한 흐름 | Flow로 추출 |
-| UseCase 하나에서만 사용하는 단순 흐름 | UseCase 내 private 메서드로 유지 |
-| 단일 Port 호출만을 위한 흐름 | Flow 생성 금지. UseCase에서 Port 직접 호출 |
+- 두 개 이상의 UseCase에서 동일한 실행 흐름이 필요 → Flow로 추출
+- 여러 Port · Validator · Handler를 조합하는 복잡한 흐름 → Flow로 추출
+- UseCase 하나에서만 사용하는 단순 흐름 → UseCase 내 private 메서드로 유지
+- 단일 Port 호출만을 위한 흐름 → Flow 생성 금지. UseCase에서 Port 직접 호출
 
 ### Flow 내부 처리 vs UseCase에서 묶기 판단
 
 "해당 흐름을 빼면 나머지만으로 비즈니스가 성립하는가?"
 
-| 판단 기준 | 예시 | 결론 |
-|----------|------|------|
-| 빼면 불완전 → 단일 비즈니스 오퍼레이션 | 부서 생성 시 Role 생성 | Flow 내부에서 Handler를 통해 함께 처리 |
-| 빼도 각각 성립 → 독립적인 오퍼레이션 조합 | 사용자 등록 + 역할 배정 + 연차 초기화 | UseCase에서 `@Transactional`로 여러 Flow 묶기 |
+- 빼면 불완전 → 단일 비즈니스 오퍼레이션 (예: 부서 생성 시 Role 생성) → Flow 내부에서 Handler를 통해 함께 처리
+- 빼도 각각 성립 → 독립적인 오퍼레이션 조합 (예: 사용자 등록 + 역할 배정 + 연차 초기화) → UseCase에서 `@Transactional`로 여러 Flow 묶기
 
 ---
 
 ## 트랜잭션 경계
 
-| 레이어 | `@Transactional` 규칙 |
-|--------|----------------------|
-| UseCase | 선언하지 않는 것이 원칙. 여러 Flow를 하나의 트랜잭션으로 묶어야 할 때만 예외 |
-| Flow | 쓰기 작업이 있으면 `@Transactional` 필수. 읽기만 있으면 `@Transactional(readOnly = true)` |
+- **UseCase**: 선언하지 않는 것이 원칙. 여러 Flow를 하나의 트랜잭션으로 묶어야 할 때만 예외
+- **Flow**: 쓰기 작업이 있으면 `@Transactional` 필수. 읽기만 있으면 `@Transactional(readOnly = true)`
 
 **외부 API 호출**: UseCase에 `@Transactional`이 없으면 Flow 커밋 후 ExternalExecutor를 호출할 수 있어
 DB 커넥션을 불필요하게 오래 점유하지 않는다.

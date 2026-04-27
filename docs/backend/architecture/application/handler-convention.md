@@ -1,5 +1,11 @@
 # Handler 컨벤션
 
+## 원칙
+
+- Handler는 도메인 간 경계를 보호한다. Flow가 다른 도메인에 직접 접근하면 도메인 간 결합이 생기고, Handler가 그 경계를 차단하는 ACL 역할을 한다.
+- 재사용이 확인된 로직만 Handler로 추출한다. 한 Flow에서만 사용하는 로직을 Handler로 올리면 불필요한 간접 계층이 생긴다.
+- 단일 Port 호출은 Handler를 거치지 않는다. 단순한 위임에 Handler를 만들면 코드 경로만 길어진다.
+
 ---
 
 ## 핵심 규칙
@@ -53,12 +59,10 @@ class UpdateProductUseCase(
 
 ## 추출 판단 기준
 
-| 조건 | 판단 |
-|------|------|
-| 여러 도메인에서 재사용, 여러 Port/Service 조합 | Handler로 추출 |
-| Flow에서 다른 개념 영역 Port 접근 필요 | Handler로 추출 (ACL) |
-| 여러 도메인에서 재사용, 단일 Port 호출 | Flow에서 직접 호출 |
-| Flow 하나에서만 사용 | Flow의 private 메서드로 유지 |
+- 여러 도메인에서 재사용, 여러 Port/Service 조합 → Handler로 추출
+- Flow에서 다른 개념 영역 Port 접근 필요 → Handler로 추출 (ACL)
+- 여러 도메인에서 재사용, 단일 Port 호출 → Flow에서 직접 호출
+- Flow 하나에서만 사용 → Flow의 private 메서드로 유지
 
 ---
 

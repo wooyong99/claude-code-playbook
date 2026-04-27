@@ -1,5 +1,12 @@
 # UseCase 컨벤션
 
+## 원칙
+
+- UseCase는 "무엇을 조합할지"만 결정한다. 비즈니스 로직이 UseCase에 들어오면 재사용 단위인 Flow가 의미를 잃는다.
+- 트랜잭션 경계는 Flow에서 관리하는 것이 원칙이다. UseCase가 트랜잭션을 선언하면 DB 커넥션을 불필요하게 오래 점유할 수 있다.
+- 하나의 개념 = 하나의 UseCase. 행위 유형(조회/쓰기)으로 나누되, 개념이 다르면 반드시 분리한다.
+- Command의 검증 범위는 형식에 한정한다. DB 조회가 필요한 규칙은 Command init에 두지 않고 Validator/Flow에 위임한다.
+
 ---
 
 ## 핵심 규칙
@@ -15,18 +22,8 @@
 
 ## 네이밍 규칙
 
-| 항목 | 패턴 | 예시 |
-|------|------|------|
-| 클래스명 | `{Action}{Entity}UseCase` (행위가 먼저, 개념이 뒤) | `GetProductUseCase`, `UploadFileUseCase`, `CreateOrderUseCase` |
-| 메서드명 | `execute` 대신 도메인 행위명 | `create`, `get`, `getList`, `getDetail`, `update`, `delete`, `upload` |
-
-```
-✅ uploadFileUseCase.upload(command)
-✅ getProductUseCase.getDetail(id)
-
-❌ ProductGetUseCase          (Action이 뒤 — Flow 패턴과 혼동)
-❌ useCase.execute(command)   (도메인 행위 없음)
-```
+- **클래스명**: `{Action}{Entity}UseCase` 패턴 (행위가 먼저, 개념이 뒤) — `GetProductUseCase`, `UploadFileUseCase`, `CreateOrderUseCase`
+- **메서드명**: `execute` 대신 도메인 행위명 — `create`, `get`, `getList`, `getDetail`, `update`, `delete`, `upload`
 
 ---
 
@@ -34,11 +31,9 @@
 
 **UseCase 메서드 — 조합 순서:**
 
-```
-1. 공통 데이터 조회  →  Port (여러 Flow에서 공유할 상위 객체)
-2. Flow 호출        →  Flow (실행 로직 위임)
-3. 결과 반환        →  Mapper
-```
+1. 공통 데이터 조회 — Port (여러 Flow에서 공유할 상위 객체)
+2. Flow 호출 — Flow (실행 로직 위임)
+3. 결과 반환 — Mapper
 
 > Flow 메서드 내부 처리 순서는 [flow-convention.md](flow-convention.md) "Flow 메서드 내부 처리 순서" 섹션 참고
 
@@ -102,11 +97,9 @@ class UpdateFsNodeUseCase(...) {
 }
 ```
 
-| 조건 | 판단 |
-|------|------|
-| 같은 개념, 같은 행위 유형 (조회/수정) | 하나의 UseCase, 메서드 분리 |
-| 같은 개념, 다른 행위 유형 (조회 vs 수정) | 별도 UseCase |
-| 다른 개념 객체 | 반드시 별도 UseCase |
+- 같은 개념, 같은 행위 유형 (조회/수정) → 하나의 UseCase, 메서드 분리
+- 같은 개념, 다른 행위 유형 (조회 vs 수정) → 별도 UseCase
+- 다른 개념 객체 → 반드시 별도 UseCase
 
 ---
 
@@ -118,15 +111,13 @@ class UpdateFsNodeUseCase(...) {
 UseCase → Flow → Validator / Handler / Policy → Port (interface)
 ```
 
-| 레이어 | 의존 가능 대상 | 의존 불가 대상 |
-|--------|--------------|--------------|
-| UseCase | Flow, Port (단순 조회), Domain | 다른 UseCase |
-| Flow | Validator, Handler, Policy, Port, Domain | UseCase, 다른 Flow |
-| Validator | Domain | Port, Flow, UseCase |
-| Handler | Port, Domain | Flow, UseCase |
-| Policy 인터페이스 | (`:core:application`에 정의) | — |
-| Policy 구현체 | 의존성에 따라 `:core:application` / `:infra:*` 에 위치 | — |
-| Port | (interface — 의존 없음) | — |
+- **UseCase**: Flow, Port (단순 조회), Domain 의존 가능 / 다른 UseCase 의존 불가
+- **Flow**: Validator, Handler, Policy, Port, Domain 의존 가능 / UseCase, 다른 Flow 의존 불가
+- **Validator**: Domain 의존 가능 / Port, Flow, UseCase 의존 불가
+- **Handler**: Port, Domain 의존 가능 / Flow, UseCase 의존 불가
+- **Policy 인터페이스**: `:core:application`에 정의
+- **Policy 구현체**: 의존성에 따라 `:core:application` / `:infra:*`에 위치
+- **Port**: interface — 의존 없음
 
 > **Flow → Flow 금지**: 여러 Flow를 조합해야 하는 경우는 UseCase가 담당한다.
 
@@ -174,13 +165,11 @@ class UpdateProduct {
 }
 ```
 
-| 항목 | 규칙 | 예시 |
-|------|------|------|
-| 파일명 | `{Action}{Entity}.kt` (항상 단수) | `UploadFile.kt`, `CreateOrder.kt` |
-| Wrapper 클래스명 | 파일명과 동일 | `class UploadFile { ... }` |
-| Command | `{Wrapper}.Command` | `UploadFile.Command` |
-| Result | `{Wrapper}.Result` | `UploadFile.Result` |
-| Command 없는 조회 | Result만 정의 | `GetFsNodeDetail.Result` |
+- **파일명**: `{Action}{Entity}.kt` (항상 단수) — `UploadFile.kt`, `CreateOrder.kt`
+- **Wrapper 클래스명**: 파일명과 동일 — `class UploadFile { ... }`
+- **Command**: `{Wrapper}.Command` — `UploadFile.Command`
+- **Result**: `{Wrapper}.Result` — `UploadFile.Result`
+- **Command 없는 조회**: Result만 정의 — `GetFsNodeDetail.Result`
 
 ---
 
