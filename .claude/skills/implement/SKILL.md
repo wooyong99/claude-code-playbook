@@ -164,14 +164,13 @@ B의 응답 처리:
 
 ```
 [수정 작업]: 이전 작업에 대한 아키텍처 검토에서 아래 위반이 발견됐습니다.
-각 위반마다 제시된 old_string → new_string을 **정확히 그대로** 적용하세요.
+각 위반 항목의 file·line_range를 직접 읽고, rule·reason을 근거로 수정하세요.
 
 {B가 반환한 위반 YAML 원문}
 
 [규칙]:
-  - old_string을 임의로 해석·수정하지 말 것.
-  - old_string이 파일에서 매칭되지 않으면 실패로 보고.
-  - 모든 Edit 적용 후 컴파일 성공 확인.
+  - 위반 항목 외 코드는 변경하지 말 것.
+  - 모든 수정 후 컴파일 성공 확인.
 
 [출력 규격]: `.claude/skills/implement/references/code-writer-contract.md` — Output > Type 2 그대로.
 ```
