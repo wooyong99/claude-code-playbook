@@ -7,7 +7,7 @@
 
 ## Input
 
-### Type 1 — 신규 구현
+### Case A — 신규 구현
 
 오케스트레이터가 아래 형식으로 프롬프트를 구성해 전달한다.
 
@@ -22,10 +22,10 @@
   - 관련 레이어: {app/application/domain/storage 중 해당}
   - 관련 도메인: {도메인명}
 
-[출력 규격]: 이 문서(.claude/skills/implement/references/code-writer-contract.md) — Output > Type 1 그대로.
+[출력 규격]: 이 문서(.claude/skills/implement/references/code-writer-contract.md) — Output > Case A 그대로.
 ```
 
-### Type 2 — 위반 수정
+### Case B — 위반 수정
 
 ```
 [수정 작업]: 이전 작업에 대한 아키텍처 검토에서 아래 위반이 발견됐습니다.
@@ -37,7 +37,14 @@
   - 위반 항목 외 코드는 변경하지 말 것.
   - 모든 수정 후 컴파일 성공 확인.
 
-[출력 규격]: 이 문서(.claude/skills/implement/references/code-writer-contract.md) — Output > Type 2 그대로.
+[출력 규격]: 이 문서(.claude/skills/implement/references/code-writer-contract.md) — Output > Case B 그대로.
+```
+
+체크포인트 재호출 시 Case A·Case B 프롬프트에 아래 필드가 추가된다:
+
+```
+[체크포인트]: .claude/code-writer-checkpoint.md 참조.
+완료된 작업은 건너뛰고 남은 작업부터 이어서 수행.
 ```
 
 ---
@@ -46,7 +53,7 @@
 
 작업 완료 후 반드시 아래 포맷 중 하나로 반환한다. 불필요한 서술 없이 간결하게.
 
-### Type 1 (신규 구현)
+### Case A: 신규 구현
 
 ```
 ## 완료 요약
@@ -68,7 +75,7 @@
 - <있다면 기재. 없으면 "없음">
 ```
 
-### Type 2 (위반 수정)
+### Case B: 위반 수정
 
 ```
 ## 수정 적용 결과
@@ -83,4 +90,12 @@
 
 ### 빌드 결과
 - 컴파일: 성공 / 실패 (실패 시 에러)
+```
+
+### Case C: 컨텍스트 체크포인트
+
+컨텍스트 윈도우가 65% 이상 소모된 경우, 출력 **첫 줄**에 아래 신호를 출력한 뒤 완료된 작업에 대한 정상 출력 포맷을 이어서 작성한다:
+
+```
+CONTEXT_CHECKPOINT: .claude/code-writer-checkpoint.md
 ```

@@ -88,7 +88,7 @@ description: 요구사항을 마일스톤 단위로 분해하여 코드 작성(A
 - `description`: `[M{n}] 코드 작성`
 - `prompt`: 아래 템플릿
 
-**A 프롬프트 템플릿 (Type 1 — 신규 구현)**:
+**A 프롬프트 템플릿 (Case A — 신규 구현)**:
 
 ```
 [마일스톤]: {마일스톤 제목}
@@ -101,10 +101,22 @@ description: 요구사항을 마일스톤 단위로 분해하여 코드 작성(A
   - 관련 레이어: {app/application/domain/storage 중 해당}
   - 관련 도메인: {도메인명}
 
-[출력 규격]: `.claude/skills/implement/references/code-writer-contract.md` — Output > Type 1 그대로.
+[출력 규격]: `.claude/skills/implement/references/code-writer-contract.md` — Output > Case A 그대로.
 ```
 
 A의 응답을 받으면:
+
+**응답 첫 줄이 `CONTEXT_CHECKPOINT:` 신호인 경우:**
+```
+⚡ [M{n}] 컨텍스트 체크포인트 저장됨 — 재호출 중...
+```
+체크포인트 파일을 Read한 뒤, 아래 형식으로 A를 재호출한다 (Case A 템플릿에 추가):
+```
+[체크포인트]: .claude/code-writer-checkpoint.md 참조. 완료된 작업은 건너뛰고 남은 작업부터 이어서 수행.
+```
+재호출 후 응답을 받을 때까지 이 처리를 반복한다.
+
+**정상 응답인 경우:**
 ```
 ✅ 코드 작성 완료 · 변경 파일 {N}개
 ```
@@ -144,6 +156,7 @@ B의 응답을 받으면 아래 포맷으로 즉시 콘솔에 출력:
 ```
 
 B의 응답 처리:
+- **응답 첫 줄이 `CONTEXT_CHECKPOINT:` 신호인 경우**: 체크포인트 파일을 Read한 뒤 B를 재호출. 재호출 프롬프트에 `[체크포인트]: .claude/architecture-reviewer-checkpoint.md 참조. 완료된 파일은 건너뛰고 남은 파일부터 이어서 검토.` 를 추가. 완료된 파일의 위반 결과는 이전 응답에서 누적해서 보관.
 - 응답이 `PASS`면 → Step 2-6으로 (마일스톤 완료)
 - 위반 YAML이면 → Step 2-4로
 
@@ -160,7 +173,7 @@ B의 응답 처리:
 - `description`: `[M{n}] 위반 수정`
 - `prompt`: 아래 템플릿
 
-**A 프롬프트 템플릿 (Type 2 — 위반 수정)**:
+**A 프롬프트 템플릿 (Case B — 위반 수정)**:
 
 ```
 [수정 작업]: 이전 작업에 대한 아키텍처 검토에서 아래 위반이 발견됐습니다.
@@ -172,7 +185,7 @@ B의 응답 처리:
   - 위반 항목 외 코드는 변경하지 말 것.
   - 모든 수정 후 컴파일 성공 확인.
 
-[출력 규격]: `.claude/skills/implement/references/code-writer-contract.md` — Output > Type 2 그대로.
+[출력 규격]: `.claude/skills/implement/references/code-writer-contract.md` — Output > Case B 그대로.
 ```
 
 A의 응답을 받으면:

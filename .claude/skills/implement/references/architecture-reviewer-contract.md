@@ -20,6 +20,13 @@
 [출력 규격]: 이 문서(.claude/skills/implement/references/architecture-reviewer-contract.md) — Output 섹션 그대로.
 ```
 
+체크포인트 재호출 시 아래 필드가 추가된다:
+
+```
+[체크포인트]: .claude/architecture-reviewer-checkpoint.md 참조.
+완료된 파일은 건너뛰고 남은 파일부터 이어서 검토.
+```
+
 ---
 
 ## Output
@@ -54,12 +61,22 @@ PASS
 - `line_range`: 시작-끝 라인 (예: `45-52`)
 - `reason`: 1줄 근거 + 참조 문서 경로 (예: `reason: Request DTO에 toCommand() 로직 포함. app-module-guidelines.md Coding Rules 2번.`)
 
+### Case C: 컨텍스트 체크포인트
+
+컨텍스트 윈도우가 65% 이상 소모된 경우, 출력 **첫 줄**에 아래 신호를 출력한 뒤 완료된 파일의 결과(PASS 또는 위반 YAML)를 이어서 작성한다:
+
+```
+CONTEXT_CHECKPOINT: .claude/architecture-reviewer-checkpoint.md
+```
+
+이후 완료된 파일 수만큼의 정상 출력 포맷을 작성한다.
+
 ### 절대 출력하지 말 것
 
 - 인사말·결론 문구 (예: "아래는 위반 목록입니다", "검토 완료")
 - Markdown 헤더·본문
 - 코드 블록 펜스(` ``` `) 외 YAML 데이터
-- PASS 또는 YAML 외의 어떤 텍스트
+- PASS, YAML, CONTEXT_CHECKPOINT 외의 어떤 텍스트
 
 ---
 
