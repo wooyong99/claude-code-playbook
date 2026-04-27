@@ -14,11 +14,12 @@
 
 | 항목 | 패턴 | 예시 |
 |------|------|------|
-| 파일 | `{Provider}ServiceDto.kt` 또는 `{Provider}Dto.kt` | `GiftCardServiceDto.kt`, `PayletterDto.kt` |
-| 요청 DTO | `{Provider}{Function}Request` | `GiftCardBurnRequest`, `GiftCardValidateRequest` |
-| 응답 DTO | `{Provider}{Function}Response` | `GiftCardBurnResponse`, `GiftCardValidateResponse` |
+| 파일 | `{Provider}Dtos.kt` | `GiftCardDtos.kt`, `BiscuitLinkDtos.kt` |
+| 요청 DTO | `{Provider}{Function}Request` | `GiftCardBurnRequest`, `GiftCardValidateRequest`, `BiscuitLinkVerifyAccountRequest` |
+| 응답 DTO | `{Provider}{Function}Response` | `GiftCardBurnResponse`, `BiscuitLinkVerifyAccountResponse` |
 | 응답 data payload | `{Provider}{Function}Data` | `GiftCardBurnData` |
-| 공통 래퍼 | `{Provider}ServiceResponse<T>`, `{Provider}ServiceResult` | `GiftCardServiceResponse<T>`, `GiftCardServiceResult` |
+| 공통 래퍼 | `{Provider}ApiResponse<T>` | `GiftCardApiResponse<T>`, `BiscuitLinkApiResponse<T>` |
+| 공통 결과 | `{Provider}ResponseResult` | `GiftCardResponseResult` |
 
 ---
 
@@ -26,10 +27,8 @@
 
 **규칙: 모든 DTO에 `@JsonIgnoreProperties(ignoreUnknown = true)`를 달고, 모든 프로퍼티에 `@JsonProperty`를 명시한다.**
 
-Kotlin `data class`는 기본적으로 Jackson 기본 네이밍 전략을 따르므로, 외부 스키마와 일치한다고 단정하지 말고 명시한다.
-
 ```kotlin
-// ✅ 누락 없는 어노테이션
+// ✅ 누락 없는 어노테이션 (GiftCardDtos.kt 실제 구현)
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class GiftCardBurnRequest(
     @get:JsonProperty("sourceServer")
@@ -52,25 +51,59 @@ data class GiftCardBurnRequest(
 )
 ```
 
-- `@JsonProperty`는 `@get:JsonProperty` 형태로 getter에 부착한다. `data class` 프로퍼티에서는 Kotlin 메타 어노테이션 대상 명시가 필요하다.
-- snake_case 외부 API는 `@JsonProperty("source_server")`처럼 원 스키마 그대로 적어 혼동을 없앤다.
+- `@JsonProperty`는 `@get:JsonProperty` 형태로 getter에 부착한다.
+- 외부 API가 camelCase를 사용하면 그대로 `@JsonProperty("sourceServer")`처럼 적는다.
+
+---
+
+## 공통 응답 래퍼 구조
+
+**규칙: 외부 스키마의 중첩 구조는 그대로 반영하고, 플랫하게 합치지 않는다.**
+
+Provider마다 공통 응답 래퍼 구조가 다를 수 있다. DTO도 그 구조를 그대로 반영한다.
+
+```kotlin
+// ✅ GiftCard: { result: {...}, payload: T? } 구조
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class GiftCardApiResponse<T>(
+    @get:JsonProperty("result") val result: GiftCardResponseResult,
+    @get:JsonProperty("payload") val payload: T? = null,
+)
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class GiftCardResponseResult(
+    @get:JsonProperty("code") val code: Int,
+    @get:JsonProperty("message") val message: String?,
+    @get:JsonProperty("detailMessage") val detailMessage: String? = null,
+    @get:JsonProperty("messageCode") val messageCode: String? = null,
+)
+
+// ✅ BiscuitLink: { code, message, payload: T? } 구조 (더 단순한 래퍼)
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class BiscuitLinkApiResponse<T>(
+    @get:JsonProperty("code") val code: Int,
+    @get:JsonProperty("message") val message: String?,
+    @get:JsonProperty("payload") val payload: T? = null,
+)
+```
+
+```kotlin
+// ❌ 플랫하게 병합 → 원 스키마 추적 불가
+data class GiftCardBurnResult(
+    val resultCode: Int,
+    val approvalCode: String?,
+    val price: Long?,
+)
+```
 
 ---
 
 ## 스키마 매핑 원칙
 
-**규칙: 외부 스키마의 중첩 구조(`result` + `payload.data`)는 그대로 반영하고, 플랫하게 합치지 않는다.**
-
-외부 응답이 `{ result: {...}, payload: { code, message, data: {...} } }`처럼 중첩이면, DTO도 3계층으로 표현한다. Adapter가 매핑 시 필요한 값만 뽑아 Port Result로 옮긴다.
+**규칙: payload 내부에 data 계층이 있으면 별도 data DTO로 표현한다.**
 
 ```kotlin
-// ✅ 외부 스키마 그대로 반영
-@JsonIgnoreProperties(ignoreUnknown = true)
-data class GiftCardServiceResponse<T>(
-    @get:JsonProperty("result") val result: GiftCardServiceResult,
-    @get:JsonProperty("payload") val payload: T? = null,
-)
-
+// ✅ payload → { code, message, data: GiftCardBurnData? } 구조 유지
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class GiftCardBurnResponse(
     @get:JsonProperty("code") val code: String?,
@@ -81,17 +114,10 @@ data class GiftCardBurnResponse(
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class GiftCardBurnData(
     @get:JsonProperty("approvalCode") val approvalCode: String?,
+    @get:JsonProperty("approvalDate") val approvalDate: String?,
+    @get:JsonProperty("orderNo") val orderNo: String?,
+    @get:JsonProperty("voucherName") val voucherName: String?,
     @get:JsonProperty("price") val price: Long?,
-    ...
-)
-```
-
-```kotlin
-// ❌ 플랫하게 병합 → 원 스키마 추적 불가, 새 필드 추가 시 구조가 틀어짐
-data class GiftCardBurnResult(
-    val resultCode: Int,
-    val approvalCode: String?,
-    val price: Long?,
 )
 ```
 
@@ -101,13 +127,12 @@ data class GiftCardBurnResult(
 
 **규칙: 원 스키마의 타입을 그대로 유지하고, 도메인 타입(`BigDecimal`, `LocalDate` 등)으로의 변환은 Adapter가 수행한다.**
 
-DTO는 파싱 계층이므로 외부가 `Long`으로 주면 `Long`, `String`으로 주면 `String`으로 둔다. Adapter가 이를 `BigDecimal.valueOf(response.amount)` / `LocalDate.parse(response.validFrom)`처럼 변환한다.
-
 ```kotlin
-// ✅ 원 스키마 타입 유지
+// ✅ 원 스키마 타입 유지 (GiftCardDtos.kt)
 data class GiftCardValidateResponse(
-    @get:JsonProperty("amount") val amount: Long,
-    @get:JsonProperty("validFrom") val validFrom: String,
+    @get:JsonProperty("pinNo") val pinNo: String,
+    @get:JsonProperty("amount") val amount: Long,     // Long → Adapter에서 BigDecimal.valueOf()
+    @get:JsonProperty("validFrom") val validFrom: String, // String → Adapter에서 LocalDate.parse()
     @get:JsonProperty("validTo") val validTo: String,
 )
 ```
@@ -122,19 +147,17 @@ data class GiftCardValidateResponse(
 
 ### nullable 정책
 
-- 외부가 생략 가능하다고 명시하거나 실무 관찰로 누락 가능성이 확인된 필드만 `nullable`로 둔다.
+- 외부가 생략 가능하다고 명시하거나 실무 관찰로 누락 가능성이 확인된 필드만 nullable로 둔다.
 - `payload` 같은 래퍼 최상위는 실패 응답에서 null이 올 수 있으므로 nullable이 기본이다.
-- 필수로 기대하지만 null이 오면 `ResponseParsingException`으로 승격한다(ApiClient의 `extractPayload`에서 처리).
+- 필수로 기대하지만 null이 오면 `ResponseParsingException`으로 승격한다.
 
 ---
 
 ## 배치 형태
 
-**규칙: Provider의 모든 DTO는 한 파일(`{Provider}ServiceDto.kt` 또는 `{Provider}Dto.kt`)에 모은다.**
+**규칙: Provider의 모든 DTO는 한 파일(`{Provider}Dtos.kt`)에 모은다.**
 
-관련 DTO를 파일 단위로 그룹화하면 스키마 변경 시 diff가 한 곳에 모인다. 기능별로 쪼개면 공통 래퍼가 흩어져 중복·불일치를 유발한다.
-
-단, 기능 단위가 명확히 다르고 DTO 수가 많은 경우(예: aligo의 알림톡/메시지)는 `{Provider}AlimtalkDto.kt`, `{Provider}MessageDto.kt`로 분리해도 된다.
+관련 DTO를 파일 단위로 그룹화하면 스키마 변경 시 diff가 한 곳에 모인다.
 
 ---
 
@@ -142,9 +165,10 @@ data class GiftCardValidateResponse(
 
 - `@JsonIgnoreProperties(ignoreUnknown = true)`를 생략하지 않는다.
 - `@JsonProperty`를 일부 필드만 붙이지 않는다. **전부 붙이거나 전부 생략하지 않는다**(일관성).
-- DTO에서 외부 스키마에 없는 필드를 임의로 추가하지 않는다(Adapter가 Result로 옮길 때 보강).
+- DTO에서 외부 스키마에 없는 필드를 임의로 추가하지 않는다.
 - DTO 클래스에 비즈니스 메서드(`isValid()` 등)를 추가하지 않는다. 순수 데이터 홀더로 유지한다.
 - 외부 응답 구조를 플랫하게 병합해 중첩 계층을 생략하지 않는다.
+- 에러코드 enum을 DTO 파일 안에 포함하지 않는다. 별도 파일로 분리한다.
 
 ---
 
@@ -152,7 +176,8 @@ data class GiftCardValidateResponse(
 
 - [ ] 모든 DTO에 `@JsonIgnoreProperties(ignoreUnknown = true)`가 달려 있는가?
 - [ ] 모든 프로퍼티에 `@get:JsonProperty("...")`가 명시됐는가?
-- [ ] 외부 중첩 스키마(`result` / `payload` / `data`)가 DTO 계층으로 그대로 재현됐는가?
+- [ ] 공통 래퍼(`GiftCardApiResponse<T>`, `BiscuitLinkApiResponse<T>`)가 외부 스키마 구조를 그대로 재현했는가?
+- [ ] payload 내부의 data 계층도 별도 DTO(`{Provider}{Function}Data`)로 표현됐는가?
 - [ ] 원 스키마 타입(Long/String)을 유지하고 도메인 타입 변환은 Adapter에 맡겼는가?
 - [ ] Provider의 DTO가 한 파일에 모여 있는가?
 - [ ] DTO에 비즈니스 로직이 섞이지 않았는가?
