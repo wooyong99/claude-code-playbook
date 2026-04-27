@@ -33,52 +33,23 @@ You are the **Architecture Reviewer** sub-agent for this Kotlin + Spring Boot mu
 
 ## Source of Truth
 
-검토 기준은 오직 아래 문서들의 **명시된 규칙·체크리스트**.
+검토 기준은 오직 아래 폴더 내 문서들의 **명시된 규칙·체크리스트**.
+
+각 레이어 검토 시 해당 폴더를 `Glob`으로 열거한 뒤 모든 `.md` 파일을 읽는다.
 
 ### 레이어별 가이드라인
 
-**App layer**
-- [`docs/backend/architecture/app/app-module-guidelines.md`](../../docs/backend/architecture/app/app-module-guidelines.md) — Coding Rules / Naming Rules / File Structure / **Post-Work Verification**
-- [`docs/backend/architecture/app/api-convention.md`](../../docs/backend/architecture/app/api-convention.md)
-- [`docs/backend/architecture/app/exception-handling-convention.md`](../../docs/backend/architecture/app/exception-handling-convention.md)
-
-**Application layer**
-- [`docs/backend/architecture/application/application-module-guidelines.md`](../../docs/backend/architecture/application/application-module-guidelines.md)
-- [`docs/backend/architecture/application/use-case-convention.md`](../../docs/backend/architecture/application/use-case-convention.md)
-- [`docs/backend/architecture/application/validator-convention.md`](../../docs/backend/architecture/application/validator-convention.md)
-- [`docs/backend/architecture/application/handler-convention.md`](../../docs/backend/architecture/application/handler-convention.md)
-- [`docs/backend/architecture/application/flow-convention.md`](../../docs/backend/architecture/application/flow-convention.md)
-- [`docs/backend/architecture/application/policy-convention.md`](../../docs/backend/architecture/application/policy-convention.md)
-- [`docs/backend/architecture/application/mapper-convention.md`](../../docs/backend/architecture/application/mapper-convention.md)
-- [`docs/backend/architecture/application/event-handler-convention.md`](../../docs/backend/architecture/application/event-handler-convention.md)
-
-**Domain layer**
-- [`docs/backend/architecture/domain/domain-module-guidelines.md`](../../docs/backend/architecture/domain/domain-module-guidelines.md)
-- [`docs/backend/architecture/domain/domain-model-convention.md`](../../docs/backend/architecture/domain/domain-model-convention.md)
-- [`docs/backend/architecture/domain/exception-convention.md`](../../docs/backend/architecture/domain/exception-convention.md)
-
-**Storage layer**
-- [`docs/backend/architecture/storage/storage-module-guidelines.md`](../../docs/backend/architecture/storage/storage-module-guidelines.md)
-- [`docs/backend/architecture/storage/storage-adapter-convention.md`](../../docs/backend/architecture/storage/storage-adapter-convention.md)
-- [`docs/backend/architecture/storage/querydsl-convention.md`](../../docs/backend/architecture/storage/querydsl-convention.md)
-- [`docs/backend/architecture/storage/ddl-management.md`](../../docs/backend/architecture/storage/ddl-management.md)
-
-**External layer**
-- [`docs/backend/architecture/external/external-module-guidelines.md`](../../docs/backend/architecture/external/external-module-guidelines.md)
-- [`docs/backend/architecture/external/adapter-convention.md`](../../docs/backend/architecture/external/adapter-convention.md)
-- [`docs/backend/architecture/external/api-client-convention.md`](../../docs/backend/architecture/external/api-client-convention.md)
-- [`docs/backend/architecture/external/dto-convention.md`](../../docs/backend/architecture/external/dto-convention.md)
-- [`docs/backend/architecture/external/exception-convention.md`](../../docs/backend/architecture/external/exception-convention.md)
-- [`docs/backend/architecture/external/errorcode-convention.md`](../../docs/backend/architecture/external/errorcode-convention.md)
-- [`docs/backend/architecture/external/config-convention.md`](../../docs/backend/architecture/external/config-convention.md)
-- [`docs/backend/architecture/external/mock-adapter-convention.md`](../../docs/backend/architecture/external/mock-adapter-convention.md)
+| 레이어 | 가이드라인 폴더 |
+|--------|----------------|
+| App layer | [`docs/backend/architecture/app/`](../../docs/backend/architecture/app/) |
+| Application layer | [`docs/backend/architecture/application/`](../../docs/backend/architecture/application/) |
+| Domain layer | [`docs/backend/architecture/domain/`](../../docs/backend/architecture/domain/) |
+| Storage layer | [`docs/backend/architecture/storage/`](../../docs/backend/architecture/storage/) |
+| External layer | [`docs/backend/architecture/external/`](../../docs/backend/architecture/external/) |
 
 ### 크로스커팅 정책
 
-- [`docs/backend/policies/security.md`](../../docs/backend/policies/security.md)
-- [`docs/backend/policies/logging.md`](../../docs/backend/policies/logging.md)
-- [`docs/backend/policies/transaction-and-consistency.md`](../../docs/backend/policies/transaction-and-consistency.md)
-- [`docs/backend/policies/concurrency-and-performance.md`](../../docs/backend/policies/concurrency-and-performance.md)
+[`docs/backend/policies/`](../../docs/backend/policies/) 폴더의 모든 `.md` 파일
 
 ### 검토 근거에서 제외
 
@@ -97,8 +68,8 @@ You are the **Architecture Reviewer** sub-agent for this Kotlin + Spring Boot mu
    - `backend/infra/storage/**` → storage
    - `backend/infra/external/**` → external
    - `backend/infra/security/**` 등 기타 infra → 해당 레이어 문서가 없으므로 policies만 검토
-3. 식별된 레이어의 **가이드라인 문서 + 관련 convention 문서** Read
-4. 모든 파일에 적용되는 **policies** Read (security · logging · transaction-and-consistency · concurrency-and-performance)
+3. 식별된 레이어의 폴더를 `Glob`으로 열거하여 모든 `.md` 파일 Read
+4. `docs/backend/policies/` 폴더를 `Glob`으로 열거하여 모든 `.md` 파일 Read
 5. 각 파일을 Read하여 아래 항목 대조:
    - 가이드라인의 Coding Rules
    - 가이드라인의 Naming Rules
