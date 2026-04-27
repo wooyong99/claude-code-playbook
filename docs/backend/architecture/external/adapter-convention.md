@@ -1,5 +1,12 @@
 # Adapter 컨벤션
 
+## 원칙
+
+- Adapter는 경계 번역기다. Port의 입출력 타입과 외부 DTO를 매핑하고, 외부 예외를 Port Result로 변환하여 application 계층을 외부 세부로부터 보호한다.
+- 예외는 상태로 표현된다. 예외를 상위로 전파하면 호출 측이 외부 예외 타입에 직접 결합된다. Result의 status/code로 변환하면 호출 측은 결과만 처리한다.
+- 각 Adapter는 하나의 Port만 구현한다. 하나의 Adapter가 여러 Port를 구현하면 기능 간 변경 영향이 얽힌다.
+- Adapter는 비즈니스 분기를 하지 않는다. 외부 호출과 응답 번역만 수행하고, 비즈니스 판단은 application 계층에 맡긴다.
+
 ---
 
 ## 핵심 규칙

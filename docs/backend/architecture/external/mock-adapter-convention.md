@@ -1,5 +1,11 @@
 # Mock Adapter 컨벤션
 
+## 원칙
+
+- 로컬 환경과 운영 환경은 분리된다. Profile 기반으로 실 Adapter와 Mock Adapter를 교체하면 로컬 개발이 실 시스템 의존 없이 가능해진다.
+- Mock은 현실을 모사한다. 성공만 반환하는 Mock은 실패 경로를 검증할 수 없다. 입력 토큰으로 시나리오를 분기하면 다양한 결과를 재현한다.
+- Mock Adapter는 순수하다. ApiClient·Repository를 주입받으면 Mock이 외부 시스템에 의존하게 되어 목적을 잃는다.
+
 ---
 
 ## 핵심 규칙

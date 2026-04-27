@@ -1,5 +1,11 @@
 # DTO 컨벤션
 
+## 원칙
+
+- DTO는 외부 스키마의 거울이다. 외부 JSON 구조를 그대로 반영해야 스키마 변경 추적이 용이하고 역직렬화 오류를 즉시 확인할 수 있다.
+- 예측 불가능한 외부 변화에 방어적으로 대비한다. `@JsonIgnoreProperties(ignoreUnknown = true)`는 외부 API가 신규 필드를 추가해도 역직렬화가 깨지지 않도록 보호한다.
+- 도메인 변환은 DTO의 책임이 아니다. DTO는 순수 데이터 홀더이고, 타입 변환(`Long` → `BigDecimal`, `String` → `LocalDate`)은 Adapter의 책임이다.
+
 ---
 
 ## 핵심 규칙

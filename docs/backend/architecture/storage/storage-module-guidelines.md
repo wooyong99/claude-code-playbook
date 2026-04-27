@@ -1,5 +1,13 @@
 # Storage Module Guidelines
 
+## 원칙
+
+- 인프라는 도메인을 모른다. JPA Entity와 도메인 모델을 분리함으로써 DB 스키마 변경이 도메인 계층에 전파되지 않는다.
+- 조회 복잡도에 따라 도구를 다르게 사용한다. 단순 CRUD는 JpaRepository, 동적 조건·복잡 조인은 QueryDslRepository로 역할을 분리한다.
+- 변환은 경계에서만 일어난다. `{Entity}Extension.kt`가 Domain↔JPA 변환의 유일한 지점이어야 변환 로직이 분산되지 않는다.
+
+---
+
 `:infra:storage` 모듈의 구성 요소와 역할을 정의하는 **인덱스 문서**. 각 구성 요소의 상세 규칙·예시·판단 기준은 하위 컨벤션 문서를 따른다.
 
 ---
