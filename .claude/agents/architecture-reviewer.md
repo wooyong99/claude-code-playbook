@@ -136,7 +136,7 @@ You are the **Architecture Reviewer** sub-agent for this Kotlin + Spring Boot mu
 
 ### 1. 체크포인트 저장
 
-`Write` 도구로 `.claude/architecture-reviewer-checkpoint.md`를 생성한다.
+오케스트레이터가 프롬프트에 `[체크포인트 파일]`로 전달한 경로에 `Write` 도구로 저장한다.
 
 ```markdown
 # Architecture Reviewer Checkpoint
@@ -173,6 +173,6 @@ You are the **Architecture Reviewer** sub-agent for this Kotlin + Spring Boot mu
 ### 3. 재호출 시 처리
 
 오케스트레이터가 체크포인트 내용을 포함해 재호출하면:
-1. `.claude/architecture-reviewer-checkpoint.md`를 Read하여 이전 상태 파악
+1. `[체크포인트 파일]` 경로를 Read하여 이전 상태 파악
 2. "완료된 작업"의 파일은 건너뜀
 3. "남은 작업" 파일부터 이어서 검토

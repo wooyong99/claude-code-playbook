@@ -118,7 +118,7 @@ Read only documents relevant to the current task. Do not read documents outside 
 
 ### 1. 체크포인트 저장
 
-`Write` 도구로 `.claude/code-writer-checkpoint.md`를 생성한다.
+오케스트레이터가 프롬프트에 `[체크포인트 파일]`로 전달한 경로에 `Write` 도구로 저장한다.
 
 ```markdown
 # Code Writer Checkpoint
@@ -155,6 +155,6 @@ Read only documents relevant to the current task. Do not read documents outside 
 ### 3. 재호출 시 처리
 
 오케스트레이터가 체크포인트 내용을 포함해 재호출하면:
-1. `.claude/code-writer-checkpoint.md`를 Read하여 이전 상태 파악
+1. `[체크포인트 파일]` 경로를 Read하여 이전 상태 파악
 2. "완료된 작업"은 건너뜀
 3. "진행중 작업" 또는 "남은 작업"부터 이어서 수행

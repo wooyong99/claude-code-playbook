@@ -17,13 +17,15 @@
 [추가 컨텍스트]: 이번 마일스톤에서 A가 집중한 설계 결정 요약
 {A의 "핵심 설계 결정" 섹션 그대로}
 
+[체크포인트 파일]: .claude/checkpoints/arch-reviewer-{run_id}-M{n}-r{iter}.md
+
 [출력 규격]: 이 문서(.claude/skills/implement/references/architecture-reviewer-contract.md) — Output 섹션 그대로.
 ```
 
 체크포인트 재호출 시 아래 필드가 추가된다:
 
 ```
-[체크포인트]: .claude/architecture-reviewer-checkpoint.md 참조.
+[체크포인트]: [체크포인트 파일] 경로 참조.
 완료된 파일은 건너뛰고 남은 파일부터 이어서 검토.
 ```
 
@@ -66,7 +68,7 @@ PASS
 컨텍스트 윈도우가 65% 이상 소모된 경우, 출력 **첫 줄**에 아래 신호를 출력한 뒤 완료된 파일의 결과(PASS 또는 위반 YAML)를 이어서 작성한다:
 
 ```
-CONTEXT_CHECKPOINT: .claude/architecture-reviewer-checkpoint.md
+CONTEXT_CHECKPOINT: {[체크포인트 파일] 경로}
 ```
 
 이후 완료된 파일 수만큼의 정상 출력 포맷을 작성한다.

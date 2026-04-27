@@ -20,13 +20,15 @@
   - 관련 레이어: {app/application/domain/storage 중 해당}
   - 관련 도메인: {도메인명}
 
+[체크포인트 파일]: .claude/checkpoints/design-writer-{run_id}-M{n}.md
+
 [출력 규격]: 이 문서(.claude/skills/implement/references/design-writer-contract.md) — Output 섹션 그대로.
 ```
 
 체크포인트 재호출 시 프롬프트에 아래 필드가 추가된다:
 
 ```
-[체크포인트]: .claude/design-writer-checkpoint.md 참조. 이어서 작업 진행.
+[체크포인트]: [체크포인트 파일] 경로 참조. 이어서 작업 진행.
 ```
 
 ---
@@ -75,5 +77,5 @@ TDD_SKIPPED: {이유 — 예: "단일 UseCase 추가로 설계 결정 사항 없
 컨텍스트 윈도우가 65% 이상 소모된 경우, 출력 **첫 줄**에 아래 신호를 출력한 뒤 지금까지 완료된 작업을 이어서 작성한다:
 
 ```
-CONTEXT_CHECKPOINT: .claude/design-writer-checkpoint.md
+CONTEXT_CHECKPOINT: {[체크포인트 파일] 경로}
 ```
