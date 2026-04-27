@@ -47,16 +47,6 @@ Clean Architecture + DDD 기반 멀티모듈. 의존 방향: `app → applicatio
 
 ---
 
-## 아키텍처 전역 결정 ([`architecture/`](architecture/))
-
-특정 레이어에 국한되지 않으면서, 프로젝트의 **아키텍처 선택**에 의해 도입되는 규칙.
-
-| 문서 | 설명 |
-|------|------|
-| [multi-tenant](architecture/multi-tenant.md) | 테넌트 격리 전략, 데이터 분류, 채널별 테넌트 식별 방식 |
-
----
-
 ## 크로스커팅 정책 ([`policies/`](policies/))
 
 프로젝트 도메인·아키텍처 선택과 무관하게, 모든 레이어에 걸쳐 일반적으로 적용되는 기술 정책.
