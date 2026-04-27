@@ -30,21 +30,9 @@
 
 ---
 
-## 책임 분배 원칙
+## UseCase 메서드 구성
 
-**규칙: 각 로직은 아래 순서와 위치를 따른다.**
-
-| 순서 | 책임 | 담당 객체 | 위치 |
-|------|------|-----------|------|
-| 1 | 입력값 형식 검증 (필수값, 범위, 포맷) | Command의 `init` 블록 | `dto/` |
-| 2 | 데이터 조회 | UseCase 또는 Flow에서 Port 조회 | UseCase / Flow |
-| 3 | 비즈니스 규칙 검증 (허용 확장자, 중복 등) | Validator (조회된 객체를 매개변수로 전달) | `validator/` |
-| 4 | 도메인 행위 호출 (상태 변경) | Domain 객체 메서드 | `:core:domain` |
-| 5 | 결과 변환 | Mapper 클래스 | `mapper/` |
-
-UseCase와 Flow에서 이 순서가 코드에 그대로 드러나야 한다.
-
-**UseCase 메서드 — 조합:**
+**UseCase 메서드 — 조합 순서:**
 
 ```
 1. 공통 데이터 조회  →  Port (여러 Flow에서 공유할 상위 객체)
@@ -196,49 +184,6 @@ class UpdateProduct {
 
 ---
 
-## 파일 구조
-
-**규칙: 진입점(UseCase)은 flat 노출, 구현 세부사항(Flow, Validator, Policy)은 서브패키지로 격리한다.**
-
-```
-:core:application/
-└── src/main/kotlin/com/wooyong/demo/core/application/
-    ├── {domain}/
-    │   ├── {Action}{Entity}UseCase.kt     ← UseCase: flat 노출 (진입점)
-    │   ├── {Entity}EventHandler.kt        ← EventHandler: flat 노출
-    │   ├── flow/
-    │   │   └── {Entity}{Action}Flow.kt
-    │   ├── validator/
-    │   │   └── {Entity}Validator.kt
-    │   ├── policy/
-    │   │   └── {Entity}SomePolicy.kt
-    │   ├── dto/
-    │   │   └── {Action}{Entity}.kt
-    │   ├── mapper/
-    │   │   └── {Entity}DtoMapper.kt
-    │   └── port/
-    │       └── {Entity}Repository.kt
-    │
-    └── file/
-        ├── AttachedFileHandler.kt
-        └── port/
-            └── FileStoragePort.kt
-```
-
-| 구성 요소 | 위치 | 이유 |
-|-----------|------|------|
-| UseCase | `{domain}/` flat | 진입점이므로 바로 노출 |
-| EventHandler | `{domain}/` flat | UseCase와 동격 |
-| Flow | `{domain}/flow/` | 실행 구현 세부사항 |
-| Validator | `{domain}/validator/` | 검증 전용 컴포넌트 |
-| Policy | `{domain}/policy/` | 인터페이스 + 순수 구현체 모음 |
-| Handler | 해당 개념 도메인 패키지 flat | 여러 도메인에서 재사용 |
-
-- Validator, Policy가 없으면 해당 서브패키지를 만들지 않는다.
-- Flow가 1개뿐이어도 `flow/` 서브패키지로 분리한다.
-
----
-
 ## 금지 사항
 
 - `BaseUseCase` 같은 공통 상속 클래스를 만들지 않는다.
@@ -263,5 +208,3 @@ class UpdateProduct {
 - [ ] 파일명이 `{Action}{Entity}.kt` 형식이고 Command/Result가 nested class로 정의됐는가?
 - [ ] Command의 `init`에서 형식 검증만 하고 DB 조회가 없는가?
 - [ ] UseCase → Flow → Validator/Handler/Policy → Port 방향만 의존하는가?
-- [ ] UseCase와 EventHandler가 도메인 패키지 루트에 flat 배치됐는가?
-- [ ] Flow / Validator / Policy가 각각의 서브패키지에 위치하는가?

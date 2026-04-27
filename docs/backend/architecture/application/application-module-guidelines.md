@@ -28,6 +28,22 @@ UseCase → Flow → Validator / Handler / Policy → Port (interface)
 
 ---
 
+## 책임 분배 원칙
+
+**규칙: 각 로직은 아래 순서와 위치를 따른다.**
+
+| 순서 | 책임 | 담당 객체 | 위치 |
+|------|------|-----------|------|
+| 1 | 입력값 형식 검증 (필수값, 범위, 포맷) | Command의 `init` 블록 | `dto/` |
+| 2 | 데이터 조회 | UseCase 또는 Flow에서 Port 조회 | UseCase / Flow |
+| 3 | 비즈니스 규칙 검증 (허용 확장자, 중복 등) | Validator (조회된 객체를 매개변수로 전달) | `validator/` |
+| 4 | 도메인 행위 호출 (상태 변경) | Domain 객체 메서드 | `:core:domain` |
+| 5 | 결과 변환 | Mapper 클래스 | `mapper/` |
+
+UseCase와 Flow에서 이 순서가 코드에 그대로 드러나야 한다.
+
+---
+
 ## 구성 요소별 상세 문서
 
 | 구성 요소 | 핵심 규칙 (한 줄 요약) | 상세 문서 |
@@ -42,17 +58,11 @@ UseCase → Flow → Validator / Handler / Policy → Port (interface)
 
 ---
 
-## 책임 분배 순서
+## 패키지 구조
 
-| 순서 | 책임 | 담당 객체 |
-|------|------|-----------|
-| 1 | 입력값 형식 검증 (필수값, 범위, 포맷) | Command의 `init` 블록 |
-| 2 | 데이터 조회 | UseCase 또는 Flow에서 Port 조회 |
-| 3 | 비즈니스 규칙 검증 | Validator (조회된 객체를 매개변수로 전달) |
-| 4 | 도메인 행위 호출 (상태 변경) | Domain 객체 메서드 |
-| 5 | 결과 변환 | Mapper 클래스 |
+진입점(UseCase, EventHandler)은 도메인 패키지 루트에 flat 노출, 구현 세부사항(Flow, Validator, Policy)은 서브패키지로 격리한다.
 
-> 각 단계별 상세는 [use-case-convention.md](use-case-convention.md) "책임 분배 원칙" 섹션 참고
+상세 레이아웃과 위치 규칙: [package-structure.md](package-structure.md)
 
 ---
 
@@ -90,6 +100,7 @@ UseCase → Flow → Validator / Handler / Policy → Port (interface)
 
 각 문서 하단의 "체크리스트" 섹션을 참고한다.
 
+- [package-structure.md](package-structure.md)
 - [use-case-convention.md](use-case-convention.md)
 - [flow-convention.md](flow-convention.md)
 - [validator-convention.md](validator-convention.md)
