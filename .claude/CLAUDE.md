@@ -37,7 +37,7 @@
 | `:infra:external` | [external-module-guidelines](../docs/backend/architecture/external/external-module-guidelines.md) | [adapter](../docs/backend/architecture/external/adapter-convention.md) · [api-client](../docs/backend/architecture/external/api-client-convention.md) · [dto](../docs/backend/architecture/external/dto-convention.md) · [exception](../docs/backend/architecture/external/exception-convention.md) · [config](../docs/backend/architecture/external/config-convention.md) · [mock-adapter](../docs/backend/architecture/external/mock-adapter-convention.md) |
 
 **크로스커팅 정책** ([`docs/backend/policies/`](../docs/backend/policies/))
-- [security](../docs/backend/policies/security.md) · [logging](../docs/backend/policies/logging.md)
+- [security](../docs/backend/policies/security.md) · [logging](../docs/backend/policies/logging.md) · [transaction-and-consistency](../docs/backend/policies/transaction-and-consistency.md) · [concurrency-and-performance](../docs/backend/policies/concurrency-and-performance.md)
 
 **설계 문서** — [`docs/backend/design/`](../docs/backend/design/)
 기능·서브시스템의 기술 설계(TDD). 작성 규칙과 템플릿은 [design/README.md](../docs/backend/design/README.md) · 샘플 [sample-tdd.md](../docs/backend/design/sample-tdd.md).

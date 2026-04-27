@@ -65,6 +65,8 @@ Clean Architecture + DDD 기반 멀티모듈. 의존 방향: `app → applicatio
 |------|------|
 | [security](policies/security.md) | 비밀번호 취급, 인증 컨텍스트 분리, 민감 정보 커밋 금지 |
 | [logging](policies/logging.md) | 로그 레벨 기준, MDC 키, 민감 데이터 차단 |
+| [transaction-and-consistency](policies/transaction-and-consistency.md) | 트랜잭션 경계 설정, 정합성 수준 선택, 이벤트 기반 최종 일관성, 분산 락 |
+| [concurrency-and-performance](policies/concurrency-and-performance.md) | 동시성 제어 방식 선택, N+1 해결 패턴, 캐시 전략, 확장 가능성 문서화 |
 
 ---
 
