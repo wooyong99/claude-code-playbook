@@ -4,9 +4,9 @@
 
 ## 핵심 규칙
 
-**app 계층은 표현 계층 전역 관심사를 담는 `common/`과 도메인별 표현 객체를 담는 `{domain}/`으로 구성하며, 변환 Extension 파일(`{Domain}DtoExtension.kt`)은 반드시 `dto/` 밖 도메인 패키지 레벨에 위치한다.**
+**app 계층은 표현 계층 전역 관심사를 담는 `common/`과 도메인별 표현 객체를 담는 `{domain}/`으로 구성한다. 변환 Extension 파일(`{Domain}DtoExtension.kt`)은 반드시 `dto/` 밖 도메인 패키지 레벨에 둔다.**
 
-파일 위치가 책임의 소유권을 시각화한다. `common/`과 `{domain}/`의 분리는 횡단 관심사와 도메인별 책임을 위치로 드러내고, Extension이 `dto/` 밖에 있는 이유는 변환이 DTO의 책임이 아니라 경계 계층의 책임이기 때문이다.
+파일 구조 문서는 **어디에 배치하는가**를 정의한다. 각 디렉토리가 어떤 책임을 가져야 하는지는 [common.md](common.md) 같은 개별 전략 문서에서 다룬다.
 
 ---
 
@@ -21,17 +21,12 @@
 
 ## 전체 구조 트리
 
-> `common/`의 서브패키지는 선택한 인증·보안 전략에 따라 달라진다. `security/`·`logging/`은 전략 종속이며, 이 프로젝트의 구성은 [strategies/README.md](README.md)를 참고한다.
+> `common/` 내부의 세부 서브패키지 구성은 전략에 따라 달라질 수 있다. 이 문서는 상위 배치 규칙만 정의하고, `common/` 내부 책임 기준은 [common.md](common.md)를 따른다.
 
 ```
 {app-module}/
 ├── common/
-│   ├── config/          ← WebMvc, Jackson, CORS, Interceptor 등
-│   ├── advice/          ← @RestControllerAdvice, 글로벌 예외 핸들러
-│   ├── response/        ← BaseResponse<T>, ErrorResponse, PageResponse<T>
-│   ├── security/        ← SecurityFilterChain, 인증 필터, 인가 규칙 (전략 종속)
-│   ├── logging/         ← 요청·응답 로그 필터, MDC 설정, 마스킹 (전략 종속)
-│   └── validator/       ← 커스텀 Bean Validation, 공통 포맷 Validator
+│   └── ...              ← 공통 표현 계층 구성요소
 └── {domain}/
     ├── {Entity}Controller.kt
     ├── {Domain}DtoExtension.kt   ← dto/ 밖에 위치
@@ -39,8 +34,6 @@
         ├── {Domain}Requests.kt
         └── {Domain}Responses.kt  ← 필요 시만
 ```
-
-각 공통 패키지의 역할·포함 대상·금지 사항 → [표현 계층 전역 관심사](common.md)
 
 ---
 
@@ -79,8 +72,8 @@
 
 ## 금지 사항
 
-- `common/`이 `{domain}/` 패키지의 클래스를 import하지 않는다.
-- 도메인 패키지 간 직접 참조를 허용하지 않는다 — 공유 로직은 반드시 `common/`을 경유한다.
+- `common/`과 `{domain}/`의 배치 경계를 무너뜨리지 않는다.
+- 도메인 패키지 간 직접 참조를 허용하지 않는다.
 - `{Domain}DtoExtension.kt`를 `dto/` 패키지 안에 배치하지 않는다.
 - DTO 내부에 `toCommand()` 등 변환 로직을 포함하지 않는다.
 - app 모듈 간 코드를 직접 공유하지 않는다 — 공유 모듈을 경유한다.
@@ -91,6 +84,6 @@
 
 - [ ] `{Domain}DtoExtension.kt`가 `dto/` 밖 `{domain}/` 패키지 레벨에 위치하는가?
 - [ ] Controller가 `{domain}/` 최상위에 flat 배치됐는가?
-- [ ] `common/`이 `{domain}/` 패키지 클래스를 import하지 않는가?
+- [ ] 공통 구성요소와 도메인별 구성요소가 위치상 명확히 분리됐는가?
 - [ ] 도메인 패키지 간 직접 참조가 없는가?
 - [ ] DTO 내부에 변환 로직이 없는가?
