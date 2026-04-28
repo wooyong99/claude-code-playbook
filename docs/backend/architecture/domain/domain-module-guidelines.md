@@ -1,51 +1,41 @@
-# Domain Module Guidelines
+# Domain Layer Guidelines
 
-## 원칙
+## Domain 계층의 본질적 책임
 
-- 도메인 계층은 순수하다. Spring, JPA, Jackson 같은 프레임워크 의존이 없어야 비즈니스 규칙이 인프라 변경에 영향받지 않는다.
-- 도메인은 비즈니스 언어로 말한다. 외부에서 enum을 꺼내 판단하는 대신, 도메인 객체에게 질문하고 답을 얻는다 (Tell, Don't Ask).
-- 불변식은 도메인이 보호한다. `private constructor` + 팩토리 메서드로 생성을 제어하고, 행위 메서드로만 상태를 변경한다.
+`:core:domain` 모듈은 순수 비즈니스 개념과 규칙을 표현하는 계층이다. 외부 프레임워크에 의존하지 않으므로 인프라 변경이 도메인 로직을 침범하지 않는다.
 
----
-
-`:core:domain` 모듈의 구성 요소와 역할을 정의하는 **인덱스 문서**. 각 구성 요소의 상세 규칙·예시·판단 기준은 하위 컨벤션 문서를 따른다.
+1. **비즈니스 개념 표현**: 도메인 언어로 비즈니스 개념과 관계를 코드로 구현한다.
+2. **불변식 보호**: 도메인 객체가 스스로 생성과 상태 변경을 통제하여 잘못된 상태를 막는다.
+3. **예외 계층 소유**: 비즈니스 규칙 위반을 도메인 소유 예외로 표현하며, HTTP 개념에 의존하지 않는다.
 
 ---
 
-## Purpose
+## 반드시 지켜야 할 규칙
 
-- 순수 비즈니스 개념과 규칙을 표현하는 도메인 모델 계층
-- 외부 프레임워크 의존 없이 Kotlin / Java 표준 라이브러리만 사용
-
----
-
-## 레이어 개요
-
-```
-domain (ErrorCode, CoreException, Entity, Value Object)
-  ↑
-application (Flow/UseCase에서 도메인 객체 조립 및 CoreException throw)
-  ↑
-app (GlobalExceptionHandler: CoreErrorType → HttpStatus 매핑)
-```
-
-- **Entity**: 식별자(id)로 동등성을 판단하는 비즈니스 개념. 상태 전이 메서드 보유
-- **Value Object**: 값 자체로 동등성을 판단하는 불변 객체 (`data class`)
-- **ErrorCode**: 도메인별 enum으로 에러 코드를 상수화. `ErrorCode` 인터페이스 구현
-- **CoreException**: 모든 도메인 예외의 기반 클래스. `ErrorCode`를 받아 통일된 핸들러로 처리
+- **R1. 순수성** — Spring, JPA, Jackson 등 외부 프레임워크에 의존하지 않는다. 순수 Kotlin / Java 표준 라이브러리만 사용한다.
+- **R2. 불변식 보호** — 도메인 객체는 스스로 생성·상태 변경을 통제한다. 외부에서 도메인 규칙을 우회하는 경로를 허용하지 않는다.
+- **R3. 도메인 경계** — 다른 도메인의 객체를 직접 포함하지 않는다. ID 참조로 경계를 유지한다.
+- **R4. 예외 계층 소유** — 비즈니스 규칙 위반은 도메인 계층이 소유한 예외 계층(`ErrorCode`, `CoreException`)으로 표현한다. HTTP 프로토콜 개념(`HttpStatus`)에 의존하지 않는다.
 
 ---
 
-## 구성 요소별 상세 문서
+## 금지 규칙 / 안티패턴
 
-| 구성 요소 | 핵심 규칙 (한 줄 요약) | 상세 문서 |
-|-----------|---------------------|----------|
-| Entity / Value Object | `private constructor` + `companion object` 팩토리. `init` 금지. Spring / JPA / Jackson 의존 금지. 상태 변경은 행위 메서드로만 | [domain-model-convention.md](domain-model-convention.md) |
-| Exception / ErrorCode | 도메인별 `{Domain}ErrorCode` enum + `CoreException`. HTTP 매핑은 app 계층에서. 프레임워크(`HttpStatus`) 의존 금지 | [exception-convention.md](exception-convention.md) |
+- **프레임워크 import** — `@Entity`, `@Component`, `@JsonProperty`, `HttpStatus` 등을 import하면 인프라 변경이 도메인 계층에 전파된다.
+- **범용 ErrorCode enum** — 여러 도메인이 공유하는 `CommonErrorCode`는 예외의 소속을 모호하게 만들고 도메인 경계를 무너뜨린다.
+- **HTTP 개념 직접 의존** — 도메인 계층이 `HttpStatus` 같은 프로토콜 타입을 직접 사용하면 표현 계층 변경이 도메인에 영향을 준다.
 
 ---
 
-## File Structure
+## 선택 가능한 내부 구현 전략
+
+역할 정의, 전략 선택 기준, 이 프로젝트의 선택 → [`strategies/`](strategies/README.md)
+
+---
+
+## 이 프로젝트의 로컬 컨벤션
+
+### 파일 구조
 
 ```
 :core:domain/
@@ -59,25 +49,25 @@ app (GlobalExceptionHandler: CoreErrorType → HttpStatus 매핑)
     └── exception/
         ├── ErrorCode.kt             ← ErrorCode 인터페이스
         ├── CoreErrorType.kt         ← HTTP 의미론적 분류 (Spring 미의존)
-        └── CoreException.kt         ← 기본 예외 클래스
+        └── CoreException.kt         ← 기반 예외 클래스
 ```
 
----
+### 공통 규칙
 
-## Testing
+**테스팅**: 도메인 모델은 순수 Kotlin이므로 프레임워크 없이 단위 테스트한다.
 
-- 도메인 모델은 순수 Kotlin이므로 프레임워크 없이 단위 테스트한다.
-- 팩토리 메서드(`create` / `reconstitute`) 생성 경로를 테스트한다.
-- 행위 메서드의 상태 전이와 전제조건(`require` / `check`) 위반을 테스트한다.
-- Tell, Don't Ask 메서드(`isActive()`, `canCancel()` 등)의 판단 로직을 테스트한다.
+**의존성 방향**:
 
----
+```
+domain (ErrorCode, CoreException, Entity, Value Object)
+  ↑
+application (Flow/UseCase에서 도메인 객체 조립 및 CoreException throw)
+  ↑
+app (GlobalExceptionHandler: CoreErrorType → HttpStatus 매핑)
+```
 
-## Post-Work Verification
+### Post-Work Verification
 
-**가이드라인 문서를 참고했더라도 실제 생성된 코드에 반영되지 않은 부분이 있을 수 있다.** 구현 완료 후, 생성하거나 수정한 파일을 직접 읽어서 아래 각 하위 문서의 체크리스트를 하나씩 대조한다. 위반이 발견되면 즉시 수정하고 다시 검증한다.
+구현 완료 후 생성·수정한 파일을 직접 읽어 아래 각 문서의 체크리스트를 대조한다.
 
-각 문서 하단의 "체크리스트" 섹션을 참고한다.
-
-- [domain-model-convention.md](domain-model-convention.md)
-- [exception-convention.md](exception-convention.md)
+이 프로젝트의 체크리스트 문서 목록 → [`strategies/README.md`](strategies/README.md)

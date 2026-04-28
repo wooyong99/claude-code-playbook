@@ -1,12 +1,5 @@
 # ApiClient 컨벤션
 
-## 원칙
-
-- ApiClient는 HTTP 세부를 캡슐화한다. 외부 HTTP 예외가 ApiClient를 넘어가면 Adapter가 Spring 프레임워크에 결합된다.
-- 예외 변환은 한 곳에서 관리한다. `handleErrors` 패턴은 모든 API 메서드의 예외 변환 경로를 통일하고 누락을 방지한다.
-- 토큰 관리는 전용 컴포넌트에 위임한다. ApiClient가 토큰을 직접 들고 있으면 동시성 문제와 재발급 로직이 얽힌다.
-- 메서드-엔드포인트는 1:1이다. 한 메서드 안에서 여러 엔드포인트를 분기하면 호출 의도가 흐려진다.
-
 ---
 
 ## 핵심 규칙
@@ -64,7 +57,7 @@ fun call(type: ApiType, request: Any): Any = when (type) {
 - 응답 결과 및 소요시간
 
 로깅 방식은 프로젝트 환경에 따라 선택한다:
-세부 구현 방식(어노테이션 기반, 수동 로깅 등)과 속성 규칙은 [api-client-logging.md](api-client-logging.md)에 프로젝트별로 정의한다.
+세부 구현 방식(어노테이션 기반, 수동 로깅 등)과 속성 규칙은 [api-client-logging.md](strategies/api-client-logging.md)에 프로젝트별로 정의한다.
 
 ---
 
@@ -217,7 +210,7 @@ private fun <T> GiftCardApiResponse<T>?.extractPayload(apiName: String): T =
 - Provider별로 별도 빈을 구성하고 `@Qualifier`로 주입받는다.
 - 메서드 내부에서 클라이언트를 매번 생성하지 않는다.
 
-사용하는 HTTP 클라이언트 유형과 빈 주입 방식은 [api-client-http-client.md](api-client-http-client.md)에 프로젝트별로 정의한다.
+사용하는 HTTP 클라이언트 유형과 빈 주입 방식은 [api-client-http-client.md](strategies/api-client-http-client.md)에 프로젝트별로 정의한다.
 
 ---
 

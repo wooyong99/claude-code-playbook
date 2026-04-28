@@ -1,13 +1,5 @@
 # API 컨벤션 (App Layer)
 
-## 원칙
-
-- HTTP는 외부 계약이다. Controller는 HTTP 진입점 역할만 담당하고, 비즈니스 로직은 application 계층에 위임한다.
-- Request DTO와 Command는 서로 다른 경계의 계약이다. 이 둘을 섞으면 HTTP 계층과 비즈니스 계층이 결합된다.
-- 변환은 경계에서 일어난다. 변환 로직은 DTO 자신의 것이 아니라, 경계를 관리하는 계층의 책임이다.
-- Response DTO는 필요한 경우에만 만든다. Result를 그대로 반환할 수 있다면 추상화 계층을 늘리지 않는다.
-- 응답 형식은 일관성이 중요하다. 성공·실패 모두 `BaseResponse<T>`로 래핑하여 클라이언트가 단일 포맷을 기대할 수 있다.
-
 ---
 
 ## 핵심 규칙
@@ -152,19 +144,6 @@ fun Get{Entity}.Result.toResponse() = Get{Entity}Response(
 
 > `infra:storage`의 `{Entity}Extension.kt` 패턴과 동일한 원칙 (변환은 소유자가 아닌 경계 계층의 책임).
 
----
-
-## 파일 구조
-
-```
-controller/
-└── {domain}/
-    ├── {Entity}Controller.kt       ← Controller (flat 배치)
-    ├── {Domain}DtoExtension.kt     ← 매핑 Extension (dto/ 밖)
-    └── dto/
-        ├── {Domain}Requests.kt     ← 모든 Request DTO
-        └── {Domain}Responses.kt    ← 필요 시만 (모든 Response DTO)
-```
 
 ---
 

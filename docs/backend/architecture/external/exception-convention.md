@@ -1,12 +1,5 @@
 # Exception 컨벤션
 
-## 원칙
-
-- Provider별 예외는 독립적이어야 한다. 공용 예외 계층은 서로 다른 Provider의 예외가 섞이는 통로가 된다.
-- `sealed class`는 완전성을 보장한다. `when` 분기에서 컴파일러가 모든 케이스를 처리했는지 강제할 수 있다.
-- 예외 분류는 Adapter의 응답 전략을 결정한다. API/Auth/Server/Network/Parsing의 5종 분류는 각각 다른 Result status로 매핑된다.
-- 원인 체이닝을 잃지 않는다. `cause`를 보존해야 네트워크 장애·역직렬화 버그의 근본 원인을 추적할 수 있다.
-
 ---
 
 ## 핵심 규칙

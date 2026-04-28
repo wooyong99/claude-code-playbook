@@ -1,25 +1,8 @@
 # External Module Guidelines
 
-## 원칙
+## External 계층의 본질적 책임
 
-- 외부 시스템의 변화는 내부로 전파되지 않아야 한다. Adapter가 외부 스키마와 Port 계약을 분리함으로써 외부 API 변경이 application 계층에 영향을 미치지 않는다.
-- 외부 예외는 내부 표현으로 번역된다. HTTP/네트워크 예외가 application 계층까지 올라오면 상위 계층이 외부 기술 세부에 결합된다.
-- 로컬 개발환경은 실 시스템과 격리된다. Mock Adapter는 외부 의존 없이 동일한 흐름을 재현할 수 있게 한다.
-- Provider 단위로 패키지를 분리한다. 서로 다른 외부 시스템의 코드가 섞이면 변경 영향도를 파악하기 어려워진다.
-
----
-
-`modules/external` 모듈의 구성 요소와 역할을 정의하는 **인덱스 문서**. 각 구성 요소의 상세 규칙·예시·판단 기준은 하위 컨벤션 문서를 따른다.
-
----
-
-## Purpose
-
-외부 시스템(PG, 상품권 서비스, BiscuitLink, 알림톡, 메일 등)과의 통신을 담당하는 **Outbound Adapter 계층**. `application` 모듈이 정의한 Outbound Port를 구현하여 외부 시스템 호출을 캡슐화하고, 외부 서비스의 오류·응답을 내부 도메인 표현으로 변환한다.
-
----
-
-## 레이어 개요
+외부 시스템(PG, 상품권 서비스, 알림 서비스 등)과의 통신을 담당하는 Outbound Adapter 계층이다. `application` 모듈이 정의한 Outbound Port를 구현하여 외부 시스템 호출을 캡슐화하고, 외부 서비스의 오류·응답을 내부 표현으로 변환한다.
 
 ```
 application (Outbound Port 정의)
@@ -27,38 +10,35 @@ application (Outbound Port 정의)
 external  (Adapter → ApiClient → 외부 시스템)
 ```
 
-- **Adapter**: Outbound Port 구현체. Port 요청/결과 타입과 외부 DTO를 매핑하고, 외부 예외를 Port Result로 번역한다.
-- **ApiClient**: HTTP 클라이언트 기반 외부 호출 전담. 호출 로깅을 적용하고 HTTP/네트워크 예외를 Provider 전용 예외로 변환한다.
-- **TokenHolder**: Bearer Token 캐싱·만료 관리 전담. ApiClient에서 토큰이 필요한 API 호출 시 사용한다.
-- **Dto**: 외부 API 요청/응답 전용 데이터 클래스. Provider의 JSON 스키마를 1:1로 표현한다.
-- **ErrorCode enum**: 외부 API 비즈니스 에러코드를 Port ErrorCode로 번역하는 매핑 테이블.
-- **Exception**: Provider 전용 sealed 예외 계층. Adapter가 Result로 변환할 때 분기 근거가 된다.
-- **Config / Properties**: HTTP 클라이언트 빈과 `@ConfigurationProperties` 바인딩.
-- **Mock Adapter**: 로컬 개발용 Port 구현체. Profile 기반으로 실 Adapter와 대칭 구성한다.
-
-모듈 의존성은 `external → application → domain` 방향으로만 흐른다. Adapter는 Port가 정의한 입·출력 타입 외의 도메인 객체를 참조하지 않는다.
+1. **Port 구현**: application이 선언한 Outbound Port의 구현체로서 외부 API 호출을 담당한다.
+2. **경계 번역**: 외부 예외·응답 스키마를 Port Result 타입으로 변환해 상위 계층을 외부 기술 세부로부터 보호한다.
+3. **격리 구성**: Mock Adapter를 통해 로컬 개발 환경을 실 외부 시스템과 분리한다.
 
 ---
 
-## 구성 요소별 상세 문서
+## 반드시 지켜야 할 규칙
 
-| 구성 요소 | 핵심 규칙 (한 줄 요약) | 상세 문서 |
-|-----------|---------------------|----------|
-| Adapter | Outbound Port만 구현하고, 외부 예외는 Port Result로 번역한다 | [adapter-convention.md](adapter-convention.md) |
-| ApiClient | HTTP 클라이언트 호출을 캡슐화하고 HTTP/네트워크 예외를 Provider 예외로 변환한다 | [api-client-convention.md](api-client-convention.md) |
-| Dto | `@JsonIgnoreProperties(ignoreUnknown = true)` + `@JsonProperty`로 외부 스키마를 고정한다 | [dto-convention.md](dto-convention.md) |
-| Exception | Provider별 `sealed class`로 분류하고 API / Auth / Server / Network / Parsing 5종을 기본으로 둔다 | [exception-convention.md](exception-convention.md) |
-| ErrorCode | `{Provider}ErrorCode` enum으로 외부 에러코드를 정의하고 `toPortErrorCode()`로 Port ErrorCode로 번역한다 | [errorcode-convention.md](errorcode-convention.md) |
-| Config / Properties | HTTP 클라이언트는 Provider 전용 `@Qualifier` 빈으로, 설정값은 `@ConfigurationProperties`로 바인딩한다 | [config-convention.md](config-convention.md) |
-| Mock Adapter | `@Profile("local")`로 실 Adapter(`@Profile("!local")`)와 대칭 구성한다 | [mock-adapter-convention.md](mock-adapter-convention.md) |
+- **R1. 외부 변화는 내부로 전파하지 않는다** — Adapter가 Port 계약과 외부 스키마 사이를 분리하여, 외부 API 변경이 application 계층에 영향을 미치지 않게 한다.
+- **R2. 외부 예외는 내부 표현으로 번역한다** — HTTP/네트워크 예외는 Provider 전용 sealed 예외 계층을 거쳐 Port Result로 변환하고, application 계층에 기술 예외가 노출되지 않는다.
+- **R3. 의존성은 external → application → domain 방향으로만 흐른다** — Adapter는 Port 입·출력 타입 외의 도메인 객체를 직접 참조하지 않는다.
+- **R4. Provider 단위로 패키지를 분리한다** — 한 패키지에 해당 Provider의 모든 구성 요소가 공존하며, Provider 간 코드가 혼재하지 않는다.
 
 ---
 
-## 모듈 공통 규칙
+## 금지 규칙 / 안티패턴
 
-### 패키지 구조
+- **HTTP/네트워크 예외를 Adapter 밖으로 전파** — application 계층이 Spring 프레임워크 세부에 결합된다.
+- **여러 Provider가 같은 패키지를 공유** — 변경 영향도 파악이 어려워지고 단일 책임이 깨진다.
+- **Adapter에서 Port 외의 도메인 객체 참조** — external이 domain을 직접 의존해 계층 의존 방향이 역전된다.
+- **외부 DTO를 Port 시그니처로 노출** — 외부 스키마 변경이 application 계층까지 전파된다.
 
-Provider 단위로 패키지를 분리한다. 한 패키지에 해당 Provider의 Adapter·ApiClient·TokenHolder·Dto·ErrorCode·Exception·Config·Properties·Mock Adapter가 공존한다.
+---
+
+## 이 프로젝트의 로컬 컨벤션
+
+### 공통 규칙
+
+**패키지 구조**: Provider 단위 패키지 분리. 한 패키지에 Adapter·ApiClient·TokenHolder·Dto·ErrorCode·Exception·Config·Properties·Mock Adapter가 공존한다.
 
 ```
 modules/external/src/main/kotlin/im/bigs/ecommerce/
@@ -76,47 +56,28 @@ modules/external/src/main/kotlin/im/bigs/ecommerce/
         └── {Provider}{Category}Code.kt
 ```
 
-복잡한 Provider(예: `keyin`)는 `config/`, `deserializer/`, `pg/` 등 하위 패키지로 분리할 수 있으나, **한 Provider가 두 개 이상의 최상위 패키지를 점유하지 않는다**.
+복잡한 Provider는 `config/`, `deserializer/` 등 하위 패키지로 분리할 수 있으나, **한 Provider가 두 개 이상의 최상위 패키지를 점유하지 않는다**.
 
-### 클래스 네이밍 요약
+**구성 요소별 컨벤션 문서**:
 
-| 구성 요소 | 패턴 | 예시 |
-|----------|------|------|
-| Adapter | `{Provider}{Function}Adapter` | `GiftCardPinValidateAdapter`, `BiscuitLinkPayoutAdapter` |
-| Mock Adapter | `Mock{Function}Adapter` | `MockBurnAdapter`, `MockPayoutAdapter` |
-| ApiClient | `{Provider}ApiClient` | `GiftCardApiClient`, `BiscuitLinkApiClient` |
-| TokenHolder | `{Provider}TokenHolder` | `GiftCardTokenHolder`, `BiscuitLinkTokenHolder` |
-| DTO 파일 | `{Provider}Dtos.kt` | `GiftCardDtos.kt`, `BiscuitLinkDtos.kt` |
-| ErrorCode | `{Provider}ErrorCode` | `GiftCardErrorCode`, `GiftCardAccountVerifyErrorCode` |
-| Exception (루트) | `{Provider}Exception` | `GiftCardException`, `BiscuitLinkException` |
-| Config | `{Provider}Config` | `GiftCardConfig`, `BiscuitLinkConfig` |
-| Properties | `{Provider}Properties` | `GiftCardProperties`, `BiscuitLinkProperties` |
+| 구성 요소 | 핵심 규칙 (한 줄 요약) | 컨벤션 문서 |
+|-----------|---------------------|-----------|
+| Adapter | Outbound Port만 구현하고, 외부 예외는 Port Result로 번역한다 | [adapter-convention.md](adapter-convention.md) |
+| ApiClient | HTTP 호출을 캡슐화하고 HTTP/네트워크 예외를 Provider 예외로 변환한다 | [api-client-convention.md](api-client-convention.md) |
+| Dto | `@JsonIgnoreProperties(ignoreUnknown = true)` + `@JsonProperty`로 외부 스키마를 고정한다 | [dto-convention.md](dto-convention.md) |
+| Exception | Provider별 `sealed class`로 API / Auth / Server / Network / Parsing 5종을 정의한다 | [exception-convention.md](exception-convention.md) |
+| ErrorCode | `{Provider}ErrorCode` enum으로 외부 에러코드를 정의하고 `toPortErrorCode()`로 번역한다 | [errorcode-convention.md](errorcode-convention.md) |
+| Config / Properties | HTTP 클라이언트는 Provider 전용 `@Qualifier` 빈으로, 설정값은 `@ConfigurationProperties`로 바인딩한다 | [config-convention.md](config-convention.md) |
+| Mock Adapter | `@Profile("local")`로 실 Adapter(`@Profile("!local")`)와 대칭 구성한다 | [mock-adapter-convention.md](mock-adapter-convention.md) |
 
-> 모든 클래스명에서 `Service` 접미사를 사용하지 않는다 (`GiftCardServiceApiClient` ❌ → `GiftCardApiClient` ✅).
+**ApiClient 구현 전략**: 사용 HTTP 클라이언트·로깅 방식은 프로젝트별로 다르다. 이 프로젝트의 선택 → [`strategies/`](strategies/README.md)
 
-### Profile 관리
+**Profile 관리**: 실 Adapter는 `@Profile("!local")`, Mock Adapter는 `@Profile("local")`로 선언해 동일 Port의 빈 충돌을 방지한다. 상세는 [mock-adapter-convention.md](mock-adapter-convention.md) "Profile 분기" 섹션 참고.
 
-- 외부 호출이 실 Provider에 의존하는 Adapter는 `@Profile("!local")`로 제한하고, 로컬 개발용 Mock Adapter는 `@Profile("local")`을 부여한다.
-- 실 Adapter와 Mock Adapter가 동일 Port를 구현하므로, 프로파일 분기로 빈 충돌을 방지한다.
+**테스트**: ApiClient 순수 로직(해시 계산, 직렬화 등)은 단위 테스트로 검증한다. Adapter는 ApiClient를 MockK로 대체한 BDD 테스트(`BehaviorSpec`)를 작성한다.
 
-> 상세는 [mock-adapter-convention.md](mock-adapter-convention.md) "Profile 분기" 섹션 참고
+### Post-Work Verification
 
-### 테스트
+구현 완료 후 생성·수정한 파일을 직접 읽어 아래 각 문서의 체크리스트를 대조한다.
 
-- ApiClient의 순수 로직(해시 계산, 직렬화 등)은 단위 테스트로 검증한다. 예: `PayletterExtensionTest`.
-- Adapter는 ApiClient를 MockK로 대체한 BDD 테스트(`BehaviorSpec`)를 작성한다.
-- Mock Adapter는 테스트 시나리오 분기 규칙(`pinNo.contains("INVALID")` 등)이 있으므로, 해당 분기가 유효한지 단위 테스트로 검증한다.
-
----
-
-## Post-Work Verification
-
-구현 완료 후 각 하위 문서의 "체크리스트" 섹션을 대조한다.
-
-- [adapter-convention.md](adapter-convention.md)
-- [api-client-convention.md](api-client-convention.md)
-- [dto-convention.md](dto-convention.md)
-- [exception-convention.md](exception-convention.md)
-- [errorcode-convention.md](errorcode-convention.md)
-- [config-convention.md](config-convention.md)
-- [mock-adapter-convention.md](mock-adapter-convention.md)
+이 프로젝트의 체크리스트 문서 목록 → [`strategies/`](strategies/README.md)

@@ -1,14 +1,12 @@
 # App Module — `common/` 패키지 상세
 
-## 원칙
-
-- `common/`은 도메인에 의존하지 않는다. common이 특정 도메인을 알면 도메인 패키지 간 경계가 무너진다.
-- 각 서브패키지는 단일 관심사를 갖는다. 예외 처리는 `advice/`, 응답 형식은 `response/`, 보안은 `security/` — 책임이 섞이지 않도록 유지한다.
-- 도메인 클래스를 import하는 순간 common은 common이 아니다. 도메인별 응답 타입, 비즈니스 로직은 common에 두지 않는다.
-
 ---
 
-`common/`은 app 모듈 내 표현 계층 전역 관심사를 담는다. 특정 도메인에 의존하지 않으며, 모든 `{domain}/` 패키지가 공유한다.
+## 핵심 규칙
+
+**`common/`은 도메인에 의존하지 않는 표현 계층 전역 관심사만 담으며, `config/`·`advice/`·`response/`·`security/`·`logging/`·`validator/` 서브패키지로 책임을 분리한다.**
+
+`common/`은 app 모듈 내 모든 `{domain}/` 패키지가 공유하는 횡단 관심사를 담는다. 특정 도메인에 의존하면 도메인 패키지 간 경계가 무너지므로, `common/`의 클래스는 도메인 클래스를 import하지 않는다.
 
 ---
 
@@ -126,3 +124,27 @@ common/validator/
 ```
 
 `validator/`의 Validator는 형식(포맷)만 검증한다. 데이터 존재 여부·중복 여부 등 DB 조회가 필요한 검증은 application 계층 `Validator` 컴포넌트 책임이다.
+
+---
+
+## 금지 사항
+
+- `common/`이 도메인 패키지의 클래스를 import하지 않는다.
+- 도메인별 응답 타입·비즈니스 로직을 `common/response/`에 두지 않는다.
+- `CoreErrorType → HttpStatus` 매핑을 `ErrorTypeExtension` 외부에서 수행하지 않는다.
+- 비즈니스 권한 검사를 `security/` 필터에 포함하지 않는다 — 도메인 로직을 직접 호출하지 않는다.
+- DB 조회가 필요한 도메인 규칙 검증을 `validator/`에 두지 않는다 — 형식(포맷) 검증만.
+- 민감 정보(비밀번호·토큰 원문)를 `logging/`에서 기록하지 않는다.
+- `@Service`·`@Repository`를 `config/`에 선언하지 않는다.
+
+---
+
+## 체크리스트
+
+- [ ] `common/`이 도메인 패키지 클래스를 import하지 않는가?
+- [ ] `advice/`에 `GlobalExceptionHandler`와 `ErrorTypeExtension`이 위치하는가?
+- [ ] `CoreErrorType → HttpStatus` 매핑이 `ErrorTypeExtension`에만 존재하는가?
+- [ ] `response/`에 도메인별 응답 타입이 포함되지 않는가?
+- [ ] `security/`에 비즈니스 권한 검사·도메인 로직 직접 호출이 없는가?
+- [ ] `validator/`가 형식 검증만 수행하고 DB 조회를 하지 않는가?
+- [ ] `logging/`이 민감 정보(비밀번호·토큰)를 원문으로 기록하지 않는가?

@@ -1,12 +1,5 @@
 # Storage Adapter 컨벤션
 
-## 원칙
-
-- Adapter는 Port의 계약을 구현한다. 저장소 구현 세부사항(JPA, QueryDsl)은 application 계층이 알 필요 없다.
-- JPA Entity는 인프라 경계 안에 머문다. Entity를 밖으로 내보내면 도메인 모델과 인프라 모델이 결합된다.
-- 역할이 다른 Repository는 분리한다. JpaRepository는 단순 접근, QueryDslRepository는 복잡한 쿼리 — 두 책임을 한 클래스에 두면 경계가 흐려진다.
-- 변환 로직은 Entity나 도메인 클래스 내부에 두지 않는다. `{Entity}Extension.kt`가 유일한 변환 지점이다.
-
 ---
 
 ## 핵심 규칙

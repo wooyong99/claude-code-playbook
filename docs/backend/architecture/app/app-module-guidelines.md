@@ -1,98 +1,68 @@
-# App Module Guidelines
+# App Layer Guidelines
 
-## 원칙
+## App 계층의 본질적 책임
 
-- App 모듈의 책임은 HTTP 관심사 격리다. 비즈니스 규칙이 이 계층에 들어오는 순간 레이어 경계가 무너진다.
-- 예외 처리는 중앙 집중화한다. 여러 Controller에 분산된 예외 처리는 일관성을 깨고 유지보수 비용을 높인다.
-- 도메인 모델은 이 계층 밖으로 나오지 않는다. Controller는 Command/Result와 소통하고, 도메인 객체를 직접 다루지 않는다.
+채널별로 독립된 app 모듈(`:app:{channel}`)은 HTTP 요청을 수신하여 application 계층에 위임하고, 그 결과를 HTTP 응답으로 변환하는 경계 역할을 담당한다.
 
----
-
-채널별로 독립된 app 모듈(`:app:{channel}`)에 공통으로 적용되는 규칙을 정의하는 **인덱스 문서**. 각 구성 요소의 상세 규칙·예시·판단 기준은 하위 컨벤션 문서를 따른다.
-
----
-
-## Purpose
-
-- REST API 진입점 (Controller, Request/Response DTO)
-- HTTP / Spring 관심사를 application 계층으로 누출시키지 않는 경계 역할
-- 도메인 예외 → HTTP 응답 변환의 단일 책임 지점 (`GlobalExceptionHandler`)
-
----
-
-## 레이어 개요
+1. **HTTP 진입점 제공**: Controller가 Request DTO를 수신하고 UseCase를 통해 application 계층에 위임한다.
+2. **HTTP 관심사 격리**: Spring·Jakarta 의존 코드(어노테이션, HTTP 상태 코드, 예외)를 app 계층 내에 가두고 application·domain 계층으로 누출시키지 않는다.
+3. **예외 응답 단일화**: 모든 예외를 `GlobalExceptionHandler` 한 곳에서 HTTP 응답으로 변환한다.
 
 ```
 클라이언트
   ↓ HTTP
 app — Controller → Request DTO → Extension → Command
-        ↓ (UseCase 호출)
+        ↓ UseCase 호출
   application
-        ↓ (Result)
-      Controller → (Extension) → BaseResponse 래핑
+        ↓ Result
+      Controller → Extension → BaseResponse 래핑
   ↓ HTTP
 클라이언트
 
 (예외) → GlobalExceptionHandler → BaseResponse.error 래핑 → HTTP 응답
 ```
 
-- **Controller**: Request 수신 → UseCase 위임 → 응답 반환 (비즈니스 로직 금지)
-- **Request / Response DTO**: HTTP 요청·응답 스키마 (Spring 검증 어노테이션만)
-- **Extension**: Request → Command, Result → Response 변환 (`{Domain}DtoExtension.kt`)
-- **GlobalExceptionHandler**: 모든 예외의 단일 처리 지점
-- **BaseErrorCode / BaseError / BaseResponse**: HTTP 응답 표준 포맷
-- **ErrorTypeExtension**: `CoreErrorType → HttpStatus` 매핑
+---
+
+## 반드시 지켜야 할 규칙
+
+- **R1. HTTP 관심사 격리** — Controller·DTO·Extension은 HTTP 계층의 관심사만 처리한다. 비즈니스 로직은 application 계층에 위임한다.
+- **R2. 예외 처리 중앙 집중화** — 모든 예외는 `GlobalExceptionHandler`에서 일괄 처리한다. Controller에 개별 `try-catch`를 두지 않는다.
+- **R3. 도메인 모델 계층 경계** — Controller는 application 계층의 Command/Result와 소통하고, domain 모듈의 엔티티·값 객체를 직접 다루지 않는다.
+- **R4. 변환 책임 분리** — Request DTO → Command, Result → Response 변환은 `{Domain}DtoExtension.kt`가 담당한다. DTO 자신이 변환 로직을 보유하지 않는다.
 
 ---
 
-## 구성 요소별 상세 문서
+## 금지 규칙 / 안티패턴
 
-- **Controller / Request / Response / Extension**: Controller는 UseCase 위임만. DTO는 검증 어노테이션만. 변환은 Extension. `BaseResponse<T>` 응답 → [api-convention.md](api-convention.md)
-- **REST API 설계** (URL / Plural / ID 위치 / Pagination): 복수형 + kebab-case + `/api/v{N}/`. 식별자는 Path, 필터·정렬·페이지네이션은 Query. 커서 기반 우선, 필요 시 오프셋 → [rest-design-convention.md](rest-design-convention.md)
-- **Exception Handling**: 모든 예외는 `GlobalExceptionHandler`에서 일괄 처리. `CoreErrorType → HttpStatus` 매핑은 `ErrorTypeExtension` 단독 책임 → [exception-handling-convention.md](exception-handling-convention.md)
-
----
-
-## File Structure
-
-app 모듈의 최상위 디렉토리는 `common/`과 `{domain}/`으로 구성한다.
-
-```
-:app:{module}/
-├── common/
-│   ├── config/      ← WebMvc, Jackson, CORS, Interceptor 등
-│   ├── advice/      ← @RestControllerAdvice, GlobalExceptionHandler
-│   ├── response/    ← BaseResponse<T>, ErrorResponse, PageResponse<T>
-│   ├── security/    ← SecurityFilterChain, 인증 필터, 인가 규칙
-│   ├── logging/     ← 요청·응답 로그 필터, MDC 설정, 마스킹
-│   └── validator/   ← 커스텀 Bean Validation, 공통 포맷 Validator
-└── {domain}/
-    ├── {Entity}Controller.kt        ← Controller (flat 배치)
-    ├── {Domain}DtoExtension.kt      ← 매핑 Extension (dto/ 밖)
-    └── dto/
-        ├── {Domain}Requests.kt      ← Request DTO 모음
-        └── {Domain}Responses.kt     ← Response DTO 모음 (필요 시만)
-```
-
-상세 규칙 → [file-structure.md](file-structure.md) · [common/ 패키지 상세](file-structure/common.md)
+- **Controller 내 비즈니스 로직** — UseCase 위임 없이 Controller에서 도메인 규칙을 검증·계산하면 app 계층과 application 계층의 경계가 무너진다.
+- **Command 직접 바인딩** — application 계층 Command를 `@RequestBody`로 직접 수신하면 HTTP 계층과 application 계층의 계약이 결합된다.
+- **분산 예외 처리** — Controller나 개별 Bean에 `@ExceptionHandler`·`try-catch`를 분산 배치하면 처리 일관성이 깨지고 핸들러 누락이 발생한다.
+- **domain 모듈의 Spring 의존** — `HttpStatus`·Spring 어노테이션을 domain 모듈에서 참조하면 계층 독립성이 무너진다.
+- **DTO 내 변환 로직** — `toCommand()` 등의 변환 메서드를 DTO 내부에 두면 HTTP 계층 교체 시 DTO를 함께 수정해야 한다.
 
 ---
 
-## Testing
+## 선택 가능한 내부 구현 전략
 
-- Controller 테스트는 `@WebMvcTest` + MockMvc로 요청/응답 형태와 검증 어노테이션을 테스트한다.
-- Request DTO의 Spring 검증 어노테이션이 올바르게 동작하는지 테스트한다.
-- UseCase는 mock으로 격리하고, Controller는 요청 파싱과 응답 포맷에만 집중한다.
-- `GlobalExceptionHandler` 핸들러별로 응답 포맷과 HTTP 상태 코드를 테스트한다.
+App 계층의 인증 방식·컨텍스트 전파·멀티테넌시 처리는 프로젝트 요구사항에 따라 달라진다. 어떤 전략을 선택하든 R1–R4는 반드시 지킨다.
+
+역할 정의, 전략 선택 기준, 이 프로젝트의 선택 → [`strategies/`](strategies/README.md)
 
 ---
 
-## Post-Work Verification
+## 이 프로젝트의 로컬 컨벤션
 
-**가이드라인 문서를 참고했더라도 실제 생성된 코드에 반영되지 않은 부분이 있을 수 있다.** 구현 완료 후, 생성하거나 수정한 파일을 직접 읽어서 아래 각 하위 문서의 체크리스트를 하나씩 대조한다. 위반이 발견되면 즉시 수정하고 다시 검증한다.
+이 프로젝트의 구현 전략과 역할별 컴포넌트 매핑은 [`strategies/`](strategies/README.md)에서 확인한다.
 
-각 문서 하단의 "체크리스트" 섹션을 참고한다.
+### 공통 규칙
 
-- [api-convention.md](api-convention.md)
-- [rest-design-convention.md](rest-design-convention.md)
-- [exception-handling-convention.md](exception-handling-convention.md)
+**테스트**: Controller 테스트는 `@WebMvcTest` + MockMvc로 요청·응답 형태와 검증 어노테이션을 검증한다. UseCase는 mock으로 격리하고, `GlobalExceptionHandler` 핸들러별 응답 포맷·HTTP 상태 코드를 테스트한다.
+
+**파일 구조**: app 모듈은 `common/`(표현 계층 전역 관심사)과 `{domain}/`(도메인별 표현 객체) 두 최상위 디렉토리로 구성한다. → [file-structure.md](file-structure.md) · [file-structure/common.md](file-structure/common.md)
+
+### Post-Work Verification
+
+구현 완료 후 생성·수정한 파일을 직접 읽어 아래 각 문서의 체크리스트를 대조한다.
+
+이 프로젝트의 체크리스트 문서 목록 → [`strategies/`](strategies/README.md)
