@@ -9,22 +9,38 @@
 
 ```
 docs/
+├── PRD.md                # 제품 요구사항 문서
 ├── backend/              # Kotlin + Spring Boot 서버 문서
 │   ├── README.md         # 백엔드 문서 인덱스
 │   ├── getting-started.md
-│   ├── architecture/     # 레이어별 가이드라인
+│   ├── architecture/
+│   │   ├── documentation-convention.md   # 문서 작성 컨벤션
 │   │   ├── app/          # Controller, API 규약, 예외 처리
+│   │   │   ├── app-module-guidelines.md
+│   │   │   └── strategies/  # 세부 전략 문서
 │   │   ├── application/  # UseCase, Validator, Handler, Flow, Policy, Mapper, EventHandler
+│   │   │   ├── application-module-guidelines.md
+│   │   │   └── strategies/
 │   │   ├── domain/       # 도메인 모델, 예외
+│   │   │   ├── domain-module-guidelines.md
+│   │   │   └── strategies/
 │   │   ├── storage/      # JPA 어댑터, QueryDSL, DDL 관리
+│   │   │   ├── storage-module-guidelines.md
+│   │   │   ├── ddl-management.md
+│   │   │   └── strategies/
 │   │   └── external/     # 외부 API 어댑터, 클라이언트, DTO
+│   │       ├── external-module-guidelines.md
+│   │       └── strategies/
 │   ├── policies/         # 크로스커팅 정책 (도메인·아키텍처 무관, 전역 기술 정책)
 │   │   ├── security.md
-│   │   └── logging.md
+│   │   ├── logging.md
+│   │   ├── transaction-and-consistency.md
+│   │   └── concurrency-and-performance.md
 │   └── design/           # 기능·서브시스템 기술 설계 문서 (TDD)
 │
 └── frontend/             # React 프론트엔드 문서
     ├── README.md         # 프론트엔드 문서 인덱스
+    ├── getting-started.md
     ├── architecture/     # FSD 아키텍처, 폴더 구조, 상태 관리
     ├── conventions/      # 코드, 네이밍, 컴포넌트, API
     ├── performance/      # 렌더링, 캐싱, 리스트 최적화

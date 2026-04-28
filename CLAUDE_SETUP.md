@@ -11,11 +11,16 @@
 .claude/
 ├── CLAUDE.md                   # 프로젝트 컨텍스트 (에이전트가 항상 로드)
 ├── agents/
-│   ├── code-writer.md          # 코드 작성 서브에이전트
+│   ├── design-writer.md         # 기술설계문서(TDD) 작성 서브에이전트
+│   ├── code-writer.md           # 코드 작성 서브에이전트
 │   └── architecture-reviewer.md # 아키텍처 검토 서브에이전트
 ├── skills/
 │   └── implement/
-│       └── SKILL.md            # implement 스킬 (코드 작성·검토 오케스트레이션)
+│       ├── SKILL.md             # implement 스킬 (D→A→B 오케스트레이션)
+│       └── references/          # 에이전트별 입출력 계약 문서
+│           ├── design-writer-contract.md
+│           ├── code-writer-contract.md
+│           └── architecture-reviewer-contract.md
 ├── settings.json               # 팀 공유 설정 (훅, 권한 등, 커밋 대상)
 └── settings.local.json         # 로컬 전용 설정 (커밋 제외)
 ```
@@ -54,9 +59,19 @@
 
 ### 현재 정의된 에이전트
 
+#### `design-writer.md`
+
+- **역할**: 마일스톤별 기술설계문서(TDD) 작성. 코드 작성 전에 호출되어 설계 방향을 확정한다.
+- **도구**: 전체 사용 (Read, Write, Skill 등). 단, 코드 파일 수정은 금지.
+- **제약**:
+  - **코드 작성 금지** — 설계 문서만 작성
+  - **사용자와 직접 대화 금지** — 모든 소통은 오케스트레이터를 통해
+  - TDD 필요 여부를 판단해 불필요하면 `TDD_SKIPPED`로 스킵
+- **반환 포맷**: `TDD_CREATED: <경로>` / `TDD_SKIPPED: <이유>` / `CONTEXT_CHECKPOINT: ...`
+
 #### `code-writer.md`
 
-- **역할**: Kotlin 코드 작성·수정·테스트. 요구사항을 받아 파일을 편집하고 빌드를 통과시킨다.
+- **역할**: Kotlin 코드 작성·수정·테스트. 요구사항과 TDD를 받아 파일을 편집하고 빌드를 통과시킨다.
 - **도구**: 전체 사용 (Read, Write, Edit, Bash 등)
 - **제약**:
   - **자기검증 금지** — 자기 코드의 아키텍처 준수 여부는 판단하지 않는다 (편향 방지)
@@ -102,8 +117,9 @@ tools:                  # 생략 시 전체 도구 사용
 
 #### `implement/SKILL.md`
 
-요구사항을 받아 `code-writer` ↔ `architecture-reviewer` 루프를 돌리는 오케스트레이션 스킬.
+요구사항을 받아 `design-writer`(D) → `code-writer`(A) → `architecture-reviewer`(B) 루프를 돌리는 오케스트레이션 스킬.
 "구현해줘", "추가해줘", "리팩토링" 등 코드 작업 요청 시 자동 트리거.
+`references/` 디렉토리에 각 에이전트의 입출력 계약 문서가 있으며, 오케스트레이터가 에이전트 프롬프트를 구성할 때 사용한다.
 세부 흐름은 [WORKFLOW.md](WORKFLOW.md) 참조.
 
 ### 스킬 정의 형식

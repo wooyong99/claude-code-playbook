@@ -1,7 +1,7 @@
 # WORKFLOW — `implement` 스킬 운용 흐름
 
 `implement` 스킬은 이 리포지토리의 **주력 코드 작업 스킬**이다.
-요구사항 한 줄을 받아서, 마일스톤 단위 분할 → 구현 → 아키텍처 검토 → 자동 수정 루프를 돌려 PASS까지 수렴시킨다.
+요구사항 한 줄을 받아서, 마일스톤 단위 분할 → 설계 → 구현 → 아키텍처 검토 → 자동 수정 루프를 돌려 PASS까지 수렴시킨다.
 
 ---
 
@@ -16,6 +16,8 @@
    ↓
 각 마일스톤 M마다:
    ┌──────────────────────────────────────────────┐
+   │ [메인] Agent D 위임 (TDD 작성)                │
+   │    ↓ TDD_CREATED / TDD_SKIPPED               │
    │ [메인] Agent A 위임 (구현)                    │
    │    ↓                                         │
    │ [메인] Agent B 위임 (검토)                    │
@@ -40,17 +42,18 @@
 
 | 역할 | 주체 | 책임 |
 |------|------|------|
-| **오케스트레이터** | 메인 Claude | 요구 분석, 마일스톤 분할, A·B 위임, 종료 판단, 사용자 보고 |
+| **오케스트레이터** | 메인 Claude | 요구 분석, 마일스톤 분할, D·A·B 위임, 종료 판단, 사용자 보고 |
+| **Agent D** | `design-writer` 서브에이전트 | 마일스톤별 기술설계문서(TDD) 작성. 코드 수정 금지. |
 | **Agent A** | `code-writer` 서브에이전트 | Kotlin 코드 작성·수정·테스트·빌드 |
 | **Agent B** | `architecture-reviewer` 서브에이전트 | 문서 기반 규칙 준수 검토. Read 전용. |
 
 ### 절대 지켜야 할 제약 (스킬에 명시)
 
-1. **메인 Claude는 파일을 직접 편집하지 않는다.** 모든 코드 작업은 A에게 위임.
+1. **메인 Claude는 파일을 직접 편집하지 않는다.** 코드 작업은 A에게, 설계 문서는 D에게 위임.
 2. **메인 Claude는 검토를 직접 하지 않는다.** 검토는 전부 B에게 위임.
-3. **A와 B는 서로 호출하지 않는다.** 모든 통신은 메인을 경유.
+3. **D·A·B는 서로 호출하지 않는다.** 모든 통신은 메인을 경유.
 4. **B 호출은 매번 새 인스턴스**로 수행 (fresh context).
-5. **A 호출도 매번 새 인스턴스**로 수행 (fresh context). A에게 전달하는 프롬프트에 필요한 모든 맥락을 담는다.
+5. **D 호출도 매번 새 인스턴스**로 수행. **A는 마일스톤 첫 호출만 새 인스턴스**, 같은 마일스톤 내 수정 재호출은 동일 인스턴스를 이어 사용한다.
 
 ---
 
@@ -97,14 +100,20 @@
 
 각 마일스톤에 대해 아래 루프를 돈다.
 
-### Step 1. 코드 작성 위임 (Agent A)
+### Step 1. 기술설계 위임 (Agent D)
+
+메인이 `Agent` 도구로 `design-writer` 호출. D가 TDD 필요 여부를 판단해:
+
+- **TDD 필요** → `docs/backend/design/tdd-{slug}.md`에 문서 작성 후 `TDD_CREATED: <경로>` 반환
+- **TDD 불필요** (단순 CRUD 등) → `TDD_SKIPPED: <이유>` 반환
+
+### Step 2. 코드 작성 위임 (Agent A)
 
 메인이 `Agent` 도구로 `code-writer` 호출. 프롬프트에는 다음이 포함:
 
-- 마일스톤 제목
-- 구체적 요구사항·범위
-- 프로젝트 컨텍스트 (레이어, 관련 도메인)
-- 반환 포맷 지정 (`code-writer` 정의의 Type 1)
+- 마일스톤 제목, 구체적 요구사항·범위, 관련 레이어·도메인
+- D가 작성한 TDD 경로 (TDD_CREATED인 경우)
+- 반환 포맷 지정
 
 A의 반환:
 
@@ -117,7 +126,7 @@ A의 반환:
 ### 불확실한 부분
 ```
 
-### Step 2. 아키텍처 검토 위임 (Agent B)
+### Step 3. 아키텍처 검토 위임 (Agent B)
 
 메인이 `Agent` 도구로 `architecture-reviewer` 호출. 프롬프트에는:
 
@@ -144,21 +153,21 @@ PASS
   reason: ...
 ```
 
-### Step 3. 분기
+### Step 4. 분기
 
 - `PASS` → 마일스톤 완료 → 다음 마일스톤
-- 위반 존재 → Step 4로
+- 위반 존재 → Step 5로
 
-### Step 4. 위반 수정 위임 (Agent A, Type 2)
+### Step 5. 위반 수정 위임 (Agent A 재호출)
 
-메인이 다시 `code-writer` 호출. B가 반환한 YAML을 **그대로** 프롬프트에 포함하고, A에게 다음을 지시:
+메인이 같은 마일스톤의 A 인스턴스를 이어서 사용. B가 반환한 YAML을 프롬프트에 포함하고 지시:
 
 - 각 위반의 `old_string → new_string`을 **정확히** Edit으로 적용
 - 임의 해석·확장 금지
 - old_string이 매칭되지 않으면 **실패로 보고** (추측 금지)
 - 모든 수정 후 컴파일 확인
 
-A의 반환은 `code-writer` 정의의 **Type 2** 포맷:
+A의 반환:
 
 ```
 ## 수정 적용 결과
@@ -167,13 +176,13 @@ A의 반환은 `code-writer` 정의의 **Type 2** 포맷:
 ### 빌드 결과
 ```
 
-### Step 5. 재검토 (Agent B)
+### Step 6. 재검토 (Agent B)
 
-Step 2를 반복. 결과에 따라:
+Step 3을 반복. 결과에 따라:
 - `PASS` → 다음 마일스톤
-- 위반 여전 → Step 4로 돌아가 반복
+- 위반 여전 → Step 5로 돌아가 반복
 
-### Step 6. Escalation (5회 초과 시)
+### Step 7. Escalation (5회 초과 시)
 
 `iter > 5`면 메인이 사용자에게 선택지 제시:
 
@@ -205,13 +214,18 @@ Step 2를 반복. 결과에 따라:
 변경 파일 총 12개
 
 다음 단계 제안:
-  1. smart-commit 스킬로 마일스톤 단위 커밋 그룹핑
-  2. 또는 바로 커밋 작성
+  1. 마일스톤 단위 커밋 작성
+  2. 또는 전체를 하나의 커밋으로
 ```
 
 ---
 
 ## 왜 이 흐름이 작동하는가
+
+### 설계 먼저, 구현 나중
+
+D가 TDD를 먼저 작성하면 A는 "무엇을 어떻게 짤지"를 미리 확정한 상태에서 코드를 쓴다.
+잘못된 방향으로 구현하다 뒤늦게 재작업하는 비용이 줄어든다.
 
 ### 자동 수렴
 
@@ -234,23 +248,29 @@ Step 2를 반복. 결과에 따라:
 
 ### 루프 횟수를 바꾸고 싶다
 
-`.claude/skills/implement/SKILL.md`의 Step 2-4의 `iter > 5` 기준을 수정.
+`.claude/skills/implement/SKILL.md`의 Step 2-5의 `iter > 5` 기준을 수정.
 
 ### 검토 기준에 다른 문서를 추가하고 싶다
 
 `.claude/agents/architecture-reviewer.md`의 **Source of Truth** 섹션에 문서 추가.
 
+### TDD 작성 조건을 바꾸고 싶다
+
+`.claude/agents/design-writer.md`의 "TDD 필요 여부 판단" 섹션에서 필요/불필요 기준을 수정.
+
 ### 새 에이전트를 루프에 끼우고 싶다 (예: 보안 전문 검토자)
 
 1. `.claude/agents/security-reviewer.md` 신규 작성 (Read 전용)
-2. `.claude/skills/implement/SKILL.md`의 Phase 2에 Step 추가 (A → 아키텍처 검토 → 보안 검토 → ...)
+2. `.claude/skills/implement/references/security-reviewer-contract.md` 계약 문서 작성
+3. `.claude/skills/implement/SKILL.md`의 Phase 2에 Step 추가 (B 이후 보안 검토 → ...)
 
 ---
 
 ## 참고
 
-- [CLAUDE_SETUP.md](CLAUDE_SETUP.md) — 에이전트·커맨드 정의 파일 상세
+- [CLAUDE_SETUP.md](CLAUDE_SETUP.md) — 에이전트·스킬 정의 파일 상세
 - [PHILOSOPHY.md](PHILOSOPHY.md) — 이 루프를 만든 설계 사상
 - `.claude/skills/implement/SKILL.md` — 실제 스킬 정의 (진실의 원본)
+- `.claude/agents/design-writer.md` — Agent D 정의
 - `.claude/agents/code-writer.md` — Agent A 정의
 - `.claude/agents/architecture-reviewer.md` — Agent B 정의
