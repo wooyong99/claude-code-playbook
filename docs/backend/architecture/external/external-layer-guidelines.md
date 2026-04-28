@@ -1,4 +1,4 @@
-# External Module Guidelines
+# External Layer Guidelines
 
 ## External 계층의 본질적 책임
 

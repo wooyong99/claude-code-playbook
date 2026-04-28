@@ -1,6 +1,6 @@
 # Application 계층 구현 전략
 
-[Application Layer Guidelines](../application-module-guidelines.md)의 보편 원칙(R1–R4) 위에서, 이 프로젝트가 선택한 Application 계층 내부 구현 전략을 정의한다.
+[Application Layer Guidelines](../application-layer-guidelines.md)의 보편 원칙(R1–R4) 위에서, 이 프로젝트가 선택한 Application 계층 내부 구현 전략을 정의한다.
 
 새 프로젝트에 이 플레이북을 적용할 때는 **"이 프로젝트의 전략"** 섹션을 교체하고, 각 역할에 맞는 컨벤션 문서를 작성한다.
 

@@ -12,7 +12,7 @@
 ```markdown
 # {Layer} 계층 구현 전략
 
-[{layer}-module-guidelines.md](../{layer}-module-guidelines.md)의 보편 원칙(R1–RN) 위에서,
+[{layer}-layer-guidelines.md](../{layer}-layer-guidelines.md)의 보편 원칙(R1–RN) 위에서,
 이 프로젝트가 선택한 {Layer} 계층 구현 전략을 정의한다.
 
 ---

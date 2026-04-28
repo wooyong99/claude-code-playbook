@@ -58,10 +58,10 @@ PASS
 
 - `file`: 절대 경로 (상대 경로 금지)
 - `rule`: 형식 `<문서명>:<항목>`
-  - 예: `app-module-guidelines.md:Controller 체크리스트 "@Valid가 Request DTO에 적용됐는가"`
+  - 예: `app-layer-guidelines.md:Controller 체크리스트 "@Valid가 Request DTO에 적용됐는가"`
   - 예: `logging.md:LogExtension 확장 함수 사용 규정`
 - `line_range`: 시작-끝 라인 (예: `45-52`)
-- `reason`: 1줄 근거 + 참조 문서 경로 (예: `reason: Request DTO에 toCommand() 로직 포함. app-module-guidelines.md Coding Rules 2번.`)
+- `reason`: 1줄 근거 + 참조 문서 경로 (예: `reason: Request DTO에 toCommand() 로직 포함. app-layer-guidelines.md Coding Rules 2번.`)
 
 ### Case C: 컨텍스트 체크포인트
 
@@ -94,9 +94,9 @@ PASS
 
 ```yaml
 - file: /path/to/backend/app/backoffice/src/main/kotlin/com/example/backoffice/product/ProductController.kt
-  rule: app-module-guidelines.md:Controller 체크리스트 "@Valid가 Request DTO에 적용됐는가"
+  rule: app-layer-guidelines.md:Controller 체크리스트 "@Valid가 Request DTO에 적용됐는가"
   line_range: 52-56
-  reason: Request DTO에 @Valid 누락. docs/backend/architecture/app/app-module-guidelines.md Post-Work Verification - Controller 섹션.
+  reason: Request DTO에 @Valid 누락. docs/backend/architecture/app/app-layer-guidelines.md Post-Work Verification - Controller 섹션.
 
 - file: /path/to/backend/core/application/src/main/kotlin/com/example/application/product/CreateProductUseCase.kt
   rule: logging.md:LogExtension 확장 함수 사용 규정

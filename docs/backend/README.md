@@ -9,7 +9,7 @@
 ```
 docs/backend/
 ├── getting-started.md # 오리엔테이션 (기술 스택, 로컬 실행)
-├── architecture/      # 레이어별 모듈 가이드라인 및 컨벤션
+├── architecture/      # 레이어별 가이드라인 및 컨벤션
 ├── policies/          # 레이어를 관통하는 규칙·전략 (멀티테넌트, 보안, 로깅, DDL)
 └── design/            # 기술 설계 문서 (TDD)
 ```
@@ -39,11 +39,11 @@ Clean Architecture + DDD 기반 멀티모듈. 의존 방향: `app → applicatio
 
 | 레이어 | 가이드라인 |
 |--------|-----------|
-| `:app:*` | [app-module-guidelines](architecture/app/app-module-guidelines.md) |
-| `:core:application` | [application-module-guidelines](architecture/application/application-module-guidelines.md) |
-| `:core:domain` | [domain-module-guidelines](architecture/domain/domain-module-guidelines.md) |
-| `:infra:storage` | [storage-module-guidelines](architecture/storage/storage-module-guidelines.md) |
-| `:infra:external` | [external-module-guidelines](architecture/external/external-module-guidelines.md) |
+| 표현 계층 (Controller, DTO, 예외 처리) | [app-layer-guidelines](architecture/app/app-layer-guidelines.md) |
+| 응용 계층 (UseCase, Flow, Validator) | [application-layer-guidelines](architecture/application/application-layer-guidelines.md) |
+| 도메인 계층 (Entity, Value Object, 도메인 규칙) | [domain-layer-guidelines](architecture/domain/domain-layer-guidelines.md) |
+| 저장소 계층 (DB 어댑터, Repository) | [storage-layer-guidelines](architecture/storage/storage-layer-guidelines.md) |
+| 외부 연동 계층 (외부 API 어댑터, ApiClient) | [external-layer-guidelines](architecture/external/external-layer-guidelines.md) |
 
 ---
 

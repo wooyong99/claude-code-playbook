@@ -151,7 +151,7 @@ Controller → UseCase → Service → Port → Adapter → Repository
 이 단계가 TDD의 핵심이다. 각 계층이 어떤 책임을 가지며, 왜 그렇게 나눴는지를 문서화한다.
 
 > 참조 문서
-> - 계층별 책임: [domain-module-guidelines](../../../docs/backend/architecture/domain/domain-module-guidelines.md) · [application-module-guidelines](../../../docs/backend/architecture/application/application-module-guidelines.md) · [storage-module-guidelines](../../../docs/backend/architecture/storage/storage-module-guidelines.md) · [external-module-guidelines](../../../docs/backend/architecture/external/external-module-guidelines.md) · [app-module-guidelines](../../../docs/backend/architecture/app/app-module-guidelines.md)
+> - 계층별 책임: [domain-layer-guidelines](../../../docs/backend/architecture/domain/domain-layer-guidelines.md) · [application-layer-guidelines](../../../docs/backend/architecture/application/application-layer-guidelines.md) · [storage-layer-guidelines](../../../docs/backend/architecture/storage/storage-layer-guidelines.md) · [external-layer-guidelines](../../../docs/backend/architecture/external/external-layer-guidelines.md) · [app-layer-guidelines](../../../docs/backend/architecture/app/app-layer-guidelines.md)
 > - Command/Query 분리: [use-case-convention](../../../docs/backend/architecture/application/use-case-convention.md) · [flow-convention](../../../docs/backend/architecture/application/flow-convention.md)
 > - 설계 대안 분석 형식: [design/README.md](../../../docs/backend/design/README.md)
 
@@ -194,7 +194,7 @@ Controller → UseCase → Service → Port → Adapter → Repository
 
 > 참조 문서
 > - 도메인 모델 규칙 (Entity/VO/팩토리/불변식/Tell Don't Ask): [domain-model-convention](../../../docs/backend/architecture/domain/domain-model-convention.md)
-> - 모듈 구성·애그리거트 경계·ID 참조 패턴: [domain-module-guidelines](../../../docs/backend/architecture/domain/domain-module-guidelines.md)
+> - 레이어 구성·애그리거트 경계·ID 참조 패턴: [domain-layer-guidelines](../../../docs/backend/architecture/domain/domain-layer-guidelines.md)
 > - DDL-First 원칙·파일 위치·버전 관리: [ddl-management](../../../docs/backend/architecture/storage/ddl-management.md)
 
 ### 산출물 형식

@@ -144,7 +144,7 @@ PASS
 **위반 존재**
 ```yaml
 - file: /abs/path/File.kt
-  rule: app-module-guidelines.md:Controller 체크리스트 "@Valid 적용"
+  rule: app-layer-guidelines.md:Controller 체크리스트 "@Valid 적용"
   line_range: 52-56
   old_string: |
     ...

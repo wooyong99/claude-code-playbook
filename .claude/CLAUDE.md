@@ -30,11 +30,11 @@
 
 | 레이어 | 가이드라인 |
 |--------|-----------|
-| `:app:*` | [app-module-guidelines](../docs/backend/architecture/app/app-module-guidelines.md) |
-| `:core:application` | [application-module-guidelines](../docs/backend/architecture/application/application-module-guidelines.md) |
-| `:core:domain` | [domain-module-guidelines](../docs/backend/architecture/domain/domain-module-guidelines.md) |
-| `:infra:storage` | [storage-module-guidelines](../docs/backend/architecture/storage/storage-module-guidelines.md) |
-| `:infra:external` | [external-module-guidelines](../docs/backend/architecture/external/external-module-guidelines.md) |
+| 표현 계층 (Controller, DTO, 예외 처리) | [app-layer-guidelines](../docs/backend/architecture/app/app-layer-guidelines.md) |
+| 응용 계층 (UseCase, Flow, Validator) | [application-layer-guidelines](../docs/backend/architecture/application/application-layer-guidelines.md) |
+| 도메인 계층 (Entity, Value Object, 도메인 규칙) | [domain-layer-guidelines](../docs/backend/architecture/domain/domain-layer-guidelines.md) |
+| 저장소 계층 (DB 어댑터, Repository) | [storage-layer-guidelines](../docs/backend/architecture/storage/storage-layer-guidelines.md) |
+| 외부 연동 계층 (외부 API 어댑터, ApiClient) | [external-layer-guidelines](../docs/backend/architecture/external/external-layer-guidelines.md) |
 
 **크로스커팅 정책** ([`docs/backend/policies/`](../docs/backend/policies/))
 - [security](../docs/backend/policies/security.md) · [logging](../docs/backend/policies/logging.md) · [transaction-and-consistency](../docs/backend/policies/transaction-and-consistency.md) · [concurrency-and-performance](../docs/backend/policies/concurrency-and-performance.md)

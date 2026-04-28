@@ -1,6 +1,6 @@
 # Domain 계층 구현 전략
 
-[domain-module-guidelines.md](../domain-module-guidelines.md)의 보편 원칙(R1–R4) 위에서,
+[domain-layer-guidelines.md](../domain-layer-guidelines.md)의 보편 원칙(R1–R4) 위에서,
 이 프로젝트가 선택한 Domain 계층 내부 구현 전략을 정의한다.
 
 ---

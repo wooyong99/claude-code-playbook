@@ -16,20 +16,20 @@ docs/
 │   ├── architecture/
 │   │   ├── documentation-convention.md   # 문서 작성 컨벤션
 │   │   ├── app/          # Controller, API 규약, 예외 처리
-│   │   │   ├── app-module-guidelines.md
+│   │   │   ├── app-layer-guidelines.md
 │   │   │   └── strategies/  # 세부 전략 문서
 │   │   ├── application/  # UseCase, Validator, Handler, Flow, Policy, Mapper, EventHandler
-│   │   │   ├── application-module-guidelines.md
+│   │   │   ├── application-layer-guidelines.md
 │   │   │   └── strategies/
 │   │   ├── domain/       # 도메인 모델, 예외
-│   │   │   ├── domain-module-guidelines.md
+│   │   │   ├── domain-layer-guidelines.md
 │   │   │   └── strategies/
 │   │   ├── storage/      # JPA 어댑터, QueryDSL, DDL 관리
-│   │   │   ├── storage-module-guidelines.md
+│   │   │   ├── storage-layer-guidelines.md
 │   │   │   ├── ddl-management.md
 │   │   │   └── strategies/
 │   │   └── external/     # 외부 API 어댑터, 클라이언트, DTO
-│   │       ├── external-module-guidelines.md
+│   │       ├── external-layer-guidelines.md
 │   │       └── strategies/
 │   ├── policies/         # 크로스커팅 정책 (도메인·아키텍처 무관, 전역 기술 정책)
 │   │   ├── security.md
@@ -67,11 +67,11 @@ docs/
 
 | 작업 | 출발점 |
 |------|-------|
-| Controller·Request/Response DTO 작성 | [app/app-module-guidelines.md](docs/backend/architecture/app/app-module-guidelines.md) |
-| UseCase·Validator·Handler 작성 | [application/application-module-guidelines.md](docs/backend/architecture/application/application-module-guidelines.md) |
-| 도메인 모델·예외 작성 | [domain/domain-module-guidelines.md](docs/backend/architecture/domain/domain-module-guidelines.md) |
-| JPA 어댑터·QueryDSL | [storage/storage-module-guidelines.md](docs/backend/architecture/storage/storage-module-guidelines.md) |
-| 외부 API 연동 | [external/external-module-guidelines.md](docs/backend/architecture/external/external-module-guidelines.md) |
+| Controller·Request/Response DTO 작성 | [app/app-layer-guidelines.md](docs/backend/architecture/app/app-layer-guidelines.md) |
+| UseCase·Validator·Handler 작성 | [application/application-layer-guidelines.md](docs/backend/architecture/application/application-layer-guidelines.md) |
+| 도메인 모델·예외 작성 | [domain/domain-layer-guidelines.md](docs/backend/architecture/domain/domain-layer-guidelines.md) |
+| JPA 어댑터·QueryDSL | [storage/storage-layer-guidelines.md](docs/backend/architecture/storage/storage-layer-guidelines.md) |
+| 외부 API 연동 | [external/external-layer-guidelines.md](docs/backend/architecture/external/external-layer-guidelines.md) |
 | DDL 파일 관리 규칙 확인 | [architecture/storage/ddl-management.md](docs/backend/architecture/storage/ddl-management.md) |
 | 로깅·보안 등 전역 정책 확인 | [policies/](docs/backend/policies/) |
 
@@ -89,7 +89,7 @@ docs/
 
 ## 각 가이드라인 문서의 공통 구조
 
-`architecture/*/[*-module-guidelines].md` 문서는 아래 구조를 따른다:
+`architecture/*/[*-layer-guidelines].md` 문서는 아래 구조를 따른다:
 
 ```
 1. 모듈 목적
@@ -115,7 +115,7 @@ docs/
 ### 새 컨벤션 문서를 추가할 때
 
 1. 적절한 레이어 디렉토리 하위에 `*-convention.md` 추가
-2. 같은 레이어의 `*-module-guidelines.md`에서 새 문서를 참조하도록 링크
+2. 같은 레이어의 `*-layer-guidelines.md`에서 새 문서를 참조하도록 링크
 3. `.claude/agents/code-writer.md`의 **Mandatory References** 목록에 등록
 4. `.claude/agents/architecture-reviewer.md`의 **Source of Truth** 목록에 등록
 5. `.claude/CLAUDE.md`의 문서 맵 테이블에 추가
