@@ -1,5 +1,14 @@
 # Handler 컨벤션
 
+> **[로컬 컨벤션]** 이 문서는 이 프로젝트의 [구현 전략](README.md)에서 **ACL / Coordinator** 역할을 담당하는 `Handler` 컴포넌트의 컨벤션이다.
+> 다른 프로젝트에서는 동일한 역할을 `Facade`, `ApplicationService`, `DomainService` 등으로 구현할 수 있다.
+
+## 보편 개념
+
+**Anti-Corruption Layer / Cross-domain Coordinator**는 두 가지 역할을 담당한다. 첫째, 여러 도메인 영역에서 반복되는 공통 로직을 하나의 재사용 단위로 추출한다. 둘째, 한 도메인의 흐름 단위가 다른 도메인의 인프라에 직접 접근하는 것을 차단하여 도메인 간 결합을 방지한다. 단순 위임이나 단일 Port 호출만을 위해 이 역할의 컴포넌트를 만들지 않는다.
+
+---
+
 ## 원칙
 
 - Handler는 도메인 간 경계를 보호한다. Flow가 다른 도메인에 직접 접근하면 도메인 간 결합이 생기고, Handler가 그 경계를 차단하는 ACL 역할을 한다.

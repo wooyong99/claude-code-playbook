@@ -28,13 +28,13 @@
 
 **레이어별 가이드라인** ([`docs/backend/architecture/`](../docs/backend/architecture/))
 
-| 레이어 | 가이드라인 | 상세 컨벤션 |
-|--------|-----------|----------|
-| `:app:*` | [app-module-guidelines](../docs/backend/architecture/app/app-module-guidelines.md) | [api](../docs/backend/architecture/app/api-convention.md) · [exception-handling](../docs/backend/architecture/app/exception-handling-convention.md) |
-| `:core:application` | [application-module-guidelines](../docs/backend/architecture/application/application-module-guidelines.md) | [use-case](../docs/backend/architecture/application/use-case-convention.md) · [validator](../docs/backend/architecture/application/validator-convention.md) · [handler](../docs/backend/architecture/application/handler-convention.md) · [flow](../docs/backend/architecture/application/flow-convention.md) · [policy](../docs/backend/architecture/application/policy-convention.md) · [mapper](../docs/backend/architecture/application/mapper-convention.md) · [event-handler](../docs/backend/architecture/application/event-handler-convention.md) |
-| `:core:domain` | [domain-module-guidelines](../docs/backend/architecture/domain/domain-module-guidelines.md) | [domain-model](../docs/backend/architecture/domain/domain-model-convention.md) · [exception](../docs/backend/architecture/domain/exception-convention.md) |
-| `:infra:storage` | [storage-module-guidelines](../docs/backend/architecture/storage/storage-module-guidelines.md) | [storage-adapter](../docs/backend/architecture/storage/storage-adapter-convention.md) · [querydsl](../docs/backend/architecture/storage/querydsl-convention.md) · [ddl-management](../docs/backend/architecture/storage/ddl-management.md) |
-| `:infra:external` | [external-module-guidelines](../docs/backend/architecture/external/external-module-guidelines.md) | [adapter](../docs/backend/architecture/external/adapter-convention.md) · [api-client](../docs/backend/architecture/external/api-client-convention.md) · [dto](../docs/backend/architecture/external/dto-convention.md) · [exception](../docs/backend/architecture/external/exception-convention.md) · [config](../docs/backend/architecture/external/config-convention.md) · [mock-adapter](../docs/backend/architecture/external/mock-adapter-convention.md) |
+| 레이어 | 가이드라인 |
+|--------|-----------|
+| `:app:*` | [app-module-guidelines](../docs/backend/architecture/app/app-module-guidelines.md) |
+| `:core:application` | [application-module-guidelines](../docs/backend/architecture/application/application-module-guidelines.md) |
+| `:core:domain` | [domain-module-guidelines](../docs/backend/architecture/domain/domain-module-guidelines.md) |
+| `:infra:storage` | [storage-module-guidelines](../docs/backend/architecture/storage/storage-module-guidelines.md) |
+| `:infra:external` | [external-module-guidelines](../docs/backend/architecture/external/external-module-guidelines.md) |
 
 **크로스커팅 정책** ([`docs/backend/policies/`](../docs/backend/policies/))
 - [security](../docs/backend/policies/security.md) · [logging](../docs/backend/policies/logging.md) · [transaction-and-consistency](../docs/backend/policies/transaction-and-consistency.md) · [concurrency-and-performance](../docs/backend/policies/concurrency-and-performance.md)
