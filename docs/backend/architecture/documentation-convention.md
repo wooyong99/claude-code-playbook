@@ -36,13 +36,13 @@ docs/backend/architecture/
 
 `strategies/` 하위 디렉토리는 모듈의 내부 구현 방식이 프로젝트마다 달라질 수 있을 때 사용한다. 전략이 고정된 모듈은 컨벤션 파일을 최상위 문서와 같은 디렉토리에 flat하게 둔다.
 
-| 모듈 | 최상위 | 컨벤션 위치 |
-|------|-------|-----------|
-| application | application-module-guidelines.md | `strategies/` 하위 (use-case · flow · validator · handler · policy · event-handler · mapper) |
-| domain | domain-module-guidelines.md | 최상위와 같은 디렉토리 (domain-model · exception) |
-| storage | storage-module-guidelines.md | 최상위와 같은 디렉토리 (storage-adapter · querydsl · ddl-management) |
-| external | external-module-guidelines.md | 최상위와 같은 디렉토리 (adapter · api-client · dto · exception · config · mock-adapter) |
-| app | app-module-guidelines.md | 최상위와 같은 디렉토리 (api · rest-design · exception-handling) |
+| 모듈 | 최상위 |
+|------|-------|
+| application | application-module-guidelines.md |
+| domain | domain-module-guidelines.md |
+| storage | storage-module-guidelines.md |
+| external | external-module-guidelines.md |
+| app | app-module-guidelines.md |
 
 ---
 
