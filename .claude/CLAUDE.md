@@ -36,11 +36,9 @@
 | 저장소 계층 (DB 어댑터, Repository) | [storage-layer-guidelines](../docs/backend/architecture/storage/storage-layer-guidelines.md) |
 | 외부 연동 계층 (외부 API 어댑터, ApiClient) | [external-layer-guidelines](../docs/backend/architecture/external/external-layer-guidelines.md) |
 
-**크로스커팅 정책** ([`docs/backend/policies/`](../docs/backend/policies/))
-- [security](../docs/backend/policies/security.md) · [logging](../docs/backend/policies/logging.md) · [transaction-and-consistency](../docs/backend/policies/transaction-and-consistency.md) · [concurrency-and-performance](../docs/backend/policies/concurrency-and-performance.md)
+**크로스커팅 정책** — [`docs/backend/policies/`](../docs/backend/policies/README.md)
 
-**설계 문서** — [`docs/backend/design/`](../docs/backend/design/)
-기능·서브시스템의 기술 설계(TDD). 작성 규칙과 템플릿은 [design/README.md](../docs/backend/design/README.md) · 샘플 [sample-tdd.md](../docs/backend/design/sample-tdd.md).
+**설계 문서** — [`docs/backend/design/`](../docs/backend/design/README.md)
 
 ### 프론트엔드 — [`docs/frontend/`](../docs/frontend/)
 
