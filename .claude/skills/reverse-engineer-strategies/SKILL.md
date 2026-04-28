@@ -58,29 +58,51 @@ model: opus
 
 입력 받은 코드베이스 경로에서 아래 순서로 탐색한다.
 
-### 2-1. 최상위 구조 파악
+### 2-1. 멀티 모듈 vs 단일 모듈 식별
+
+먼저 대상 코드베이스가 **멀티 모듈인지 단일 모듈인지 식별**한다.
+
+- `settings.gradle.kts`가 존재하고 `include(...)` 선언이 2개 이상이면 → **멀티 모듈**
+- 그렇지 않으면 → **단일 모듈**
+
+### 2-2. 구조 파악
+
+**멀티 모듈인 경우**
+
+`settings.gradle.kts`, 각 모듈의 `build.gradle.kts`, `src/main` 구조를 읽어 **레이어별 모듈 후보**를 식별한다.
 
 ```bash
-ls {codebase_path}
-find {codebase_path} -name "build.gradle.kts" -o -name "settings.gradle.kts" | head -20
+cat {codebase_path}/settings.gradle.kts
+find {codebase_path} -name "build.gradle.kts" | grep -v "build/" | head -20
 find {codebase_path} -name "*.kt" -path "*/src/main/*" | head -50
 ```
 
-멀티모듈 구조라면 `settings.gradle.kts`에서 모듈 목록을 읽어 각 모듈의 역할을 파악한다.
+**단일 모듈인 경우**
 
-### 2-2. 레이어별 모듈 매핑
+`src/main/kotlin` 이하 패키지와 디렉토리 구조를 읽어 **레이어별 디렉토리 후보**를 식별한다.
 
-아래 기준으로 모듈을 레이어에 대응시킨다.
+```bash
+find {codebase_path}/src/main/kotlin -type d | head -40
+find {codebase_path}/src/main/kotlin -name "*.kt" | head -50
+```
 
-| 레이어 | 모듈명 패턴 | 확인 방법 |
-|-------|-----------|---------|
-| app | `*-app`, `:app:*`, `web`, `api` | Controller, @SpringBootApplication 위치 |
-| application | `*-application`, `:core:application`, `service` | @Service + UseCase/Flow 패턴 |
-| domain | `*-domain`, `:core:domain`, `core` | 순수 Kotlin 클래스, 도메인 예외 |
-| storage | `*-infra`, `:infra:storage`, `infrastructure` | @Entity, JpaRepository |
-| external | `*-external`, `:infra:external`, `client` | @FeignClient, WebClient, RestTemplate |
+### 2-3. 로컬 레이어 매핑
 
-레이어가 하나의 모듈에 혼재하는 경우 패키지 구조로 판단한다.
+식별한 모듈·디렉토리를 플레이북의 개념 레이어에 매핑한다.
+
+- `domain`, `application`, `storage`, `external`, `app` 같은 플레이북 개념 레이어를 먼저 떠올리되, 실제 프로젝트가 쓰는 **로컬 레이어 이름과 경계**를 우선 기록한다.
+- 플레이북에 적힌 예시 레이어명과 정확히 일치하지 않더라도, **실제 코드에서 드러나는 역할과 책임**을 기준으로 매핑한다.
+- 예를 들어 `app` 대신 `api`, `presentation`, `bootstrap`을 쓸 수 있고, `storage`와 `external`을 `infra` 또는 `infrastructure` 하위에 둘 수도 있다.
+- 추측하지 말고 실제 클래스 역할, 어노테이션, 네이밍 패턴, 의존 방향을 근거로 판단한다.
+
+매핑 결과는 아래 형식으로 기록한다.
+
+```text
+로컬 레이어 맵
+- {로컬 이름} -> {개념 레이어}
+- {로컬 이름} -> {개념 레이어}
+- ...
+```
 
 ---
 
@@ -88,12 +110,23 @@ find {codebase_path} -name "*.kt" -path "*/src/main/*" | head -50
 
 각 레이어에 대해 `references/layer-analysis-guide.md`의 해당 섹션을 참고하여 분석한다.
 
-분석 순서:
-1. **domain** (의존 없음, 순수 비즈니스 로직)
-2. **application** (domain 의존)
-3. **storage** (application Port 구현)
-4. **external** (application Port 구현)
-5. **app** (최외곽, HTTP/Security)
+역공학은 **고정된 폴더명 기준**이 아니라, Step 2에서 식별한 **프로젝트 로컬 레이어 맵**을 기준으로 수행한다.
+매핑 기준은 **이름 유사성**이 아니라 **레이어의 역할, 책임, 의존 방향, 포함된 클래스 종류**다.
+
+예시:
+- `bootstrap` → `app` / `api` → `app` / `presentation` → `app`
+- `infra` → `infrastructure` / `infrastructure/storage` → `storage` / `infrastructure/external` → `external`
+
+`infrastructure`처럼 상위 묶음 레이어가 있으면, 하위에서 `storage`, `external`, `messaging`, `security` 같은 전략 단위를 다시 분리해 각각 분석한다.
+
+**분석 순서**는 보통 `domain → application → infrastructure 계열 → app 계열`이 이해하기 쉽지만, 실제 프로젝트 의존 방향이 더 명확하면 그 순서를 따른다.
+
+각 식별된 레이어(또는 하위 레이어)에서 다음을 찾는다.
+
+- 실제로 쓰이는 핵심 패턴
+- 반복되는 클래스 역할과 네이밍
+- 어노테이션, 베이스 클래스, 인터페이스 조합
+- 예외 처리, 매핑, 트랜잭션, 외부 연동, 쿼리 방식 같은 구현 전략
 
 각 레이어 분석 시 반드시 실제 파일을 읽어서 사실 기반으로 답한다. 추측 금지.
 
@@ -101,14 +134,19 @@ find {codebase_path} -name "*.kt" -path "*/src/main/*" | head -50
 
 레이어마다 분석이 끝나면 아래 형식으로 내부 메모를 정리한다.
 
-```
-[{LAYER}] 분석 결과
-전략: {구체적인 전략명 — 예: JPA + QueryDsl, JWT Stateless}
-이유: {코드에서 발견한 근거 — 예: QueryDslRepository 패턴, JwtTokenProvider 클래스}
+```text
+[LAYER] 분석 결과
+전략: {핵심 전략명}
+로컬 레이어명: {프로젝트에서 실제로 쓰는 이름}
+개념 레이어 매핑: {domain/application/storage/external/app/infrastructure 중 대응}
+근거:
+- {관찰 1}
+- {관찰 2}
 컴포넌트:
-  - {역할}: {클래스명 예시} → 컨벤션 문서: {파일명}
-  - ...
-불확실한 부분: {확인 필요한 항목}
+- {역할}: {예시 클래스}
+- {역할}: {예시 클래스}
+불확실한 부분:
+- {있다면 기록, 없으면 없음}
 ```
 
 ---
@@ -137,6 +175,13 @@ find {codebase_path} -name "*.kt" -path "*/src/main/*" | head -50
 각 레이어마다:
 - **`strategies/README.md`** — 이 프로젝트의 전략 요약 (필수)
 - **`strategies/{component}-convention.md`** — 발견된 컴포넌트별 컨벤션 (발견된 것만)
+
+레이어 이름이 플레이북과 다르더라도, 생성된 문서에는 반드시 아래 두 가지를 함께 명시한다.
+
+- 실제 프로젝트가 부르는 이름 (로컬 레이어명)
+- 플레이북 개념 레이어 중 어디에 대응되는지
+
+이렇게 해야 독자가 코드베이스와 플레이북 사이의 매핑을 이해할 수 있다.
 
 ### 신규 패턴 발견 시 문서 추가
 
