@@ -37,13 +37,13 @@ Clean Architecture + DDD 기반 멀티모듈. 의존 방향: `app → applicatio
 
 ### 레이어별 가이드라인 및 컨벤션 ([`architecture/`](architecture/))
 
-| 레이어 | 가이드라인 | 상세 컨벤션 |
-|--------|-----------|----------|
-| `:app:*` | [app-module-guidelines](architecture/app/app-module-guidelines.md) | [api-convention](architecture/app/api-convention.md) · [exception-handling-convention](architecture/app/exception-handling-convention.md) |
-| `:core:application` | [application-module-guidelines](architecture/application/application-module-guidelines.md) | [use-case](architecture/application/use-case-convention.md) · [validator](architecture/application/validator-convention.md) · [handler](architecture/application/handler-convention.md) · [flow](architecture/application/flow-convention.md) · [policy](architecture/application/policy-convention.md) · [mapper](architecture/application/mapper-convention.md) · [event-handler](architecture/application/event-handler-convention.md) |
-| `:core:domain` | [domain-module-guidelines](architecture/domain/domain-module-guidelines.md) | [domain-model](architecture/domain/domain-model-convention.md) · [exception](architecture/domain/exception-convention.md) |
-| `:infra:storage` | [storage-module-guidelines](architecture/storage/storage-module-guidelines.md) | [storage-adapter](architecture/storage/storage-adapter-convention.md) · [querydsl](architecture/storage/querydsl-convention.md) |
-| `:infra:external` | [external-module-guidelines](architecture/external/external-module-guidelines.md) | [adapter](architecture/external/adapter-convention.md) · [api-client](architecture/external/api-client-convention.md) · [dto](architecture/external/dto-convention.md) · [exception](architecture/external/exception-convention.md) · [config](architecture/external/config-convention.md) · [mock-adapter](architecture/external/mock-adapter-convention.md) |
+| 레이어 | 가이드라인 |
+|--------|-----------|
+| `:app:*` | [app-module-guidelines](architecture/app/app-module-guidelines.md) |
+| `:core:application` | [application-module-guidelines](architecture/application/application-module-guidelines.md) |
+| `:core:domain` | [domain-module-guidelines](architecture/domain/domain-module-guidelines.md) |
+| `:infra:storage` | [storage-module-guidelines](architecture/storage/storage-module-guidelines.md) |
+| `:infra:external` | [external-module-guidelines](architecture/external/external-module-guidelines.md) |
 
 ---
 
