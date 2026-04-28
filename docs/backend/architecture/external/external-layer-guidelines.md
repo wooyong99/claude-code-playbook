@@ -2,7 +2,7 @@
 
 ## External 계층의 본질적 책임
 
-외부 시스템(PG, 상품권 서비스, 알림 서비스 등)과의 통신을 담당하는 Outbound Adapter 계층이다. `application` 모듈이 정의한 Outbound Port를 구현하여 외부 시스템 호출을 캡슐화하고, 외부 서비스의 오류·응답을 내부 표현으로 변환한다.
+외부 시스템(PG, 상품권 서비스, 알림 서비스 등)과의 통신을 담당하는 Outbound Adapter 계층이다. application 계층이 정의한 Outbound Port를 구현하여 외부 시스템 호출을 캡슐화하고, 외부 서비스의 오류·응답을 내부 표현으로 변환한다.
 
 ```
 application (Outbound Port 정의)
@@ -41,7 +41,7 @@ external  (Adapter → ApiClient → 외부 시스템)
 **패키지 구조**: Provider 단위 패키지 분리. 한 패키지에 Adapter·ApiClient·TokenHolder·Dto·ErrorCode·Exception·Config·Properties·Mock Adapter가 공존한다.
 
 ```
-modules/external/src/main/kotlin/im/bigs/ecommerce/
+{external-module}/src/main/kotlin/{your.package}/
 └── {provider}/
     ├── {Provider}{Function}Adapter.kt            ← Outbound Port 구현 (@Profile("!local"))
     ├── Mock{Function}Adapter.kt                  ← 로컬용 Mock 구현 (@Profile("local"))

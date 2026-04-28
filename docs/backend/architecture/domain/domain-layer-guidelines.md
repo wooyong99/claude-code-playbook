@@ -2,7 +2,7 @@
 
 ## Domain 계층의 본질적 책임
 
-`:core:domain` 모듈은 순수 비즈니스 개념과 규칙을 표현하는 계층이다. 외부 프레임워크에 의존하지 않으므로 인프라 변경이 도메인 로직을 침범하지 않는다.
+domain 계층은 순수 비즈니스 개념과 규칙을 표현하는 계층이다. 외부 프레임워크에 의존하지 않으므로 인프라 변경이 도메인 로직을 침범하지 않는다.
 
 1. **비즈니스 개념 표현**: 도메인 언어로 비즈니스 개념과 관계를 코드로 구현한다.
 2. **불변식 보호**: 도메인 객체가 스스로 생성과 상태 변경을 통제하여 잘못된 상태를 막는다.
@@ -34,8 +34,8 @@
 ### 파일 구조
 
 ```
-:core:domain/
-└── src/main/kotlin/com/wooyong/demo/core/domain/
+{domain-module}/
+└── src/main/kotlin/{your.package}/
     ├── {domain}/
     │   ├── {Entity}.kt              ← Entity 도메인 모델
     │   ├── {ValueObject}.kt         ← Value Object (data class)

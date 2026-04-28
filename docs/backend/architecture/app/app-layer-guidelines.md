@@ -2,7 +2,7 @@
 
 ## App 계층의 본질적 책임
 
-채널별로 독립된 app 모듈(`:app:{channel}`)은 HTTP 요청을 수신하여 application 계층에 위임하고, 그 결과를 HTTP 응답으로 변환하는 경계 역할을 담당한다.
+app 계층은 HTTP 요청을 수신하여 application 계층에 위임하고, 그 결과를 HTTP 응답으로 변환하는 경계 역할을 담당한다.
 
 1. **HTTP 진입점 제공**: Controller가 Request DTO를 수신하고 UseCase를 통해 application 계층에 위임한다.
 2. **HTTP 관심사 격리**: Spring·Jakarta 의존 코드(어노테이션, HTTP 상태 코드, 예외)를 app 계층 내에 가두고 application·domain 계층으로 누출시키지 않는다.

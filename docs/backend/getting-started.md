@@ -23,7 +23,7 @@
 ```bash
 docker-compose -f docker-compose-local.yml up -d
 ./gradlew build -x test --parallel
-./gradlew :app:storefront:bootRun --args='--spring.profiles.active=local'
+./gradlew :{app-module}:bootRun --args='--spring.profiles.active=local'
 ```
 
 ---

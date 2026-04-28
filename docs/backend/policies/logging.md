@@ -48,17 +48,17 @@ Grafana + Loki 환경에서는 **JSON 대신 logfmt 스타일(`key=value`)** 평
 ### 출력 예시
 
 ```
-2026-04-17 14:23:45.123 INFO  [tenantId=shop-a requestId=abc-123] c.w.d.c.a.g.CreateGiftCardPurchaseUseCase - [GIFT-CARD-PURCHASE] 매입 신청 검증 시작 - tenantId=shop-a, bankCode=KB, giftCardTypeId=15
-2026-04-17 14:23:45.456 WARN  [tenantId=shop-a requestId=def-456] c.w.d.c.a.g.CreateGiftCardPurchaseUseCase - [GIFT-CARD-PURCHASE] 매입 한도 초과 - tenantId=shop-a, requestedAmount=500000, limit=300000
-2026-04-17 14:23:45.789 ERROR [tenantId=shop-b requestId=ghi-789] c.w.d.b.payment.PaymentController - [PAYMENT] 결제 실패 - orderId=88, amount=50000
-    com.wooyong.demo.core.domain.exception.CoreException: ...
+2026-04-17 14:23:45.123 INFO  [tenantId=shop-a requestId=abc-123] c.e.a.CreateOrderUseCase - [ORDER] 주문 검증 시작 - tenantId=shop-a, productId=15, requestedQty=2
+2026-04-17 14:23:45.456 WARN  [tenantId=shop-a requestId=def-456] c.e.a.CreateOrderUseCase - [ORDER] 재고 부족 - tenantId=shop-a, productId=15, requested=2, available=1
+2026-04-17 14:23:45.789 ERROR [tenantId=shop-b requestId=ghi-789] c.e.PaymentController - [PAYMENT] 결제 실패 - orderId=88, amount=50000
+    com.example.CoreException: ...
 ```
 
 ---
 
 ## Kotlin 사용 예시
 
-프로젝트 전역에서 [`LogExtension.kt`](../../../backend/core/application/src/main/kotlin/com/wooyong/demo/core/application/common/log/LogExtension.kt)의 확장 함수 `logInfo` / `logWarn` / `logError` / `logDebug`를 사용한다. raw `LoggerFactory.getLogger(...)`는 쓰지 않는다.
+프로젝트 전역에서 `LogExtension.kt`의 확장 함수 `logInfo` / `logWarn` / `logError` / `logDebug`를 사용한다. raw `LoggerFactory.getLogger(...)`는 쓰지 않는다.
 
 ### 왜 확장 함수인가
 
@@ -70,9 +70,9 @@ Grafana + Loki 환경에서는 **JSON 대신 logfmt 스타일(`key=value`)** 평
 ### 기본 사용
 
 ```kotlin
-import com.wooyong.demo.core.application.common.log.logInfo
-import com.wooyong.demo.core.application.common.log.logWarn
-import com.wooyong.demo.core.application.common.log.logError
+import com.example.application.common.log.logInfo
+import com.example.application.common.log.logWarn
+import com.example.application.common.log.logError
 
 class CreateGiftCardPurchaseUseCase(
     private val purchaseRepository: GiftCardPurchaseRepository,
