@@ -181,12 +181,45 @@ Step 1-D에서 선택한 방식에 따라 분기한다.
 
 ---
 
+## Step 5-B. 미사용 문서 제거 (병합 모드 전용)
+
+병합 모드에서, `strategies/` 디렉토리에 있는 기존 파일 중 **코드 분석 결과 해당 컴포넌트 패턴이 코드베이스에 존재하지 않는 파일**을 제거한다.
+
+### 제거 판단 기준
+
+문서 파일명이 나타내는 컴포넌트 타입의 실제 클래스(Spring Bean)가 코드베이스에 없는 경우 제거 대상이다.
+
+| 문서 | 존재 여부 확인 방법 |
+|-----|-----------------|
+| `flow-convention.md` | `class \w+Flow` 패턴의 `@Service` / `@Component` 클래스 존재 여부 |
+| `validator-convention.md` | `@Component class \w+Validator` 패턴 존재 여부 |
+| `mapper-convention.md` | `@Component class \w+Mapper` / `@Service class \w+Mapper` 패턴 존재 여부 |
+
+### 처리 절차
+
+제거 대상으로 판단된 파일마다 다음 순서로 처리한다.
+
+1. **내용 검토**: 파일을 읽어 다른 문서에 아직 반영되지 않은 유용한 내용(금지 패턴, 체크리스트 항목 등)이 있는지 확인한다.
+2. **내용 이전**: 반영 안 된 내용은 가장 관련성 높은 컨벤션 문서에 섹션으로 추가한다 (예: `use-case-convention.md`의 "금지 패턴" 또는 "체크리스트").
+3. **파일 삭제**: 내용 이전이 완료된 파일을 삭제한다.
+4. **링크 정리**: 삭제된 파일을 참조하는 `strategies/README.md`의 역할별 컴포넌트 표·Post-Work Verification 체크리스트에서 해당 링크를 제거하거나, 내용이 이전된 문서 링크로 교체한다.
+
+### 제거하지 않는 경우
+
+아래 중 하나에 해당하면 파일을 유지한다.
+- 코드베이스에 해당 컴포넌트가 실제로 존재한다.
+- 파일 내용이 "이 프로젝트에서 해당 컴포넌트를 쓰면 안 된다"는 명시적 금지 규칙 역할을 하며, 다른 문서에 이미 통합된 내용이 없다.
+
+---
+
 ## Step 6. 완료 보고
 
-생성된 파일 목록과 각 파일에서 발견한 핵심 전략 결정 사항을 사용자에게 보고한다.
+생성/갱신된 파일 목록, 삭제된 파일 목록, 핵심 전략 결정 사항을 사용자에게 보고한다.
 
 ```
-## 생성 완료
+## 완료
+
+### 생성 / 갱신
 
 | 파일 | 발견한 전략 |
 |-----|-----------|
@@ -194,6 +227,13 @@ Step 1-D에서 선택한 방식에 따라 분기한다.
 | storage/strategies/storage-adapter-convention.md | {Entity}Adapter → JpaRepository + QueryDslRepository |
 | app/strategies/README.md | JWT Stateless, Header-based multi-tenant |
 | ...  | ... |
+
+### 삭제 (미사용 문서)
+
+| 삭제 파일 | 이유 | 내용 이전 위치 |
+|---------|-----|-------------|
+| application/strategies/flow-convention.md | Flow 클래스 미사용 | use-case-convention.md |
+| ...  | ... | ... |
 
 **추가 확인 필요**:
 - {불확실해서 임시로 작성한 항목과 이유}
