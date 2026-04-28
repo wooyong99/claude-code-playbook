@@ -1,0 +1,81 @@
+{
+  "skill_name": "reverse-engineer-strategies",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "우리 레거시 프로젝트 코드베이스 분석해서 strategies 문서 만들어줘. 코드 경로는 /tmp/test-backend 야. storage랑 domain 레이어 먼저 해줘.",
+      "expected_output": "storage/strategies/README.md와 domain/strategies/README.md가 생성됨. README에는 실제 코드에서 발견한 ORM 전략(JPA+QueryDsl)과 도메인 모델 패턴이 기술됨. 추가로 storage-adapter-convention.md, querydsl-convention.md, domain-model-convention.md, exception-convention.md가 생성됨.",
+      "files": ["/tmp/test-backend"],
+      "assertions": [
+        {
+          "name": "layer_subdirectory_structure",
+          "description": "파일이 {layer}/strategies/ 서브디렉토리에 생성됨 (플랫 파일 아님)"
+        },
+        {
+          "name": "strategies_readme_three_sections",
+          "description": "strategies/README.md가 '이 프로젝트의 전략', '역할 정의', '전략 정의 템플릿' 3개 섹션을 포함"
+        },
+        {
+          "name": "component_table_with_real_class_names",
+          "description": "역할별 컴포넌트 테이블에 실제 클래스명(OrderAdapter, OrderJpaRepository 등)이 포함"
+        },
+        {
+          "name": "convention_files_generated",
+          "description": "레이어당 최소 1개 이상의 컨벤션 문서(storage-adapter-convention.md 등)가 생성"
+        },
+        {
+          "name": "post_work_verification_present",
+          "description": "Post-Work Verification 체크리스트 섹션이 README에 포함"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "기존 프로젝트에 플레이북 적용하려고 하는데, 코드 보고 전 레이어 strategies/ 채워줘. 프로젝트는 /tmp/test-backend 에 있어.",
+      "expected_output": "app, application, domain, storage 레이어 모두 분석됨. 각 레이어의 strategies/README.md가 생성됨. 발견된 컴포넌트에 해당하는 convention 문서들이 생성됨. 마지막에 생성 파일 목록과 핵심 전략 결정 사항이 보고됨.",
+      "files": ["/tmp/test-backend"],
+      "assertions": [
+        {
+          "name": "all_four_layers_analyzed",
+          "description": "domain, application, storage, app 4개 레이어 모두 strategies/README.md가 생성됨"
+        },
+        {
+          "name": "strategies_readme_three_sections",
+          "description": "각 strategies/README.md가 3개 섹션 구조를 따름"
+        },
+        {
+          "name": "transaction_ownership_documented",
+          "description": "application strategies/README.md에 트랜잭션 소유(Flow)가 명시"
+        },
+        {
+          "name": "jwt_strategy_detected",
+          "description": "app strategies/README.md에 JWT Stateless 인증 방식이 기술"
+        },
+        {
+          "name": "completion_report_present",
+          "description": "생성 완료 보고(생성 파일 목록 + 핵심 전략)가 포함"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "/tmp/test-backend 분석해서 strategies 뽑아줘. 출력은 /tmp/output-docs 에 저장해줘.",
+      "expected_output": "사용자가 지정한 출력 경로에 문서가 저장됨. 코드를 실제로 분석하여 발견한 패턴을 기반으로 문서 생성됨. 플레이스홀더({Entity} 등)는 실제 클래스명으로 대체됨.",
+      "files": ["/tmp/test-backend"],
+      "assertions": [
+        {
+          "name": "layer_subdirectory_structure",
+          "description": "파일이 {layer}/strategies/ 서브디렉토리에 생성됨 (플랫 파일 아님)"
+        },
+        {
+          "name": "real_class_names_replace_placeholders",
+          "description": "'{Entity}' 플레이스홀더 대신 실제 클래스명(Order, OrderAdapter 등)이 사용됨"
+        },
+        {
+          "name": "strategies_readme_three_sections",
+          "description": "strategies/README.md가 3개 섹션 구조를 따름"
+        }
+      ]
+    }
+  ]
+}
