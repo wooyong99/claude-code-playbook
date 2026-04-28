@@ -1,4 +1,4 @@
-# App Module — `common/` 패키지 상세
+# App 계층 — `common/` 패키지 상세
 
 ---
 
@@ -6,7 +6,7 @@
 
 **`common/`은 도메인에 의존하지 않는 표현 계층 전역 관심사만 담으며, `config/`·`advice/`·`response/`·`security/`·`logging/`·`validator/` 서브패키지로 책임을 분리한다.**
 
-`common/`은 app 모듈 내 모든 `{domain}/` 패키지가 공유하는 횡단 관심사를 담는다. 특정 도메인에 의존하면 도메인 패키지 간 경계가 무너지므로, `common/`의 클래스는 도메인 클래스를 import하지 않는다.
+`common/`은 app 계층 내 모든 `{domain}/` 패키지가 공유하는 횡단 관심사를 담는다. 특정 도메인에 의존하면 도메인 패키지 간 경계가 무너지므로, `common/`의 클래스는 도메인 클래스를 import하지 않는다.
 
 ---
 

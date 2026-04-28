@@ -51,7 +51,7 @@ app — Controller → Request DTO → Extension → Command
 
 **테스트**: Controller 테스트는 `@WebMvcTest` + MockMvc로 요청·응답 형태와 검증 어노테이션을 검증한다. UseCase는 mock으로 격리하고, `GlobalExceptionHandler` 핸들러별 응답 포맷·HTTP 상태 코드를 테스트한다.
 
-**파일 구조**: app 모듈은 `common/`(표현 계층 전역 관심사)과 `{domain}/`(도메인별 표현 객체) 두 최상위 디렉토리로 구성한다. → [file-structure.md](strategies/file-structure.md) · [file-structure/common.md](strategies/file-structure/common.md)
+**파일 구조**: app 모듈은 `common/`(표현 계층 전역 관심사)과 `{domain}/`(도메인별 표현 객체) 두 최상위 디렉토리로 구성한다. → [file-structure.md](strategies/file-structure.md) · [common.md](strategies/common.md)
 
 ### Post-Work Verification
 
