@@ -43,23 +43,15 @@ app — Controller → Request DTO → Extension → Command
 
 ---
 
-## 선택 가능한 내부 구현 전략
-
-App 계층의 인증 방식·컨텍스트 전파·멀티테넌시 처리는 프로젝트 요구사항에 따라 달라진다. 어떤 전략을 선택하든 R1–R4는 반드시 지킨다.
-
-역할 정의, 전략 선택 기준, 이 프로젝트의 선택 → [`strategies/`](strategies/README.md)
-
----
-
 ## 이 프로젝트의 로컬 컨벤션
 
-이 프로젝트의 구현 전략과 역할별 컴포넌트 매핑은 [`strategies/`](strategies/README.md)에서 확인한다.
+인증 방식·컨텍스트 전파·멀티테넌시 처리는 프로젝트 요구사항에 따라 달라진다. 어떤 전략을 선택하든 R1–R4는 반드시 지킨다. 역할 정의, 전략 선택 기준, 이 프로젝트의 선택 → [`strategies/`](strategies/README.md)
 
 ### 공통 규칙
 
 **테스트**: Controller 테스트는 `@WebMvcTest` + MockMvc로 요청·응답 형태와 검증 어노테이션을 검증한다. UseCase는 mock으로 격리하고, `GlobalExceptionHandler` 핸들러별 응답 포맷·HTTP 상태 코드를 테스트한다.
 
-**파일 구조**: app 모듈은 `common/`(표현 계층 전역 관심사)과 `{domain}/`(도메인별 표현 객체) 두 최상위 디렉토리로 구성한다. → [file-structure.md](file-structure.md) · [file-structure/common.md](file-structure/common.md)
+**파일 구조**: app 모듈은 `common/`(표현 계층 전역 관심사)과 `{domain}/`(도메인별 표현 객체) 두 최상위 디렉토리로 구성한다. → [file-structure.md](strategies/file-structure.md) · [file-structure/common.md](strategies/file-structure/common.md)
 
 ### Post-Work Verification
 

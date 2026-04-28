@@ -35,15 +35,15 @@ HTTP Request
 | 컨텍스트 홀더 | `TenantContextHolder` | - |
 | 컨텍스트 주입기 | `MdcLoggingFilter` | - |
 
-패키지 배치: [file-structure/common.md](../file-structure/common.md) `security/` · `logging/` 섹션 참고
+패키지 배치: [file-structure/common.md](file-structure/common.md) `security/` · `logging/` 섹션 참고
 
 **Post-Work Verification 체크리스트**:
 
-- [api-convention.md](../api-convention.md)
-- [rest-design-convention.md](../rest-design-convention.md)
-- [exception-handling-convention.md](../exception-handling-convention.md)
-- [file-structure.md](../file-structure.md)
-- [file-structure/common.md](../file-structure/common.md)
+- [api-convention.md](api-convention.md)
+- [rest-design-convention.md](rest-design-convention.md)
+- [exception-handling-convention.md](exception-handling-convention.md)
+- [file-structure.md](file-structure.md)
+- [file-structure/common.md](file-structure/common.md)
 
 ---
 
@@ -99,9 +99,9 @@ HTTP Request
 | (필요한 역할만 추가) | | |
 
 **Post-Work Verification 체크리스트**:
-- [api-convention.md](../api-convention.md)
-- [rest-design-convention.md](../rest-design-convention.md)
-- [exception-handling-convention.md](../exception-handling-convention.md)
-- [file-structure.md](../file-structure.md)
+- [api-convention.md](api-convention.md)
+- [rest-design-convention.md](rest-design-convention.md)
+- [exception-handling-convention.md](exception-handling-convention.md)
+- [file-structure.md](file-structure.md)
 - {추가 컨벤션 문서 링크}
 ```

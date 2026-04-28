@@ -8,7 +8,7 @@
 
 domain 모듈이 Spring에 의존하지 않도록 HTTP 관심사는 app 계층으로 격리된다. Controller는 개별 예외 처리 로직을 두지 않는다. 내부 예외 메시지는 클라이언트에 노출하지 않고 `ErrorCode.message`로 일관된 메시지를 전달한다.
 
-> 도메인 예외 계층(`CoreException`, `CoreErrorType`, `ErrorCode`, `{Domain}ErrorCode`) 상세는 [../domain/exception-convention.md](../domain/exception-convention.md) 참고
+> 도메인 예외 계층(`CoreException`, `CoreErrorType`, `ErrorCode`, `{Domain}ErrorCode`) 상세는 [../../domain/strategies/exception-convention.md](../../domain/strategies/exception-convention.md) 참고
 
 ---
 
@@ -147,7 +147,7 @@ enum class BaseErrorCode(
 ### 언제 새 BaseErrorCode를 추가하는가
 
 - Spring/Jakarta 프레임워크 예외를 새로 매핑할 필요가 있을 때 → `BaseErrorCode`에 추가
-- 도메인 규칙 위반 → **금지** — `{Domain}ErrorCode`에 추가 ([../domain/exception-convention.md](../domain/exception-convention.md) 참고)
+- 도메인 규칙 위반 → **금지** — `{Domain}ErrorCode`에 추가 ([../../domain/strategies/exception-convention.md](../../domain/strategies/exception-convention.md) 참고)
 
 ### 언제 GlobalExceptionHandler에 새 @ExceptionHandler를 추가하는가
 
