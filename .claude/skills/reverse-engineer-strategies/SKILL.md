@@ -127,13 +127,34 @@ find {codebase_path} -name "*.kt" -path "*/src/main/*" | head -50
 
 분석 결과를 바탕으로 `references/strategies-doc-templates.md`의 템플릿에 따라 문서를 생성한다.
 
+> **원칙**: `docs/backend/architecture/*/strategies/` 하위의 기존 문서는 **디폴트 예시**일 뿐이다.
+> 코드베이스의 실제 패턴을 기준으로 문서 세트를 결정한다.
+> - 코드에 없는 패턴의 문서 → 제거 (Step 5-B)
+> - 코드에 있으나 대응 문서가 없는 패턴 → **신규 문서 작성**
+
 ### 생성 대상
 
 각 레이어마다:
 - **`strategies/README.md`** — 이 프로젝트의 전략 요약 (필수)
 - **`strategies/{component}-convention.md`** — 발견된 컴포넌트별 컨벤션 (발견된 것만)
 
-### 파일 경로
+### 신규 패턴 발견 시 문서 추가
+
+코드 분석 중 아래 조건을 모두 만족하는 패턴이 발견되면, 기존 파일 목록에 없더라도 새 컨벤션 문서를 생성한다.
+
+**조건**
+- 동일 패턴을 따르는 클래스가 코드베이스에 2개 이상 존재한다.
+- 기존 어떤 컨벤션 문서에도 해당 패턴이 다뤄지지 않는다.
+
+**파일 명명 규칙**: `{역할-키워드}-convention.md`
+(예: `scheduler-convention.md`, `batch-job-convention.md`, `cache-strategy-convention.md`)
+
+문서를 새로 만든 경우 `strategies/README.md`의 역할별 컴포넌트 표와 Post-Work Verification 체크리스트에 해당 항목을 추가한다.
+
+### 파일 경로 (디폴트 예시)
+
+아래 목록은 일반적인 Spring Boot 프로젝트에서 자주 등장하는 패턴의 예시다.
+실제 생성 파일은 코드베이스 분석 결과에 따라 늘어나거나 줄어든다.
 
 ```
 {출력경로}/
@@ -142,7 +163,8 @@ find {codebase_path} -name "*.kt" -path "*/src/main/*" | head -50
 │   ├── api-convention.md            (Controller/DTO 패턴 발견 시)
 │   ├── rest-design-convention.md    (REST 설계 규칙 발견 시)
 │   ├── exception-handling-convention.md  (GlobalExceptionHandler 발견 시)
-│   └── file-structure.md            (패키지 구조가 명확할 때)
+│   ├── file-structure.md            (패키지 구조가 명확할 때)
+│   └── common.md                    (표현 계층 전역 관심사 — security/logging/config 등이 존재할 때)
 ├── application/strategies/
 │   ├── README.md
 │   ├── use-case-convention.md       (UseCase 패턴 발견 시)
@@ -227,6 +249,13 @@ Step 1-D에서 선택한 방식에 따라 분기한다.
 | storage/strategies/storage-adapter-convention.md | {Entity}Adapter → JpaRepository + QueryDslRepository |
 | app/strategies/README.md | JWT Stateless, Header-based multi-tenant |
 | ...  | ... |
+
+### 신규 추가 (디폴트 목록에 없던 패턴)
+
+| 파일 | 발견한 패턴 | 근거 |
+|-----|-----------|-----|
+| application/strategies/scheduler-convention.md | @Scheduled 작업 공통 구조 | XxxScheduler 클래스 3개 발견 |
+| ...  | ... | ... |
 
 ### 삭제 (미사용 문서)
 

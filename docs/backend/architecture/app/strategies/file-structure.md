@@ -40,7 +40,7 @@
         └── {Domain}Responses.kt  ← 필요 시만
 ```
 
-각 공통 패키지의 역할·포함 대상·금지 사항 → [common 패키지 상세](common.md)
+각 공통 패키지의 역할·포함 대상·금지 사항 → [표현 계층 전역 관심사](common.md)
 
 ---
 
@@ -89,7 +89,6 @@
 
 ## 체크리스트
 
-- [ ] 최상위 디렉토리가 `common/`과 `{domain}/`으로 구성됐는가?
 - [ ] `{Domain}DtoExtension.kt`가 `dto/` 밖 `{domain}/` 패키지 레벨에 위치하는가?
 - [ ] Controller가 `{domain}/` 최상위에 flat 배치됐는가?
 - [ ] `common/`이 `{domain}/` 패키지 클래스를 import하지 않는가?

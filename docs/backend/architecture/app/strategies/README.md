@@ -35,7 +35,7 @@ HTTP Request
 | 컨텍스트 홀더 | `TenantContextHolder` | - |
 | 컨텍스트 주입기 | `MdcLoggingFilter` | - |
 
-패키지 배치: [common.md](common.md) `security/` · `logging/` 섹션 참고
+패키지 배치: [표현 계층 전역 관심사](common.md) `security/` · `logging/` 섹션 참고
 
 **Post-Work Verification 체크리스트**:
 

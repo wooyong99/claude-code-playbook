@@ -312,6 +312,66 @@ find {path}/{app_module} -type d -name "common" | grep -v "build/"
 | 멀티 테넌시 | `TenantContextHolder`, 테넌트 식별 헤더 | 멀티 테넌트 방식 |
 | common/ 서브패키지 | `find ... -type d -name "common"` | common.md 유지 여부 |
 
+### `common.md` 작성을 위한 추가 분석 (common/ 패키지가 존재하는 경우)
+
+`common/` 디렉토리가 확인되면 각 서브패키지의 실제 파일을 읽어 `common.md`에 채울 내용을 추출한다.
+
+```bash
+# 발견된 서브패키지 목록
+find {path}/{app_module} -mindepth 2 -maxdepth 5 -type d -path "*/common/*" | grep -v "build/"
+
+# 각 서브패키지의 파일 목록
+find {path}/{app_module} -path "*/common/config/*.kt" | grep -v "build/"
+find {path}/{app_module} -path "*/common/advice/*.kt" | grep -v "build/"
+find {path}/{app_module} -path "*/common/response/*.kt" | grep -v "build/"
+find {path}/{app_module} -path "*/common/security/*.kt" | grep -v "build/"
+find {path}/{app_module} -path "*/common/logging/*.kt" | grep -v "build/"
+find {path}/{app_module} -path "*/common/validator/*.kt" | grep -v "build/"
+
+# domain 클래스 import 여부 (금지 위반 감지)
+grep -r "import.*\.domain\." {path}/{app_module} --include="*.kt" -l | grep "/common/" | grep -v "build/"
+```
+
+각 서브패키지마다 파악할 항목:
+
+| 서브패키지 | 파악할 항목 |
+|-----------|-----------|
+| `config/` | 어떤 설정 클래스가 있는가 (WebMvc, Jackson, CORS, Interceptor 등) |
+| `advice/` | GlobalExceptionHandler의 예외 처리 순서 (도메인 예외 → Spring 검증 예외 → 미처리 예외) |
+| `response/` | 응답 봉투 클래스 목록 (BaseResponse, ErrorResponse, PageResponse 등) |
+| `security/` | 인증 방식별 필터·설정 클래스 (SecurityConfig, JwtAuthenticationFilter 등) |
+| `logging/` | 로그 필터·MDC 설정·마스킹 유틸 클래스 |
+| `validator/` | 커스텀 Bean Validation 어노테이션·Validator 구현체 |
+
+### `file-structure.md` 작성을 위한 추가 분석
+
+```bash
+# Controller 배치 방식 (flat vs controller/ 서브패키지)
+find {path}/{app_module} -name "*Controller.kt" | grep -v "build/" | grep -v "/test/"
+
+# Extension 파일 위치 (dto/ 안인지 밖인지)
+find {path}/{app_module} -name "*Extension*.kt" | grep -v "build/" | grep -v "/test/"
+
+# DTO 파일 경로
+find {path}/{app_module} -name "*Requests*.kt" -o -name "*Responses*.kt" | grep -v "build/" | grep -v "/test/"
+
+# DTO 내 변환 로직 여부 (금지 패턴 감지)
+grep -rn "fun to[A-Z]" {path}/{app_module} --include="*.kt" | grep -v "build/" | grep -v "/test/" | grep -i "request\|response"
+
+# 도메인 패키지 간 직접 참조 여부
+grep -r "import.*\.\(auth\|partner\|catalog\|inventory\)\." {path}/{app_module} --include="*.kt" | grep -v "build/" | grep "/common/\|/domain/"
+```
+
+파악할 항목:
+
+| 항목 | 파악 방법 |
+|-----|---------|
+| Controller 배치 | 파일 경로에 `/controller/` 포함 여부 — 없으면 `{domain}/` 최상위 flat 배치 |
+| Extension 위치 | 파일 경로가 `/dto/` 안인지 밖인지 확인 |
+| DTO 명명 | 파일명이 단수형인지 복수형인지 (예: `Requests` vs `Request`) |
+| DTO 내 변환 | `toCommand()` 등 변환 메서드 존재 여부 |
+| 도메인 간 직접 참조 | 다른 `{domain}/` 패키지 클래스를 import하는 파일 존재 여부 |
+
 ---
 
 ## Infrastructure 레이어

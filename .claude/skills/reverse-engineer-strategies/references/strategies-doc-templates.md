@@ -200,6 +200,245 @@ Infrastructure 레이어는 JPA 영속성 어댑터(storage 역할)와 Spring Se
 
 ---
 
+## App 계층 전용 문서 템플릿
+
+`api-convention.md` · `rest-design-convention.md` · `exception-handling-convention.md`는 "컨벤션 문서 공통 구조"를 따른다.
+아래 두 문서는 App 계층 고유 형식을 사용한다.
+
+### `file-structure.md` 템플릿
+
+```markdown
+# App 계층 — 파일 구조
+
+---
+
+## 핵심 규칙
+
+**app 계층은 {실제 구성 설명 — 예: 표현 계층 전역 관심사를 담는 `common/`과 도메인별 표현 객체를 담는 `{domain}/`으로 구성하며}, {핵심 제약 — 예: 변환 Extension 파일은 반드시 `dto/` 밖 도메인 패키지 레벨에 위치한다}.**
+
+{핵심 규칙 설명}
+
+---
+
+## 개요
+
+| 디렉토리 | 역할 |
+|---------|------|
+| `common/` | {설명} |
+| `{domain}/` | {설명} |
+
+---
+
+## 전체 구조 트리
+
+> {common/의 서브패키지가 전략 종속임을 안내하는 주석이 있으면 추가}
+
+\`\`\`
+{app-module}/
+├── common/
+│   ├── {실제 발견된 서브패키지 1}/
+│   ├── {실제 발견된 서브패키지 2}/
+│   └── ...
+└── {domain}/
+    ├── {Entity}Controller.kt
+    ├── {Domain}DtoExtension.kt   ← {Extension 위치 설명}
+    └── dto/
+        ├── {Domain}Requests.kt
+        └── {Domain}Responses.kt  ← {포함 조건 설명}
+\`\`\`
+
+각 공통 패키지의 역할·포함 대상·금지 사항 → [common 패키지 상세](common.md)
+
+---
+
+## `{domain}/` 규칙
+
+모든 도메인별 기능은 반드시 `{domain}/` 하위에 위치한다.
+
+- `{domain}`은 {명명 규칙 — 예: 단수형 소문자}
+- Controller와 Extension은 `dto/` 밖 최상위에 {배치 방식} 배치한다.
+
+### Controller
+
+| 항목 | 규칙 |
+|------|------|
+| 위치 | `{domain}/{Entity}Controller.kt` |
+| 배치 방식 | {flat / `controller/` 서브패키지} |
+| 역할 | {역할 설명} |
+| 금지 | {금지 사항} |
+
+### Extension
+
+| 항목 | 규칙 |
+|------|------|
+| 위치 | `{domain}/{Domain}DtoExtension.kt` (`dto/` 바깥) |
+| 역할 | {역할 설명 — 예: Request → Command, Result → Response 변환} |
+| 금지 | {금지 사항} |
+
+### DTO
+
+| 항목 | 규칙 |
+|------|------|
+| Request 파일 | `dto/{Domain}Requests.kt` ({단수/복수 규칙}) |
+| Response 파일 | `dto/{Domain}Responses.kt` ({포함 조건}) |
+| 금지 | {금지 사항 — 예: `toCommand()` 등 변환 로직을 DTO 내부에 포함} |
+
+---
+
+## 금지 사항
+
+{코드에서 발견한 실제 금지 패턴 목록}
+
+---
+
+## 체크리스트
+
+{코드 분석 결과 기반 체크리스트}
+```
+
+> **작성 전 코드에서 확인할 사항**:
+> - Controller 파일 경로에 `/controller/` 서브패키지가 포함되는지 여부 (flat vs 서브패키지)
+> - Extension 파일이 `dto/` 안인지 밖인지
+> - DTO 파일명이 단수형인지 복수형인지
+> - DTO 내부에 `toCommand()` 등 변환 메서드가 있는지
+> - `common/`이 발견된 경우 — [common.md](common.md) 링크를 구조 트리 아래에 추가한다
+
+---
+
+### `common.md` 템플릿
+
+```markdown
+# App 계층 — `common/` 패키지 상세
+
+---
+
+## 핵심 규칙
+
+**`common/`은 도메인에 의존하지 않는 표현 계층 전역 관심사만 담으며, {발견된 서브패키지 목록 — 예: `config/`·`advice/`·`response/`·`security/`·`logging/`·`validator/`} 서브패키지로 책임을 분리한다.**
+
+{핵심 규칙 설명}
+
+---
+
+## `config/`  <!-- 발견된 경우만 포함, 없으면 섹션 제거 -->
+
+| 항목 | 내용 |
+|------|------|
+| 역할 | {실제 발견한 설정 클래스 역할} |
+| 포함 대상 | {발견한 클래스 목록 — 예: `WebMvcConfigurer` 구현체, Jackson 설정 Bean, CORS 설정 Bean} |
+| 금지 | {금지 사항} |
+
+\`\`\`
+common/config/
+{실제 발견된 파일 목록 — 예: ├── WebMvcConfig.kt}
+\`\`\`
+
+---
+
+## `advice/`  <!-- 발견된 경우만 포함, 없으면 섹션 제거 -->
+
+| 항목 | 내용 |
+|------|------|
+| 역할 | {역할 설명} |
+| 포함 대상 | {발견한 클래스 목록 — 예: `GlobalExceptionHandler`, `ErrorTypeExtension`} |
+| 금지 | {금지 사항} |
+
+\`\`\`
+common/advice/
+{실제 발견된 파일 목록}
+\`\`\`
+
+{GlobalExceptionHandler의 예외 처리 순서 — 코드에서 확인된 경우만 작성}
+
+---
+
+## `response/`  <!-- 발견된 경우만 포함, 없으면 섹션 제거 -->
+
+| 항목 | 내용 |
+|------|------|
+| 역할 | {역할 설명} |
+| 포함 대상 | {발견한 클래스 목록 — 예: `BaseResponse<T>`, `ErrorResponse`, `PageResponse<T>`} |
+| 금지 | {금지 사항} |
+
+\`\`\`
+common/response/
+{실제 발견된 파일 목록}
+\`\`\`
+
+{응답 래핑 규칙 — 모든 Controller 응답이 이 클래스로 래핑되는지 여부}
+
+---
+
+## `security/`  <!-- 발견된 경우만 포함, 없으면 섹션 제거 -->
+
+| 항목 | 내용 |
+|------|------|
+| 역할 | {역할 설명} |
+| 포함 대상 | {발견한 클래스 목록 — 예: `SecurityConfig`, `JwtAuthenticationFilter`} |
+| 금지 | {금지 사항} |
+
+\`\`\`
+common/security/
+{실제 발견된 파일 목록}
+\`\`\`
+
+{인증 필터 내 TenantContextHolder 주입 규칙 — 발견된 경우만}
+
+---
+
+## `logging/`  <!-- 발견된 경우만 포함, 없으면 섹션 제거 -->
+
+| 항목 | 내용 |
+|------|------|
+| 역할 | {역할 설명} |
+| 포함 대상 | {발견한 클래스 목록 — 예: `HttpLoggingFilter`, `MdcLoggingFilter`, `MaskingUtil`} |
+| 금지 | {금지 사항} |
+
+\`\`\`
+common/logging/
+{실제 발견된 파일 목록}
+\`\`\`
+
+{MDC 키 주입·제거 규칙 — 발견된 경우만}
+
+---
+
+## `validator/`  <!-- 발견된 경우만 포함, 없으면 섹션 제거 -->
+
+| 항목 | 내용 |
+|------|------|
+| 역할 | {역할 설명} |
+| 포함 대상 | {발견한 클래스 목록 — 예: 커스텀 `@Constraint` 어노테이션, `ConstraintValidator` 구현체} |
+| 금지 | {금지 사항 — 예: Port 주입, DB 조회} |
+
+\`\`\`
+common/validator/
+{실제 발견된 파일 목록}
+\`\`\`
+
+{Validator 검증 범위 규칙 — 형식만 검증하는지, DB 조회도 하는지}
+
+---
+
+## 금지 사항
+
+{코드에서 발견한 실제 금지 패턴 목록}
+
+---
+
+## 체크리스트
+
+{코드 분석 결과 기반 체크리스트}
+```
+
+> **작성 전 코드에서 확인할 사항**:
+> - 존재하는 서브패키지만 섹션으로 포함한다 (`find` 결과 기준)
+> - `common/`이 도메인 패키지 클래스를 import하는지 위반 감지 (`grep import.*\.domain\.`)
+> - `advice/`가 있으면 `GlobalExceptionHandler`의 예외 처리 순서를 코드에서 직접 읽어 작성한다
+> - 보안·로깅 관련 서브패키지는 전략 종속이므로, `README.md`의 전략 섹션과 일관되게 작성한다
+
+---
+
 ## 컨벤션 문서 공통 구조
 
 모든 컨벤션 문서는 동일한 섹션 순서를 따른다.

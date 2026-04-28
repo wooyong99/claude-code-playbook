@@ -1,4 +1,4 @@
-# App 계층 — `common/` 패키지 상세
+# App 계층 — 표현 계층 전역 관심사
 
 ---
 
@@ -142,7 +142,6 @@ common/validator/
 ## 체크리스트
 
 - [ ] `common/`이 도메인 패키지 클래스를 import하지 않는가?
-- [ ] `advice/`에 `GlobalExceptionHandler`와 `ErrorTypeExtension`이 위치하는가?
 - [ ] `CoreErrorType → HttpStatus` 매핑이 `ErrorTypeExtension`에만 존재하는가?
 - [ ] `response/`에 도메인별 응답 타입이 포함되지 않는가?
 - [ ] `security/`에 비즈니스 권한 검사·도메인 로직 직접 호출이 없는가?
