@@ -1,6 +1,7 @@
 ---
 name: setup-project-context
 description: 프로젝트 전용 플레이스홀더가 있는 파일들을 인터뷰 방식으로 채우는 스킬. 대상 파일은 `.claude/CLAUDE.md`, `docs/PRD.md`, `docs/backend/README.md`, `docs/frontend/README.md`이며, 비어 있는 항목만 선택적으로 채운다. 새 프로젝트를 처음 세팅하거나, CLAUDE.md·PRD.md에 {프로젝트명}·{비즈니스 목표}·{배경 및 해결하려는 문제} 같은 미완성 플레이스홀더가 남아 있을 때 사용한다. "프로젝트 설정", "CLAUDE.md 채워줘", "PRD.md 채워줘", "프로젝트 초기화", "문서 설정해줘" 같은 요청에도 이 스킬을 사용한다.
+model: opus
 ---
 
 # 프로젝트 컨텍스트 설정

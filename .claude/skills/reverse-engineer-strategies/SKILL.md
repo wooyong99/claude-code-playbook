@@ -1,6 +1,7 @@
 ---
 name: reverse-engineer-strategies
 description: 기존 Kotlin + Spring Boot 백엔드 코드베이스를 분석하여 claude-code-playbook의 strategies/ 문서를 자동 생성하는 스킬. 레거시 프로젝트나 기존 코드베이스에 플레이북을 적용할 때, strategies/ 디렉토리 하위에 프로젝트 실제 구현 패턴을 반영한 컨벤션 문서를 만들어야 할 때 사용한다. "기존 코드 분석해서 strategies 문서 만들어줘", "레거시 코드베이스에서 전략 문서 추출", "코드 보고 strategies/ 채워줘", "기존 프로젝트 플레이북 적용해줘" 같은 요청에 반드시 이 스킬을 사용한다.
+model: opus
 ---
 
 # 기존 코드베이스 → Strategies 문서 역공학
