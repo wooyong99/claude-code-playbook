@@ -60,7 +60,7 @@
 
 **Post-Work Verification 체크리스트**:
 - {컨벤션 문서 링크 목록}
-\`\`\`
+  \`\`\`
 ```
 
 ---
@@ -94,19 +94,30 @@
 
 **역할별 컴포넌트**:
 
-| 역할 | 컴포넌트 | 컨벤션 문서 |
-|-----|---------|-----------|
-| 요청/응답 DTO | `{Domain}Requests`, `{Domain}Responses` | [api-convention.md](api-convention.md) |
-| DTO ↔ Command/Result 변환 | `{Domain}DtoExtension` | [api-convention.md](api-convention.md) |
-| REST 설계 규칙 | (규칙 문서) | [rest-design-convention.md](rest-design-convention.md) |
-| 전역 예외 처리 | `GlobalExceptionHandler` | [exception-handling-convention.md](exception-handling-convention.md) |
+| 역할 | 컴포넌트 | 위치 | 컨벤션 문서 |
+|-----|---------|------|-----------|
+| Controller | `{Domain}Controller` | app 모듈 `{domain}/controller/` | [api-convention.md](api-convention.md) |
+| 요청/응답 DTO | `{Domain}Requests`, `{Domain}Responses` | {app 모듈 로컬 또는 application 모듈 `inbound/`} | [api-convention.md](api-convention.md) |
+| DTO ↔ Command 변환 | `{Domain}DtoExtension` | {app 모듈 또는 application 모듈} | [api-convention.md](api-convention.md) |
+| REST 설계 규칙 | (규칙 문서) | - | [rest-design-convention.md](rest-design-convention.md) |
+| 전역 예외 처리 | `GlobalExceptionHandler` | {app 모듈 또는 application 모듈} | [exception-handling-convention.md](exception-handling-convention.md) |
 ```
+
+> **작성 전 코드에서 확인할 사항 (가정 금지)**:
+> - Controller 파일의 실제 경로(`{domain}/controller/` 서브패키지인가 flat인가)
+> - Request/Response DTO가 `{app_module}`에 로컬로 있는가, `{application_module}` inbound 패키지에서 직접 가져오는가
+> - DTO ↔ Command 변환 클래스가 `{app_module}`에 있는가, `{application_module}`에 있는가
+> - 전역 예외 처리 클래스·공통 응답 클래스가 `{app_module}`에 있는가, `{application_module}`에 있는가
+> - Security 설정 클래스가 `{app_module}`에 있는가, `{infra_module}`에 있는가
+>
+> 공통 관심사(예외처리, Security)가 **다른 모듈에 있는 경우**, 컴포넌트 표의 "위치" 칸에 실제 모듈명을 명시하고 해당 모듈의 strategies 문서에서 다룬다고 안내한다.
 
 ### Application
 
 ```markdown
-**오케스트레이션 패턴**: {UseCase + Flow 계층 분리 | UseCase + Service | 단일 Service}
-**트랜잭션 소유**: {Flow | UseCase | Service}
+**오케스트레이션 패턴**: {UseCase 인터페이스 + Service 구현체 | UseCase + Flow 계층 분리 | 단일 Service}
+**트랜잭션 소유**: {Service | Flow | UseCase}
+**CQRS 분리 수준**: {패키지 + 인터페이스 수준 분리 | 인터페이스만 분리 | 미분리}
 
 **선택 이유**: {코드에서 발견한 근거}
 
@@ -114,14 +125,43 @@
 
 | 역할 | 컴포넌트 | 컨벤션 문서 |
 |-----|---------|-----------|
-| 진입점 | `{Action}{Entity}UseCase` | [use-case-convention.md](use-case-convention.md) |
-| 흐름 오케스트레이터 | `{Action}{Entity}Flow` | [flow-convention.md](flow-convention.md) |
-| 검증기 | `{Entity}Validator` | [validator-convention.md](validator-convention.md) |
-| ACL / 조율자 | `{Entity}Handler` | [handler-convention.md](handler-convention.md) |
-| 전략 패턴 | `{Entity}Policy` | [policy-convention.md](policy-convention.md) |
-| 이벤트 처리 | `{Entity}EventHandler` | [event-handler-convention.md](event-handler-convention.md) |
-| 결과 변환 | `{Entity}Mapper` | [mapper-convention.md](mapper-convention.md) |
+| 진입점 (Inbound Port) | `{Domain}UseCase` (interface) | [use-case-convention.md](use-case-convention.md) |
+| 쓰기 구현체 | `{Domain}Service` (@Service) | [use-case-convention.md](use-case-convention.md) |
+| 읽기 구현체 | `Query{Domain}Service` (@Service) | [use-case-convention.md](use-case-convention.md) |
+| ACL / 크로스도메인 조율자 | `{Domain}Handler` (@Component) | [handler-convention.md](handler-convention.md) |
+| 이벤트 처리 | `{Domain}EventHandler` (@Component) | [event-handler-convention.md](event-handler-convention.md) |
+| Outbound Port | `{Domain}Port` (interface) | [use-case-convention.md](use-case-convention.md) |
 ```
+
+> 코드베이스에 없는 역할의 행과 해당 컨벤션 문서 링크는 제거한다.
+
+### Infrastructure
+
+Infrastructure 레이어는 JPA 영속성 어댑터(storage 역할)와 Spring Security/Config가 **같은 모듈**에 공존할 때 사용한다.
+별도의 `storage` 모듈이 있을 경우 해당 모듈은 Storage 템플릿을 사용한다.
+
+```markdown
+**ORM / 쿼리 빌더**: {JPA (Spring Data JPA) + QueryDsl | JOOQ | Exposed | 직접 JDBC}
+**인증 방식**: {JWT Stateless | Session | OAuth2 Resource Server | API Key}
+**멀티 테넌시**: {JWT claim 기반 | Header 기반 (`X-Tenant-Id`) | 없음}
+
+**선택 이유**: {코드에서 발견한 근거}
+
+**역할별 컴포넌트**:
+
+| 역할 | 컴포넌트 | 컨벤션 문서 |
+|-----|---------|-----------|
+| Port 구현체 | `{Entity}Adapter` | [storage-adapter-convention.md](storage-adapter-convention.md) |
+| 단순 CRUD / 단순 조회 | `{Entity}JpaRepository` | [storage-adapter-convention.md](storage-adapter-convention.md) |
+| 복잡 쿼리 / Projection | `{Entity}QueryDslRepository` | [querydsl-convention.md](querydsl-convention.md) |
+| 도메인 ↔ Entity 변환 | `{Entity}Extension` | [storage-adapter-convention.md](storage-adapter-convention.md) |
+| Security 설정 | `SecurityConfig` | [security-convention.md](security-convention.md) |
+| JWT 인증 필터 | `JwtAuthenticationFilter` | [security-convention.md](security-convention.md) |
+```
+
+> 특정 역할의 클래스가 이 모듈이 아닌 다른 모듈에 있으면 해당 행을 제거하고 실제 모듈의 strategies 문서에서 다룬다.
+
+---
 
 ### Domain
 
