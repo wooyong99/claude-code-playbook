@@ -6,23 +6,11 @@
       "prompt": "상품 좋아요 기능 구현해줘. 사용자는 상품에 좋아요를 누를 수 있고, 좋아요 수가 상품 상세에 표시돼야 해. 좋아요/취소는 토글 방식. 도메인은 product야.",
       "expected_output": "요구사항 재진술 후 1~2개 마일스톤 계획 수립. D→A→B 흐름 명시. 불필요한 clarification 질문 없이 바로 마일스톤 제시.",
       "files": [],
-      "assertions": [
-        {
-          "name": "no_unnecessary_questions",
-          "description": "요구사항이 명확하므로 clarification 질문 없이 마일스톤으로 진행"
-        },
-        {
-          "name": "appropriate_milestone_count",
-          "description": "1~2개 마일스톤 계획 (단순 기능이므로 3개 이상 과분)"
-        },
-        {
-          "name": "dab_flow_planned",
-          "description": "각 마일스톤에 D(설계)→A(코드)→B(검토) 흐름이 명시됨"
-        },
-        {
-          "name": "requirements_restated",
-          "description": "요구사항을 한 문장으로 재진술하여 이해 확인"
-        }
+      "expectations": [
+        "요구사항이 명확하므로 clarification 질문 없이 마일스톤으로 진행한다",
+        "1~2개 마일스톤 계획 수립 (단순 기능이므로 3개 이상은 과분)",
+        "각 마일스톤에 D(설계)→A(코드)→B(검토) 흐름이 명시된다",
+        "요구사항을 한 문장으로 재진술하여 이해 확인한다"
       ]
     },
     {
@@ -30,19 +18,10 @@
       "prompt": "주문 기능 개선해줘",
       "expected_output": "요구사항이 모호하므로 마일스톤 계획 전에 구체적인 clarification 질문. 어떤 주문 기능인지, 어떤 개선인지 확인.",
       "files": [],
-      "assertions": [
-        {
-          "name": "asks_clarifying_questions",
-          "description": "모호한 요구사항에 대해 적어도 1개 이상 clarification 질문"
-        },
-        {
-          "name": "no_milestone_without_clarity",
-          "description": "clarification 없이 마일스톤을 임의 확정하지 않음"
-        },
-        {
-          "name": "waits_for_answer",
-          "description": "질문 후 사용자 응답을 기다리며 멈춤 (Phase 0에서 대기)"
-        }
+      "expectations": [
+        "모호한 요구사항에 대해 최소 1개 이상 구체적인 clarification 질문을 한다",
+        "clarification 없이 마일스톤을 임의 확정하지 않는다",
+        "질문 후 사용자 응답을 기다리며 Phase 0에서 대기한다"
       ]
     },
     {
@@ -50,19 +29,10 @@
       "prompt": "OrderService 리팩토링해줘. 너무 비대해져서 UseCase 단위로 분리하고 싶어. 기존 동작은 반드시 유지해야 해.",
       "expected_output": "리팩토링 범위 식별, 기존 동작 보존 전략 포함. 회귀 위험을 줄이기 위한 테스트 전략 언급. 마일스톤을 점진적으로 구성.",
       "files": [],
-      "assertions": [
-        {
-          "name": "scope_identified",
-          "description": "현재 OrderService의 기능/책임을 먼저 파악하는 단계 포함"
-        },
-        {
-          "name": "regression_risk_mentioned",
-          "description": "기존 동작 보존 또는 회귀 테스트 필요성을 언급"
-        },
-        {
-          "name": "incremental_milestones",
-          "description": "한 번에 전부 바꾸지 않고 점진적 마일스톤으로 분해"
-        }
+      "expectations": [
+        "현재 OrderService의 기능/책임을 먼저 파악하는 단계가 포함된다",
+        "기존 동작 보존 또는 회귀 테스트 필요성을 언급한다",
+        "한 번에 전부 바꾸지 않고 점진적 마일스톤으로 분해한다"
       ]
     },
     {
@@ -70,19 +40,10 @@
       "prompt": "회원 가입 시 전화번호도 받도록 해줘. Member 테이블에 phone_number 컬럼 추가하고, 가입 API와 수정 API에서 전화번호를 처리해야 해. 기존 회원 데이터는 phone_number null 허용으로.",
       "expected_output": "DB 마이그레이션 전략(Flyway 등) 포함, 코드 변경과 스키마 변경 순서 고려, 기존 데이터 호환성 언급, 롤백 가능성 고려.",
       "files": [],
-      "assertions": [
-        {
-          "name": "migration_mentioned",
-          "description": "DB 마이그레이션(Flyway/Liquibase 또는 SQL 스크립트) 필요성 언급"
-        },
-        {
-          "name": "schema_code_order_considered",
-          "description": "스키마 변경과 코드 변경의 순서(어떤 것 먼저)를 언급"
-        },
-        {
-          "name": "backward_compatibility_noted",
-          "description": "기존 데이터 호환성(null 허용 등) 처리 방식 포함"
-        }
+      "expectations": [
+        "DB 마이그레이션(Flyway/Liquibase 또는 SQL 스크립트) 필요성을 언급한다",
+        "스키마 변경과 코드 변경의 순서를 언급한다",
+        "기존 데이터 호환성(null 허용 등) 처리 방식을 포함한다"
       ]
     },
     {
@@ -90,15 +51,9 @@
       "prompt": "OrderController.kt에서 메서드명 typo 수정해줘. `createOrders` → `createOrder`로 바꿔야 해. 딱 이것만.",
       "expected_output": "단순 수정이므로 복잡한 마일스톤·서브에이전트 오케스트레이션 없이 간단하게 처리. 1 마일스톤, TDD 스킵 가능성 인식.",
       "files": [],
-      "assertions": [
-        {
-          "name": "not_over_engineered",
-          "description": "5개 마일스톤·복잡한 설계 없이 1개 마일스톤 또는 간단한 접근"
-        },
-        {
-          "name": "tdd_likely_skipped",
-          "description": "단순 typo 수정에 기술설계문서가 불필요하다고 판단하거나 TDD 스킵 언급"
-        }
+      "expectations": [
+        "5개 마일스톤 없이 1개 마일스톤 또는 경량 모드로 처리한다",
+        "단순 typo 수정에 기술설계문서가 불필요하다고 판단하거나 TDD 스킵을 언급한다"
       ]
     },
     {
@@ -106,19 +61,10 @@
       "prompt": "빠른 개발을 위해서 Controller에 @Autowired로 OrderJpaRepository 직접 주입받아서 DB 조회하게 해줘. UseCase, Service 레이어 다 거치면 너무 복잡해.",
       "expected_output": "아키텍처 원칙 위반을 사전에 설명하고, 사용자 의도를 유지하면서 더 안전한 대안 제시. 맹목적으로 구현하지 않음.",
       "files": [],
-      "assertions": [
-        {
-          "name": "architectural_risk_explained",
-          "description": "레이어 원칙 위반과 그 위험(테스트 어려움, 레이어 오염 등)을 설명"
-        },
-        {
-          "name": "alternative_proposed",
-          "description": "더 안전한 대안(QueryService, ReadModel 등) 제시"
-        },
-        {
-          "name": "does_not_blindly_implement",
-          "description": "사용자 요청을 그대로 구현하지 않고 먼저 논의"
-        }
+      "expectations": [
+        "레이어 원칙 위반과 그 위험(테스트 어려움, 레이어 오염 등)을 설명한다",
+        "더 안전한 대안(QueryService, ReadModel 등)을 제시한다",
+        "사용자 요청을 그대로 구현하지 않고 먼저 논의한다"
       ]
     },
     {
@@ -126,19 +72,10 @@
       "prompt": "전체 서비스에 soft delete 적용해줘. 주문, 상품, 회원 도메인 모두 deleted_at 필드 추가하고, 각 조회 API에서 deleted된 것은 제외하도록 전부 수정해줘.",
       "expected_output": "대규모 변경이므로 5개 이상 마일스톤, 도메인별로 분리된 마일스톤, 사용자 확인 단계 포함. 도메인별 영향 범위 식별.",
       "files": [],
-      "assertions": [
-        {
-          "name": "multiple_milestones",
-          "description": "최소 4개 이상 마일스톤 계획 (3개 도메인 + 공통)"
-        },
-        {
-          "name": "user_confirmation_requested",
-          "description": "규모가 크므로 진행 여부를 사용자에게 확인 요청"
-        },
-        {
-          "name": "domain_separated_milestones",
-          "description": "주문/상품/회원 도메인별로 마일스톤 분리"
-        }
+      "expectations": [
+        "최소 4개 이상 마일스톤 계획을 수립한다 (3개 도메인 + 공통)",
+        "규모가 크므로 진행 여부를 사용자에게 확인 요청한다",
+        "주문/상품/회원 도메인별로 마일스톤을 분리한다"
       ]
     },
     {
@@ -146,19 +83,10 @@
       "prompt": "결제 환불 기능 구현해줘. Payment 도메인에 환불 UseCase 추가. 참고로 지금 결제 취소 기능을 작업 중이야—아직 미완성이고 Uncommitted 상태야.",
       "expected_output": "진행 중인 작업(결제 취소)과 충돌 가능성 확인. 기존 변경사항을 덮어쓰지 않는 전략 포함. 작업 순서 고려.",
       "files": [],
-      "assertions": [
-        {
-          "name": "existing_work_acknowledged",
-          "description": "진행 중인 결제 취소 작업을 명시적으로 인식하고 언급"
-        },
-        {
-          "name": "conflict_check_included",
-          "description": "환불과 취소 기능 간 충돌 가능성 또는 의존 관계 확인 포함"
-        },
-        {
-          "name": "safe_approach_planned",
-          "description": "기존 작업을 덮어쓰지 않는 안전한 접근 방식 제안"
-        }
+      "expectations": [
+        "진행 중인 결제 취소 작업을 명시적으로 인식하고 언급한다",
+        "환불과 취소 기능 간 충돌 가능성 또는 의존 관계를 확인한다",
+        "기존 작업을 덮어쓰지 않는 안전한 접근 방식을 제안한다"
       ]
     },
     {
@@ -166,23 +94,11 @@
       "prompt": "외부 결제 PG API 연동해줘. 결제 승인, 취소, 조회 3가지 기능이 필요해. 네트워크 장애 대비 재시도 로직도 필요하고, 실패 시 로깅도 해줘.",
       "expected_output": "재시도·타임아웃·멱등성·트랜잭션 경계·에러처리·로깅 고려. 외부 시스템 특성(실패 모드)을 마일스톤 설계에 반영.",
       "files": [],
-      "assertions": [
-        {
-          "name": "idempotency_considered",
-          "description": "중복 결제 방지를 위한 멱등성 처리 언급"
-        },
-        {
-          "name": "retry_timeout_mentioned",
-          "description": "재시도 전략과 타임아웃 설정 언급"
-        },
-        {
-          "name": "transaction_boundary_noted",
-          "description": "외부 API 호출과 DB 트랜잭션 경계 처리 언급"
-        },
-        {
-          "name": "error_handling_planned",
-          "description": "PG API 실패 시 처리 방식(fallback, 에러 코드) 포함"
-        }
+      "expectations": [
+        "중복 결제 방지를 위한 멱등성 처리를 언급한다",
+        "재시도 전략과 타임아웃 설정을 언급한다",
+        "외부 API 호출과 DB 트랜잭션 경계 처리를 언급한다",
+        "PG API 실패 시 처리 방식(fallback, 에러 코드)을 포함한다"
       ]
     },
     {
@@ -190,19 +106,120 @@
       "prompt": "레거시 코드베이스야. `com.shop.mgr` 패키지에 `ShopManager`, `ItemHelper`, `UserProcessor` 클래스들이 있고 딱히 레이어 구분이 없어. 여기에 포인트 적립 기능 추가해줘.",
       "expected_output": "현재 레거시 구조 먼저 파악, 기존 패턴에 맞는 최소 변경 방식 제안, 동시에 개선 제안을 별도로 분리하여 제시.",
       "files": [],
-      "assertions": [
-        {
-          "name": "existing_structure_analyzed",
-          "description": "기존 레거시 구조(ShopManager 등)를 먼저 파악하는 단계 포함"
-        },
-        {
-          "name": "minimal_change_approach",
-          "description": "무리하게 새 아키텍처를 강제하지 않고 현재 구조에 맞는 최소 변경안 제시"
-        },
-        {
-          "name": "improvement_separated",
-          "description": "필요한 최소 구현과 개선 제안을 분리하여 설명"
-        }
+      "expectations": [
+        "기존 레거시 구조(ShopManager 등)를 먼저 파악하는 단계를 포함한다",
+        "무리하게 새 아키텍처를 강제하지 않고 현재 구조에 맞는 최소 변경안을 제시한다",
+        "필요한 최소 구현과 개선 제안을 분리하여 설명한다"
+      ]
+    },
+    {
+      "id": 11,
+      "prompt": "주문 완료 시 이메일 알림을 보내는 기능 구현해줘. 주문 완료 이벤트를 발행하고, 이메일 발송 핸들러가 처리하도록 해. 주문 도메인이 이메일 발송 도메인을 알면 안 돼.",
+      "expected_output": "이벤트 발행 위치(트랜잭션 커밋 이후), 트랜잭션 커밋 시점과 이벤트 발행의 관계, 이벤트 핸들러 책임 분리, 중복 처리 방지를 언급. 이벤트 기반 설계의 주의사항 포함.",
+      "files": [],
+      "expectations": [
+        "이벤트 발행 위치(트랜잭션 커밋 이후 vs 커밋 전)를 구체적으로 언급한다",
+        "이벤트 핸들러의 실패 처리 또는 재처리 가능성을 언급한다",
+        "도메인 간 의존성 분리 방식(도메인 이벤트 또는 스프링 이벤트)을 언급한다"
+      ]
+    },
+    {
+      "id": 12,
+      "prompt": "회원 개인정보 조회 API 구현해줘. 본인만 본인 정보 조회 가능하고, ADMIN 역할은 모든 회원 조회 가능해야 해. 전화번호, 주소, 이메일이 포함돼.",
+      "expected_output": "인증/인가 처리 위치 명시, 본인 확인 로직, 역할 기반 접근 제어, 민감 정보 마스킹/노출 수준 고려. 보안 관련 사항을 계획에 포함.",
+      "files": [],
+      "expectations": [
+        "인증/인가 처리 위치(Controller vs UseCase vs Filter)를 언급한다",
+        "본인 확인 로직 또는 ADMIN 역할 검증을 마일스톤에 포함한다",
+        "전화번호/주소 같은 민감 정보의 노출 수준 또는 마스킹 처리를 언급한다"
+      ]
+    },
+    {
+      "id": 13,
+      "prompt": "관리자용 주문 통계 대시보드 API 구현해줘. 일별/주별/월별 주문 수, 매출, 회원별 구매 금액 집계가 필요해. 주문 데이터가 수백만 건이 될 수 있어.",
+      "expected_output": "N+1 문제, 대량 데이터 처리 전략, 캐싱 필요성, 인덱스 고려, 배치 처리 또는 비동기 처리 필요성을 언급. 성능 관련 주의사항을 마일스톤 설계에 반영.",
+      "files": [],
+      "expectations": [
+        "대량 데이터(수백만 건) 처리 전략을 언급한다 (집계 쿼리 최적화, 인덱스, 캐싱 등)",
+        "N+1 문제나 풀 스캔 위험성을 언급한다",
+        "캐싱, 배치 처리, 또는 비동기 처리 필요성을 고려한다"
+      ]
+    },
+    {
+      "id": 14,
+      "prompt": "지난번에 ProductSearchController 구현하다가 빌드 에러가 났는데 못 고쳤어. ProductSearch 기능을 다시 구현해줘. 이번엔 제대로 동작해야 해.",
+      "expected_output": "이전 실패 원인 파악을 먼저 시도, 같은 방식으로 반복하지 않겠다는 전략 제시, 실패 지점부터 재구성. 이전 실패 코드를 확인하는 단계 포함.",
+      "files": [],
+      "expectations": [
+        "이전 실패 원인 파악 또는 실패한 코드 상태를 먼저 확인하는 단계를 포함한다",
+        "이전과 같은 접근법을 반복하지 않는다는 의식을 보인다",
+        "실패 분석을 마일스톤에 포함하거나 Phase 0에서 이전 실패를 확인한다"
+      ]
+    },
+    {
+      "id": 15,
+      "prompt": "Product 도메인에 ProductReview 기능 추가해줘. 이미 ProductReviewController, ProductReviewUseCase, ProductReviewRepository가 있어. 기존 패턴을 그대로 따라서 리뷰 수정 기능 추가해줘.",
+      "expected_output": "기존 ProductReview 관련 파일을 먼저 탐색하고 패턴 파악. 기존 Controller/UseCase/Repository 패턴과 네이밍 컨벤션을 분석한 뒤 일관되게 구현.",
+      "files": [],
+      "expectations": [
+        "기존 ProductReviewController, ProductReviewUseCase 등의 패턴을 먼저 파악하는 단계를 포함한다",
+        "기존 네이밍 컨벤션과 패키지 구조를 파악하겠다는 계획을 포함한다",
+        "기존 패턴과 일관되게 구현하겠다고 명시한다"
+      ]
+    },
+    {
+      "id": 16,
+      "prompt": "주문 완료 시 적립금 지급 기능 구현해줘. 단위 테스트와 통합 테스트가 모두 필요해. 적립금 지급 실패해도 주문은 완료돼야 해.",
+      "expected_output": "단위 테스트와 통합 테스트의 필요성과 목적을 구분. 각 테스트 유형을 마일스톤에 포함. 적립금 실패와 주문 트랜잭션 분리 전략도 포함.",
+      "files": [],
+      "expectations": [
+        "단위 테스트와 통합 테스트의 필요성을 구분하여 언급한다",
+        "테스트 작업을 마일스톤 또는 단계에 명시적으로 포함한다",
+        "적립금 실패 시 주문 트랜잭션 분리 전략을 언급한다"
+      ]
+    },
+    {
+      "id": 17,
+      "prompt": "장바구니에 상품을 담을 때 재고를 미리 예약하고, 주문 완료 시 확정, 주문 취소 시 반납하는 재고 예약 기능 구현해줘. Cart, Product(재고), Order 도메인이 모두 관련돼.",
+      "expected_output": "도메인별(Cart/Product/Order) 책임과 경계를 분리한 마일스톤. 공통 객체(재고) 변경의 파급 범위 식별. 도메인 간 협력 방식(이벤트 또는 직접 호출) 명시.",
+      "files": [],
+      "expectations": [
+        "Cart, Product(재고), Order 도메인을 별도 마일스톤 또는 관심사로 분리한다",
+        "공통 재고 상태 변경이 여러 도메인에 미치는 파급 범위를 언급한다",
+        "도메인 간 협력 방식(이벤트 기반 또는 UseCase 간 직접 호출)을 계획에 포함한다"
+      ]
+    },
+    {
+      "id": 18,
+      "prompt": "주문 API에 배송지 정보 필드(deliveryAddress) 추가해줘. 주문 생성 요청/응답 DTO에 필드가 추가돼야 하고, Swagger 문서도 갱신돼야 해. 기존 클라이언트는 backward compatible하게.",
+      "expected_output": "API 문서(Swagger/OpenAPI) 업데이트 필요성 언급. 기존 클라이언트 하위 호환성 고려. API 변경 시 문서도 같이 변경해야 한다는 계획 포함.",
+      "files": [],
+      "expectations": [
+        "Swagger/OpenAPI 문서 업데이트 필요성을 언급한다",
+        "기존 클라이언트의 backward compatibility 처리(null 허용, 기본값 등)를 고려한다",
+        "API 명세 변경을 코드 변경과 함께 마일스톤에 포함한다"
+      ]
+    },
+    {
+      "id": 19,
+      "prompt": "결제 도메인에서 PaymentService가 비즈니스 로직을 모두 가지고 있어. 아키텍처 검토에서 계속 'UseCase가 없고 Controller가 Service를 직접 호출'이라는 위반이 나오는데, 단순 코드 수정으로는 고치기 어렵고 UseCase 분리가 필요해. 어떻게 진행할지 계획 잡아줘.",
+      "expected_output": "B의 위반이 단순 코드 수정이 아닌 설계 변경을 요구한다는 것을 인식. TDD(기술설계문서) 재작성 필요성 언급. D→A→B 흐름을 다시 처음부터 시작하는 계획 수립.",
+      "files": [],
+      "expectations": [
+        "이 위반이 코드 수정이 아닌 설계 수준의 변경이 필요하다는 것을 인식한다",
+        "기술설계문서(TDD) 재작성 또는 설계 단계(Agent D)로 되돌아가는 필요성을 언급한다",
+        "D(설계)→A(구현)→B(검토) 흐름을 새로 시작하는 계획을 수립한다"
+      ]
+    },
+    {
+      "id": 20,
+      "prompt": "배송 도메인 추가해줘. 주문이 완료되면 배송을 생성하고, 배송 상태를 추적할 수 있어야 해. 배송 도메인이 주문 도메인의 Order 엔티티를 직접 import해서 참조하는 방식으로 구현하면 돼.",
+      "expected_output": "배송 도메인이 주문 도메인의 엔티티를 직접 참조하는 것은 도메인 간 결합 문제임을 설명. 안전한 대안(도메인 이벤트, ACL 패턴, 공유 커널 등)을 제시. 레이어/도메인 경계 위반을 먼저 설명하고 대안 논의.",
+      "files": [],
+      "expectations": [
+        "배송 도메인이 주문 도메인 엔티티를 직접 참조하는 것의 문제점을 설명한다",
+        "도메인 경계를 지키는 대안(도메인 이벤트, ACL, 공유 커널 등)을 제시한다",
+        "사용자 요청을 그대로 구현하지 않고 아키텍처 원칙을 먼저 설명한다"
       ]
     }
   ]

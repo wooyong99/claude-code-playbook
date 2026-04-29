@@ -79,13 +79,17 @@ Read only folders relevant to the current task. Do not read documents outside yo
 
 ---
 
-## Context Window Management
+## 체크포인트 관리
 
-컨텍스트 윈도우가 **65% 이상** 소모됐다고 판단되면 아래 순서로 처리한다.
+### 시작 시
 
-### 1. 체크포인트 저장
+오케스트레이터가 `[체크포인트 파일]`로 전달한 경로에 파일이 있으면 Read하여 이전 상태를 파악한다.
+- "완료된 작업" 목록에 있는 파일·작업은 건너뜀
+- "남은 작업"부터 이어서 수행
 
-오케스트레이터가 프롬프트에 `[체크포인트 파일]`로 전달한 경로에 `Write` 도구로 저장한다.
+### 작업 중
+
+파일 하나를 작성·수정 완료할 때마다 `[체크포인트 파일]` 경로에 현재 상태를 **Write**한다:
 
 ```markdown
 # Code Writer Checkpoint
@@ -94,19 +98,10 @@ Read only folders relevant to the current task. Do not read documents outside yo
 {이번 호출에서 달성해야 할 목표}
 
 ## 완료된 작업
-{처리 완료된 파일·작업 목록}
-
-## 진행중 작업
-{현재 처리 중이던 파일·작업}
+- {절대경로}: {1줄 설명}
 
 ## 남은 작업
-{아직 처리하지 않은 파일·작업 목록}
-
-## 발견한 버그
-{작업 중 발견한 이슈. 없으면 "없음"}
-
-## 주의사항
-{다음 작업자가 알아야 할 제약·특이사항}
+- {아직 처리하지 않은 파일·작업}
 
 ## 최근 결정
 {이번 호출에서 내린 주요 설계 결정}
@@ -114,14 +109,3 @@ Read only folders relevant to the current task. Do not read documents outside yo
 ## 관련 파일
 {이번 작업과 관련된 핵심 파일 절대 경로 목록}
 ```
-
-### 2. 신호 반환
-
-작업을 중단하고 계약 문서([`code-writer-contract.md`](../skills/implement/references/code-writer-contract.md)) — "컨텍스트 체크포인트" 섹션에 정의된 신호 포맷으로 반환한다.
-
-### 3. 재호출 시 처리
-
-오케스트레이터가 체크포인트 내용을 포함해 재호출하면:
-1. `[체크포인트 파일]` 경로를 Read하여 이전 상태 파악
-2. "완료된 작업"은 건너뜀
-3. "진행중 작업" 또는 "남은 작업"부터 이어서 수행
