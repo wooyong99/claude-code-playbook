@@ -3,77 +3,133 @@
   "evals": [
     {
       "id": 1,
-      "prompt": "우리 레거시 프로젝트 코드베이스 분석해서 strategies 문서 만들어줘. 코드 경로는 /tmp/test-backend 야. storage랑 domain 레이어 먼저 해줘.",
-      "expected_output": "storage/strategies/README.md와 domain/strategies/README.md가 생성됨. README에는 실제 코드에서 발견한 ORM 전략(JPA+QueryDsl)과 도메인 모델 패턴이 기술됨. 추가로 storage-adapter-convention.md, querydsl-convention.md, domain-model-convention.md, exception-convention.md가 생성됨.",
-      "files": ["/tmp/test-backend"],
+      "prompt": "코드베이스를 분석해서 strategies 문서를 만들어줘. 코드 경로는 /tmp/reverse-engineer-eval/fixtures/case1-no-docs 이고, 출력 경로는 /tmp/reverse-engineer-eval/workspace/iteration-1/case1-with_skill/outputs 야. 별도 질문 없이 바로 진행해줘.",
+      "expected_output": "docs 디렉토리가 전혀 없는 신규 코드베이스에서 app/application/domain/storage 레이어의 strategies 문서들이 새로 생성됨. 각 레이어마다 strategies/README.md와 최소 1개 이상의 컨벤션 문서가 코드 분석 기반으로 작성됨.",
+      "files": [],
       "assertions": [
         {
-          "name": "layer_subdirectory_structure",
-          "description": "파일이 {layer}/strategies/ 서브디렉토리에 생성됨 (플랫 파일 아님)"
+          "name": "creates_readme_per_layer",
+          "description": "분석된 각 레이어마다 strategies/README.md가 생성됨 (예: domain/strategies/README.md)"
         },
         {
-          "name": "strategies_readme_three_sections",
-          "description": "strategies/README.md가 '이 프로젝트의 전략', '역할 정의', '전략 정의 템플릿' 3개 섹션을 포함"
+          "name": "convention_files_created",
+          "description": "최소 2개 이상의 컨벤션 문서가 생성됨 (예: storage-adapter-convention.md, domain-model-convention.md)"
         },
         {
-          "name": "component_table_with_real_class_names",
-          "description": "역할별 컴포넌트 테이블에 실제 클래스명(OrderAdapter, OrderJpaRepository 등)이 포함"
+          "name": "real_class_names_used",
+          "description": "문서 내에 실제 클래스명(OrderAdapter, OrderJpaRepository 등)이 포함됨 (플레이스홀더 미사용)"
         },
         {
-          "name": "convention_files_generated",
-          "description": "레이어당 최소 1개 이상의 컨벤션 문서(storage-adapter-convention.md 등)가 생성"
+          "name": "no_placeholder_patterns_remain",
+          "description": "'{Entity}', '{Component}' 같은 플레이스홀더가 최종 문서에 남아있지 않음"
         },
         {
-          "name": "post_work_verification_present",
-          "description": "Post-Work Verification 체크리스트 섹션이 README에 포함"
+          "name": "layer_structure_correct",
+          "description": "파일이 {layer}/strategies/ 하위에 배치됨 (플랫 구조 아님)"
         }
       ]
     },
     {
       "id": 2,
-      "prompt": "기존 프로젝트에 플레이북 적용하려고 하는데, 코드 보고 전 레이어 strategies/ 채워줘. 프로젝트는 /tmp/test-backend 에 있어.",
-      "expected_output": "app, application, domain, storage 레이어 모두 분석됨. 각 레이어의 strategies/README.md가 생성됨. 발견된 컴포넌트에 해당하는 convention 문서들이 생성됨. 마지막에 생성 파일 목록과 핵심 전략 결정 사항이 보고됨.",
-      "files": ["/tmp/test-backend"],
+      "prompt": "기존 strategies 문서가 있는데 코드와 안 맞는 것들이 있어. 코드베이스 /tmp/reverse-engineer-eval/fixtures/case2-unnecessary-docs 를 분석해서 출력 경로 /tmp/reverse-engineer-eval/workspace/iteration-1/case2-with_skill/outputs 에 정리해줘. 병합 모드로 처리해줘.",
+      "expected_output": "코드베이스에 Flow/Validator/Mapper 클래스가 없으므로 flow-convention.md, validator-convention.md, mapper-convention.md가 제거됨. use-case-convention.md는 유지되며 실제 코드 기반으로 내용이 갱신됨. README.md의 컴포넌트 표에서 삭제된 파일 링크가 제거됨.",
+      "files": [],
       "assertions": [
         {
-          "name": "all_four_layers_analyzed",
-          "description": "domain, application, storage, app 4개 레이어 모두 strategies/README.md가 생성됨"
+          "name": "flow_convention_removed",
+          "description": "flow-convention.md가 최종 출력에 존재하지 않음 (코드에 Flow 클래스 없음)"
         },
         {
-          "name": "strategies_readme_three_sections",
-          "description": "각 strategies/README.md가 3개 섹션 구조를 따름"
+          "name": "validator_convention_removed",
+          "description": "validator-convention.md가 최종 출력에 존재하지 않음 (코드에 Validator 클래스 없음)"
         },
         {
-          "name": "transaction_ownership_documented",
-          "description": "application strategies/README.md에 트랜잭션 소유(Flow)가 명시"
+          "name": "mapper_convention_removed",
+          "description": "mapper-convention.md가 최종 출력에 존재하지 않음 (코드에 Mapper 클래스 없음)"
         },
         {
-          "name": "jwt_strategy_detected",
-          "description": "app strategies/README.md에 JWT Stateless 인증 방식이 기술"
+          "name": "usecase_convention_preserved",
+          "description": "use-case-convention.md는 유지되며 CreateOrderUseCase 실제 코드 패턴이 반영됨"
         },
         {
-          "name": "completion_report_present",
-          "description": "생성 완료 보고(생성 파일 목록 + 핵심 전략)가 포함"
+          "name": "readme_links_cleaned",
+          "description": "README.md에 삭제된 파일(flow-convention.md 등)의 링크가 남아있지 않음"
         }
       ]
     },
     {
       "id": 3,
-      "prompt": "/tmp/test-backend 분석해서 strategies 뽑아줘. 출력은 /tmp/output-docs 에 저장해줘.",
-      "expected_output": "사용자가 지정한 출력 경로에 문서가 저장됨. 코드를 실제로 분석하여 발견한 패턴을 기반으로 문서 생성됨. 플레이스홀더({Entity} 등)는 실제 클래스명으로 대체됨.",
-      "files": ["/tmp/test-backend"],
+      "prompt": "코드베이스 /tmp/reverse-engineer-eval/fixtures/case3-mismatched-docs 를 분석해서 출력 경로 /tmp/reverse-engineer-eval/workspace/iteration-1/case3-with_skill/outputs 에 strategies 문서를 업데이트해줘. 기존 문서가 있는데 코드와 맞지 않는 내용이 있을 수 있어. 병합 모드로 해줘.",
+      "expected_output": "기존 docs가 QueryDSL/RestTemplate으로 되어있으나 실제 코드는 JOOQ/OkHttp를 사용함. 스킬이 이 불일치를 감지하고 JOOQ 기반 storage 문서와 OkHttp 기반 external 문서로 교체함. querydsl-convention.md와 api-client-resttemplate.md가 제거되고 jooq-convention.md, api-client-okhttp.md 등 새 파일이 생성됨.",
+      "files": [],
       "assertions": [
         {
-          "name": "layer_subdirectory_structure",
-          "description": "파일이 {layer}/strategies/ 서브디렉토리에 생성됨 (플랫 파일 아님)"
+          "name": "wrong_orm_doc_replaced",
+          "description": "QueryDSL 관련 문서(querydsl-convention.md)가 제거되거나 JOOQ 내용으로 대체됨"
         },
         {
-          "name": "real_class_names_replace_placeholders",
-          "description": "'{Entity}' 플레이스홀더 대신 실제 클래스명(Order, OrderAdapter 등)이 사용됨"
+          "name": "jooq_strategy_documented",
+          "description": "JOOQ를 사용하는 실제 패턴이 storage 관련 문서에 기술됨"
         },
         {
-          "name": "strategies_readme_three_sections",
-          "description": "strategies/README.md가 3개 섹션 구조를 따름"
+          "name": "wrong_http_client_doc_replaced",
+          "description": "RestTemplate 관련 문서(api-client-resttemplate.md)가 제거되거나 OkHttp 내용으로 대체됨"
+        },
+        {
+          "name": "okhttp_strategy_documented",
+          "description": "OkHttp를 사용하는 실제 패턴이 external 관련 문서에 기술됨"
+        },
+        {
+          "name": "mismatch_not_silently_preserved",
+          "description": "기존 문서의 잘못된 기술(QueryDSL, RestTemplate)이 그대로 보존되지 않음"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "레거시 프로젝트야. 코드베이스 /tmp/reverse-engineer-eval/fixtures/case4-legacy 를 분석해서 출력 경로 /tmp/reverse-engineer-eval/workspace/iteration-1/case4-with_skill/outputs 에 strategies 문서를 만들어줘. docs 디렉토리는 없어.",
+      "expected_output": "레거시 코드베이스 패턴(Service+Manager+Handler 혼용, @Transactional 남용, REST 안티패턴 URL 등)을 분석하여 현재 패턴을 기술한 strategies 문서가 생성됨. 각 컨벤션 문서 하단에 '개선 제안' 섹션이 포함되어 발견된 안티패턴과 개선 방향이 명시됨.",
+      "files": [],
+      "assertions": [
+        {
+          "name": "current_patterns_documented",
+          "description": "현재 레거시 패턴(Service/Manager/Handler 혼용 등)이 있는 그대로 문서화됨"
+        },
+        {
+          "name": "improvement_section_present",
+          "description": "적어도 하나 이상의 문서에 개선 제안 또는 안티패턴 섹션이 포함됨"
+        },
+        {
+          "name": "antipatterns_identified",
+          "description": "URL 안티패턴, @Transactional 오용, 명명 불일치 같은 안티패턴이 언급됨"
+        },
+        {
+          "name": "docs_created_despite_unclear_conventions",
+          "description": "컨벤션이 불명확해도 strategies 문서가 생성됨 (문서 생성을 거부하지 않음)"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "코드베이스 /tmp/reverse-engineer-eval/fixtures/case5-partial-docs 를 분석해서 출력 경로 /tmp/reverse-engineer-eval/workspace/iteration-1/case5-with_skill/outputs 에 strategies 문서를 만들어줘. storage/strategies/ 문서는 이미 있고 나머지는 없어. 병합 모드로 처리해줘.",
+      "expected_output": "storage/strategies/ 기존 문서는 유지(병합)하고, app/application/domain/external 레이어의 strategies 문서는 코드 기반으로 새로 생성됨. 특히 external 레이어(PaymentAdapter/PaymentApiClient)에 대한 문서가 새로 생성되어야 함.",
+      "files": [],
+      "assertions": [
+        {
+          "name": "storage_docs_preserved",
+          "description": "기존 storage/strategies/README.md와 storage-adapter-convention.md 내용이 보존됨"
+        },
+        {
+          "name": "missing_layers_created",
+          "description": "app/strategies/, application/strategies/, domain/strategies/ 가 새로 생성됨"
+        },
+        {
+          "name": "external_layer_created",
+          "description": "external/strategies/ 가 PaymentAdapter/PaymentApiClient 코드 기반으로 생성됨"
+        },
+        {
+          "name": "no_duplication_of_storage_docs",
+          "description": "storage/strategies/ 가 중복 생성되지 않고 기존 파일이 활용됨"
         }
       ]
     }
