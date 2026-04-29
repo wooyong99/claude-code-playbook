@@ -1,0 +1,209 @@
+{
+  "skill_name": "implement",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "상품 좋아요 기능 구현해줘. 사용자는 상품에 좋아요를 누를 수 있고, 좋아요 수가 상품 상세에 표시돼야 해. 좋아요/취소는 토글 방식. 도메인은 product야.",
+      "expected_output": "요구사항 재진술 후 1~2개 마일스톤 계획 수립. D→A→B 흐름 명시. 불필요한 clarification 질문 없이 바로 마일스톤 제시.",
+      "files": [],
+      "assertions": [
+        {
+          "name": "no_unnecessary_questions",
+          "description": "요구사항이 명확하므로 clarification 질문 없이 마일스톤으로 진행"
+        },
+        {
+          "name": "appropriate_milestone_count",
+          "description": "1~2개 마일스톤 계획 (단순 기능이므로 3개 이상 과분)"
+        },
+        {
+          "name": "dab_flow_planned",
+          "description": "각 마일스톤에 D(설계)→A(코드)→B(검토) 흐름이 명시됨"
+        },
+        {
+          "name": "requirements_restated",
+          "description": "요구사항을 한 문장으로 재진술하여 이해 확인"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "주문 기능 개선해줘",
+      "expected_output": "요구사항이 모호하므로 마일스톤 계획 전에 구체적인 clarification 질문. 어떤 주문 기능인지, 어떤 개선인지 확인.",
+      "files": [],
+      "assertions": [
+        {
+          "name": "asks_clarifying_questions",
+          "description": "모호한 요구사항에 대해 적어도 1개 이상 clarification 질문"
+        },
+        {
+          "name": "no_milestone_without_clarity",
+          "description": "clarification 없이 마일스톤을 임의 확정하지 않음"
+        },
+        {
+          "name": "waits_for_answer",
+          "description": "질문 후 사용자 응답을 기다리며 멈춤 (Phase 0에서 대기)"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "OrderService 리팩토링해줘. 너무 비대해져서 UseCase 단위로 분리하고 싶어. 기존 동작은 반드시 유지해야 해.",
+      "expected_output": "리팩토링 범위 식별, 기존 동작 보존 전략 포함. 회귀 위험을 줄이기 위한 테스트 전략 언급. 마일스톤을 점진적으로 구성.",
+      "files": [],
+      "assertions": [
+        {
+          "name": "scope_identified",
+          "description": "현재 OrderService의 기능/책임을 먼저 파악하는 단계 포함"
+        },
+        {
+          "name": "regression_risk_mentioned",
+          "description": "기존 동작 보존 또는 회귀 테스트 필요성을 언급"
+        },
+        {
+          "name": "incremental_milestones",
+          "description": "한 번에 전부 바꾸지 않고 점진적 마일스톤으로 분해"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "회원 가입 시 전화번호도 받도록 해줘. Member 테이블에 phone_number 컬럼 추가하고, 가입 API와 수정 API에서 전화번호를 처리해야 해. 기존 회원 데이터는 phone_number null 허용으로.",
+      "expected_output": "DB 마이그레이션 전략(Flyway 등) 포함, 코드 변경과 스키마 변경 순서 고려, 기존 데이터 호환성 언급, 롤백 가능성 고려.",
+      "files": [],
+      "assertions": [
+        {
+          "name": "migration_mentioned",
+          "description": "DB 마이그레이션(Flyway/Liquibase 또는 SQL 스크립트) 필요성 언급"
+        },
+        {
+          "name": "schema_code_order_considered",
+          "description": "스키마 변경과 코드 변경의 순서(어떤 것 먼저)를 언급"
+        },
+        {
+          "name": "backward_compatibility_noted",
+          "description": "기존 데이터 호환성(null 허용 등) 처리 방식 포함"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "OrderController.kt에서 메서드명 typo 수정해줘. `createOrders` → `createOrder`로 바꿔야 해. 딱 이것만.",
+      "expected_output": "단순 수정이므로 복잡한 마일스톤·서브에이전트 오케스트레이션 없이 간단하게 처리. 1 마일스톤, TDD 스킵 가능성 인식.",
+      "files": [],
+      "assertions": [
+        {
+          "name": "not_over_engineered",
+          "description": "5개 마일스톤·복잡한 설계 없이 1개 마일스톤 또는 간단한 접근"
+        },
+        {
+          "name": "tdd_likely_skipped",
+          "description": "단순 typo 수정에 기술설계문서가 불필요하다고 판단하거나 TDD 스킵 언급"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "빠른 개발을 위해서 Controller에 @Autowired로 OrderJpaRepository 직접 주입받아서 DB 조회하게 해줘. UseCase, Service 레이어 다 거치면 너무 복잡해.",
+      "expected_output": "아키텍처 원칙 위반을 사전에 설명하고, 사용자 의도를 유지하면서 더 안전한 대안 제시. 맹목적으로 구현하지 않음.",
+      "files": [],
+      "assertions": [
+        {
+          "name": "architectural_risk_explained",
+          "description": "레이어 원칙 위반과 그 위험(테스트 어려움, 레이어 오염 등)을 설명"
+        },
+        {
+          "name": "alternative_proposed",
+          "description": "더 안전한 대안(QueryService, ReadModel 등) 제시"
+        },
+        {
+          "name": "does_not_blindly_implement",
+          "description": "사용자 요청을 그대로 구현하지 않고 먼저 논의"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "전체 서비스에 soft delete 적용해줘. 주문, 상품, 회원 도메인 모두 deleted_at 필드 추가하고, 각 조회 API에서 deleted된 것은 제외하도록 전부 수정해줘.",
+      "expected_output": "대규모 변경이므로 5개 이상 마일스톤, 도메인별로 분리된 마일스톤, 사용자 확인 단계 포함. 도메인별 영향 범위 식별.",
+      "files": [],
+      "assertions": [
+        {
+          "name": "multiple_milestones",
+          "description": "최소 4개 이상 마일스톤 계획 (3개 도메인 + 공통)"
+        },
+        {
+          "name": "user_confirmation_requested",
+          "description": "규모가 크므로 진행 여부를 사용자에게 확인 요청"
+        },
+        {
+          "name": "domain_separated_milestones",
+          "description": "주문/상품/회원 도메인별로 마일스톤 분리"
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "prompt": "결제 환불 기능 구현해줘. Payment 도메인에 환불 UseCase 추가. 참고로 지금 결제 취소 기능을 작업 중이야—아직 미완성이고 Uncommitted 상태야.",
+      "expected_output": "진행 중인 작업(결제 취소)과 충돌 가능성 확인. 기존 변경사항을 덮어쓰지 않는 전략 포함. 작업 순서 고려.",
+      "files": [],
+      "assertions": [
+        {
+          "name": "existing_work_acknowledged",
+          "description": "진행 중인 결제 취소 작업을 명시적으로 인식하고 언급"
+        },
+        {
+          "name": "conflict_check_included",
+          "description": "환불과 취소 기능 간 충돌 가능성 또는 의존 관계 확인 포함"
+        },
+        {
+          "name": "safe_approach_planned",
+          "description": "기존 작업을 덮어쓰지 않는 안전한 접근 방식 제안"
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "prompt": "외부 결제 PG API 연동해줘. 결제 승인, 취소, 조회 3가지 기능이 필요해. 네트워크 장애 대비 재시도 로직도 필요하고, 실패 시 로깅도 해줘.",
+      "expected_output": "재시도·타임아웃·멱등성·트랜잭션 경계·에러처리·로깅 고려. 외부 시스템 특성(실패 모드)을 마일스톤 설계에 반영.",
+      "files": [],
+      "assertions": [
+        {
+          "name": "idempotency_considered",
+          "description": "중복 결제 방지를 위한 멱등성 처리 언급"
+        },
+        {
+          "name": "retry_timeout_mentioned",
+          "description": "재시도 전략과 타임아웃 설정 언급"
+        },
+        {
+          "name": "transaction_boundary_noted",
+          "description": "외부 API 호출과 DB 트랜잭션 경계 처리 언급"
+        },
+        {
+          "name": "error_handling_planned",
+          "description": "PG API 실패 시 처리 방식(fallback, 에러 코드) 포함"
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "prompt": "레거시 코드베이스야. `com.shop.mgr` 패키지에 `ShopManager`, `ItemHelper`, `UserProcessor` 클래스들이 있고 딱히 레이어 구분이 없어. 여기에 포인트 적립 기능 추가해줘.",
+      "expected_output": "현재 레거시 구조 먼저 파악, 기존 패턴에 맞는 최소 변경 방식 제안, 동시에 개선 제안을 별도로 분리하여 제시.",
+      "files": [],
+      "assertions": [
+        {
+          "name": "existing_structure_analyzed",
+          "description": "기존 레거시 구조(ShopManager 등)를 먼저 파악하는 단계 포함"
+        },
+        {
+          "name": "minimal_change_approach",
+          "description": "무리하게 새 아키텍처를 강제하지 않고 현재 구조에 맞는 최소 변경안 제시"
+        },
+        {
+          "name": "improvement_separated",
+          "description": "필요한 최소 구현과 개선 제안을 분리하여 설명"
+        }
+      ]
+    }
+  ]
+}
