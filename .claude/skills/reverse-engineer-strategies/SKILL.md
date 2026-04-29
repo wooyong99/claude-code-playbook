@@ -127,68 +127,9 @@ find {codebase_path}/src/main/kotlin -name "*.kt" | head -50
 
 ## Step 5. 문서 생성
 
-분석 결과를 바탕으로 [`references/strategies-doc-templates.md`](references/strategies-doc-templates.md)의 템플릿과 작성 지침에 따라 문서를 생성한다.
-문서 구조, 작성 원칙, 새 컨벤션 문서 생성 조건은 해당 문서에 정의되어 있다.
+분석 결과를 바탕으로 [`references/strategies-doc-templates.md`](references/strategies-doc-templates.md)를 참고하여 문서를 생성한다.
 
-> **원칙**: `docs/backend/architecture/*/strategies/` 하위의 기존 문서는 **디폴트 예시**일 뿐이다.
-> - 코드에 없는 패턴의 문서 → 제거 (Step 5-B)
-> - 코드에 있으나 대응 문서가 없는 패턴 → **신규 문서 작성**
-
-### 생성 대상
-
-각 레이어마다:
-- **`strategies/README.md`** — 이 프로젝트의 전략 요약 (필수)
-- **`strategies/{component}-convention.md`** — 발견된 컴포넌트별 컨벤션 (발견된 것만)
-
-레이어 이름이 플레이북과 다르더라도, 생성된 문서에는 반드시 아래 두 가지를 함께 명시한다.
-- 실제 프로젝트가 부르는 이름 (로컬 레이어명)
-- 플레이북 개념 레이어 중 어디에 대응되는지
-
-### 신규 패턴 발견 시 문서 추가
-
-새 컨벤션 문서 생성 조건은 [`references/strategies-doc-templates.md`](references/strategies-doc-templates.md)의 "세부 컨벤션 문서를 만들 조건"을 따른다.
-
-**파일 명명 규칙**: `{역할-키워드}-convention.md`
-(예: `scheduler-convention.md`, `batch-job-convention.md`, `cache-strategy-convention.md`)
-
-문서를 새로 만든 경우 `strategies/README.md`의 역할별 컴포넌트 표와 Post-Work Verification 체크리스트에 해당 항목을 추가한다.
-
-### 파일 경로 (디폴트 예시)
-
-아래 목록은 일반적인 Spring Boot 프로젝트에서 자주 등장하는 패턴의 예시다.
-실제 생성 파일은 코드베이스 분석 결과에 따라 늘어나거나 줄어든다.
-
-```
-{출력경로}/
-├── app/strategies/
-│   ├── README.md
-│   ├── api-convention.md            (Controller/DTO 패턴 발견 시)
-│   ├── rest-design-convention.md    (REST 설계 규칙 발견 시)
-│   ├── exception-handling-convention.md  (GlobalExceptionHandler 발견 시)
-│   ├── file-structure.md            (패키지 구조가 명확할 때)
-│   └── common.md                    (표현 계층 전역 관심사 — security/logging/config 등이 존재할 때)
-├── application/strategies/
-│   ├── README.md
-│   ├── use-case-convention.md       (UseCase 패턴 발견 시)
-│   ├── flow-convention.md           (Flow/Orchestrator 발견 시)
-│   ├── validator-convention.md      (Validator 발견 시)
-│   ├── handler-convention.md        (Handler/ACL 발견 시)
-│   ├── policy-convention.md         (Policy/Strategy 발견 시)
-│   ├── event-handler-convention.md  (EventHandler 발견 시)
-│   └── mapper-convention.md         (Mapper/Assembler 발견 시)
-├── domain/strategies/
-│   ├── README.md
-│   ├── domain-model-convention.md   (Entity/VO 패턴 발견 시)
-│   └── exception-convention.md      (도메인 예외 패턴 발견 시)
-├── storage/strategies/
-│   ├── README.md
-│   ├── storage-adapter-convention.md  (Adapter 패턴 발견 시)
-│   └── {orm}-convention.md            (QueryDsl/JOOQ 등 발견 시)
-└── external/strategies/
-    ├── README.md
-    ├── api-client-{http-client}.md    (HTTP 클라이언트 발견 시)
-    └── api-client-logging.md          (로깅 패턴 발견 시)
-```
+코드에 없는 패턴의 기존 문서는 제거한다 (→ Step 5-B).
 
 ### 기존 파일 처리
 

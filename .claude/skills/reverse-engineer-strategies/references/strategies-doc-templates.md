@@ -9,6 +9,9 @@
 
 모든 레이어의 `strategies/README.md`는 다음 세 섹션으로 구성된다.
 
+레이어 이름이 플레이북과 다른 경우, 제목 아래에 **로컬 레이어명**과 **플레이북 개념 레이어 대응**을 함께 명시한다.
+(예: `# api 계층 구현 전략 (플레이북: app 계층에 대응)`)
+
 ```markdown
 # {Layer} 계층 구현 전략
 
@@ -100,21 +103,6 @@
 
 ---
 
-## 금지 패턴
-
-- **{패턴명}**: {왜 금지인지}
-- **{패턴명}**: {왜 금지인지}
-
----
-
-## 체크리스트
-
-- [ ] {검증 항목 1}
-- [ ] {검증 항목 2}
-```
-
----
-
 ## 컨벤션 문서 작성 지침
 
 ### 핵심 원칙
@@ -137,4 +125,47 @@
 - 문서 생성 기준은 플레이북 지식 시스템에 존재하는 문서 목록이 아니라 **실제 코드에서 관찰된 구현 전략**이다.
   - 플레이북에 템플릿이 없더라도: 코드에서 반복 패턴이 보이면 → 새 문서 생성
   - 플레이북에 템플릿이 있더라도: 코드에서 해당 패턴이 없으면 → 문서 생성하지 않음
+
+새 컨벤션 문서 생성 시:
+- **파일 명명 규칙**: `{역할-키워드}-convention.md` (예: `scheduler-convention.md`, `batch-job-convention.md`, `cache-strategy-convention.md`)
+- `strategies/README.md`의 역할별 컴포넌트 표와 Post-Work Verification 체크리스트에 해당 항목을 추가한다.
+
+---
+
+### 디폴트 파일 구성 예시
+
+일반적인 Spring Boot 프로젝트에서 자주 등장하는 패턴의 예시다.
+실제 생성 파일은 코드베이스 분석 결과에 따라 늘어나거나 줄어든다.
+
+```
+{출력경로}/
+├── app/strategies/
+│   ├── README.md
+│   ├── api-convention.md            (Controller/DTO 패턴 발견 시)
+│   ├── rest-design-convention.md    (REST 설계 규칙 발견 시)
+│   ├── exception-handling-convention.md  (GlobalExceptionHandler 발견 시)
+│   ├── file-structure.md            (패키지 구조가 명확할 때)
+│   └── common.md                    (표현 계층 전역 관심사 — security/logging/config 등이 존재할 때)
+├── application/strategies/
+│   ├── README.md
+│   ├── use-case-convention.md       (UseCase 패턴 발견 시)
+│   ├── flow-convention.md           (Flow/Orchestrator 발견 시)
+│   ├── validator-convention.md      (Validator 발견 시)
+│   ├── handler-convention.md        (Handler/ACL 발견 시)
+│   ├── policy-convention.md         (Policy/Strategy 발견 시)
+│   ├── event-handler-convention.md  (EventHandler 발견 시)
+│   └── mapper-convention.md         (Mapper/Assembler 발견 시)
+├── domain/strategies/
+│   ├── README.md
+│   ├── domain-model-convention.md   (Entity/VO 패턴 발견 시)
+│   └── exception-convention.md      (도메인 예외 패턴 발견 시)
+├── storage/strategies/
+│   ├── README.md
+│   ├── storage-adapter-convention.md  (Adapter 패턴 발견 시)
+│   └── {orm}-convention.md            (QueryDsl/JOOQ 등 발견 시)
+└── external/strategies/
+    ├── README.md
+    ├── api-client-{http-client}.md    (HTTP 클라이언트 발견 시)
+    └── api-client-logging.md          (로깅 패턴 발견 시)
+```
 
