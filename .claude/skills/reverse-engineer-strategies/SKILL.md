@@ -108,46 +108,10 @@ find {codebase_path}/src/main/kotlin -name "*.kt" | head -50
 
 ## Step 3. 레이어별 코드 분석
 
-각 레이어에 대해 `references/layer-analysis-guide.md`의 해당 섹션을 참고하여 분석한다.
-
-역공학은 **고정된 폴더명 기준**이 아니라, Step 2에서 식별한 **프로젝트 로컬 레이어 맵**을 기준으로 수행한다.
-매핑 기준은 **이름 유사성**이 아니라 **레이어의 역할, 책임, 의존 방향, 포함된 클래스 종류**다.
-
-예시:
-- `bootstrap` → `app` / `api` → `app` / `presentation` → `app`
-- `infra` → `infrastructure` / `infrastructure/storage` → `storage` / `infrastructure/external` → `external`
-
-`infrastructure`처럼 상위 묶음 레이어가 있으면, 하위에서 `storage`, `external`, `messaging`, `security` 같은 전략 단위를 다시 분리해 각각 분석한다.
-
-**분석 순서**는 보통 `domain → application → infrastructure 계열 → app 계열`이 이해하기 쉽지만, 실제 프로젝트 의존 방향이 더 명확하면 그 순서를 따른다.
-
-각 식별된 레이어(또는 하위 레이어)에서 다음을 찾는다.
-
-- 실제로 쓰이는 핵심 패턴
-- 반복되는 클래스 역할과 네이밍
-- 어노테이션, 베이스 클래스, 인터페이스 조합
-- 예외 처리, 매핑, 트랜잭션, 외부 연동, 쿼리 방식 같은 구현 전략
+각 레이어에 대해 [`references/layer-analysis-guide.md`](references/layer-analysis-guide.md)를 참고하여 분석한다.
+레이어별 분석 대상, 확인할 패턴, 결과 기록 형식이 모두 해당 문서에 정의되어 있다.
 
 각 레이어 분석 시 반드시 실제 파일을 읽어서 사실 기반으로 답한다. 추측 금지.
-
-### 분석 결과 기록 형식
-
-레이어마다 분석이 끝나면 아래 형식으로 내부 메모를 정리한다.
-
-```text
-[LAYER] 분석 결과
-전략: {핵심 전략명}
-로컬 레이어명: {프로젝트에서 실제로 쓰는 이름}
-개념 레이어 매핑: {domain/application/storage/external/app/infrastructure 중 대응}
-근거:
-- {관찰 1}
-- {관찰 2}
-컴포넌트:
-- {역할}: {예시 클래스}
-- {역할}: {예시 클래스}
-불확실한 부분:
-- {있다면 기록, 없으면 없음}
-```
 
 ---
 
@@ -163,10 +127,10 @@ find {codebase_path}/src/main/kotlin -name "*.kt" | head -50
 
 ## Step 5. 문서 생성
 
-분석 결과를 바탕으로 `references/strategies-doc-templates.md`의 템플릿에 따라 문서를 생성한다.
+분석 결과를 바탕으로 [`references/strategies-doc-templates.md`](references/strategies-doc-templates.md)의 템플릿과 작성 지침에 따라 문서를 생성한다.
+문서 구조, 작성 원칙, 새 컨벤션 문서 생성 조건은 해당 문서에 정의되어 있다.
 
 > **원칙**: `docs/backend/architecture/*/strategies/` 하위의 기존 문서는 **디폴트 예시**일 뿐이다.
-> 코드베이스의 실제 패턴을 기준으로 문서 세트를 결정한다.
 > - 코드에 없는 패턴의 문서 → 제거 (Step 5-B)
 > - 코드에 있으나 대응 문서가 없는 패턴 → **신규 문서 작성**
 
@@ -177,19 +141,12 @@ find {codebase_path}/src/main/kotlin -name "*.kt" | head -50
 - **`strategies/{component}-convention.md`** — 발견된 컴포넌트별 컨벤션 (발견된 것만)
 
 레이어 이름이 플레이북과 다르더라도, 생성된 문서에는 반드시 아래 두 가지를 함께 명시한다.
-
 - 실제 프로젝트가 부르는 이름 (로컬 레이어명)
 - 플레이북 개념 레이어 중 어디에 대응되는지
 
-이렇게 해야 독자가 코드베이스와 플레이북 사이의 매핑을 이해할 수 있다.
-
 ### 신규 패턴 발견 시 문서 추가
 
-코드 분석 중 아래 조건을 모두 만족하는 패턴이 발견되면, 기존 파일 목록에 없더라도 새 컨벤션 문서를 생성한다.
-
-**조건**
-- 동일 패턴을 따르는 클래스가 코드베이스에 2개 이상 존재한다.
-- 기존 어떤 컨벤션 문서에도 해당 패턴이 다뤄지지 않는다.
+새 컨벤션 문서 생성 조건은 [`references/strategies-doc-templates.md`](references/strategies-doc-templates.md)의 "세부 컨벤션 문서를 만들 조건"을 따른다.
 
 **파일 명명 규칙**: `{역할-키워드}-convention.md`
 (예: `scheduler-convention.md`, `batch-job-convention.md`, `cache-strategy-convention.md`)
